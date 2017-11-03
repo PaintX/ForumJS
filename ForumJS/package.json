@@ -1,0 +1,9 @@
+{
+  "name": "forum-js",
+  "version": "0.0.0",
+  "description": "ForumJS",
+  "main": "app.js",
+  "author": {
+    "name": "ARRT"
+  }
+}

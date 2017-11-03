@@ -1,4 +1,14 @@
 'use strict';
+/*var child_process = require('child_process');
+
+console.log('');
+console.log('************************************************');
+console.log('****           compiling  ForumJS           ****');
+console.log('************************************************');
+console.log('');
+
+child_process.exec("webpack --watch", { stdio: [0, 1, 2] });
+*/
 
 console.log('');
 console.log('************************************************');

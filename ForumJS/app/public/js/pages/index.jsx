@@ -4,8 +4,6 @@ import siteinfos from "siteinfos";
 
 var compiled = require('index_body.hbs');
 
-
-
 class IndexPage extends Component {
     constructor(props) {
         super(props);
@@ -21,8 +19,7 @@ class IndexPage extends Component {
     }
     
     render() {
-
-        return <div dangerouslySetInnerHTML={{ __html: compiled(object.Assign({}, { i18n: this.props.i18n }, siteinfos.getAll()))}} />;
+        return <div dangerouslySetInnerHTML={{ __html: compiled(Object.assign({}, { i18n: this.props.i18n }, siteinfos.getAll()))}} />;
     }
 }
 

@@ -28537,8 +28537,6 @@ var _siteinfos = __webpack_require__(76);var _siteinfos2 = _interopRequireDefaul
 
 var compiled = __webpack_require__(119);var
 
-
-
 IndexPage = function (_Component) {_inherits(IndexPage, _Component);
     function IndexPage(props) {_classCallCheck(this, IndexPage);return _possibleConstructorReturn(this, (IndexPage.__proto__ || Object.getPrototypeOf(IndexPage)).call(this,
         props));
@@ -28554,8 +28552,7 @@ IndexPage = function (_Component) {_inherits(IndexPage, _Component);
         } }, { key: 'render', value: function render()
 
         {
-
-            return _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: compiled(object.Assign({}, { i18n: this.props.i18n }, _siteinfos2.default.getAll())) } });
+            return _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: compiled(Object.assign({}, { i18n: this.props.i18n }, _siteinfos2.default.getAll())) } });
         } }]);return IndexPage;}(_react.Component);exports.default =
 
 

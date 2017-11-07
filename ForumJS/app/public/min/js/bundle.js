@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 36);
+/******/ 	return __webpack_require__(__webpack_require__.s = 55);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -261,9 +261,9 @@ process.umask = function () {return 0;};
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(37);
+  module.exports = __webpack_require__(56);
 } else {
-  module.exports = __webpack_require__(38);
+  module.exports = __webpack_require__(57);
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
@@ -339,35 +339,129 @@ module.exports = warning;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;}; /**
-                                                                                                                                                                                                                                                                                        * Copyright (c) 2013-present, Facebook, Inc.
-                                                                                                                                                                                                                                                                                        *
-                                                                                                                                                                                                                                                                                        * This source code is licensed under the MIT license found in the
-                                                                                                                                                                                                                                                                                        * LICENSE file in the root directory of this source tree.
-                                                                                                                                                                                                                                                                                        */
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' &&
-  Symbol.for &&
-  Symbol.for('react.element') ||
-  0xeac7;
+exports.__esModule = true;
+exports.extend = extend;
+exports.indexOf = indexOf;
+exports.escapeExpression = escapeExpression;
+exports.isEmpty = isEmpty;
+exports.createFrame = createFrame;
+exports.blockParams = blockParams;
+exports.appendContextPath = appendContextPath;
+var escape = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#x27;',
+  '`': '&#x60;',
+  '=': '&#x3D;' };
 
-  var isValidElement = function isValidElement(object) {
-    return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' &&
-    object !== null &&
-    object.$$typeof === REACT_ELEMENT_TYPE;
-  };
 
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(57)(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(59)();
+var badChars = /[&<>"'`=]/g,
+possible = /[&<>"'`=]/;
+
+function escapeChar(chr) {
+  return escape[chr];
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+function extend(obj /* , ...source */) {
+  for (var i = 1; i < arguments.length; i++) {
+    for (var key in arguments[i]) {
+      if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
+        obj[key] = arguments[i][key];
+      }
+    }
+  }
+
+  return obj;
+}
+
+var toString = Object.prototype.toString;
+
+exports.toString = toString;
+// Sourced from lodash
+// https://github.com/bestiejs/lodash/blob/master/LICENSE.txt
+/* eslint-disable func-style */
+var isFunction = function isFunction(value) {
+  return typeof value === 'function';
+};
+// fallback for older versions of Chrome and Safari
+/* istanbul ignore next */
+if (isFunction(/x/)) {
+  exports.isFunction = isFunction = function isFunction(value) {
+    return typeof value === 'function' && toString.call(value) === '[object Function]';
+  };
+}
+exports.isFunction = isFunction;
+
+/* eslint-enable func-style */
+
+/* istanbul ignore next */
+var isArray = Array.isArray || function (value) {
+  return value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? toString.call(value) === '[object Array]' : false;
+};
+
+exports.isArray = isArray;
+// Older IE versions do not directly support indexOf so we must implement our own, sadly.
+
+function indexOf(array, value) {
+  for (var i = 0, len = array.length; i < len; i++) {
+    if (array[i] === value) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function escapeExpression(string) {
+  if (typeof string !== 'string') {
+    // don't escape SafeStrings, since they're already safe
+    if (string && string.toHTML) {
+      return string.toHTML();
+    } else if (string == null) {
+      return '';
+    } else if (!string) {
+      return string + '';
+    }
+
+    // Force a string conversion as this will be done by the append regardless and
+    // the regex test will do this transparently behind the scenes, causing issues if
+    // an object's to string has escaped characters in it.
+    string = '' + string;
+  }
+
+  if (!possible.test(string)) {
+    return string;
+  }
+  return string.replace(badChars, escapeChar);
+}
+
+function isEmpty(value) {
+  if (!value && value !== 0) {
+    return true;
+  } else if (isArray(value) && value.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function createFrame(object) {
+  var frame = extend({}, object);
+  frame._parent = object;
+  return frame;
+}
+
+function blockParams(params, ids) {
+  params.path = ids;
+  return params;
+}
+
+function appendContextPath(contextPath, id) {
+  return (contextPath ? contextPath + '.' : '') + id;
+}
 
 /***/ }),
 /* 4 */
@@ -429,6 +523,41 @@ module.exports = invariant;
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;}; /**
+                                                                                                                                                                                                                                                                                        * Copyright (c) 2013-present, Facebook, Inc.
+                                                                                                                                                                                                                                                                                        *
+                                                                                                                                                                                                                                                                                        * This source code is licensed under the MIT license found in the
+                                                                                                                                                                                                                                                                                        * LICENSE file in the root directory of this source tree.
+                                                                                                                                                                                                                                                                                        */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' &&
+  Symbol.for &&
+  Symbol.for('react.element') ||
+  0xeac7;
+
+  var isValidElement = function isValidElement(object) {
+    return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' &&
+    object !== null &&
+    object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(85)(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(87)();
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -524,7 +653,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 };
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -566,7 +695,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -626,7 +755,74 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 8 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2014-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+
+
+/**
+               * Similar to invariant but only logs a warning if the condition is not met.
+               * This can be used to log issues in development environments in critical
+               * paths. Removing the logging code for production environments will keep the
+               * same logic and follow the same code paths.
+               */
+
+var warning = function warning() {};
+
+if (process.env.NODE_ENV !== 'production') {
+  warning = function warning(condition, format, args) {
+    var len = arguments.length;
+    args = new Array(len > 2 ? len - 2 : 0);
+    for (var key = 2; key < len; key++) {
+      args[key - 2] = arguments[key];
+    }
+    if (format === undefined) {
+      throw new Error(
+      '`warning(condition, format, ...args)` requires a warning ' +
+      'message argument');
+
+    }
+
+    if (format.length < 10 || /^[s\W]*$/.test(format)) {
+      throw new Error(
+      'The warning format should be able to uniquely identify this ' +
+      'warning. Please, use a more descriptive format than: ' + format);
+
+    }
+
+    if (!condition) {
+      var argIndex = 0;
+      var message = 'Warning: ' +
+      format.replace(/%s/g, function () {
+        return args[argIndex++];
+      });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    }
+  };
+}
+
+module.exports = warning;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -690,15 +886,109 @@ var createPath = exports.createPath = function createPath(location) {
 };
 
 /***/ }),
-/* 9 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
+
+function Exception(message, node) {
+  var loc = node && node.loc,
+  line = undefined,
+  column = undefined;
+  if (loc) {
+    line = loc.start.line;
+    column = loc.start.column;
+
+    message += ' - ' + line + ':' + column;
+  }
+
+  var tmp = Error.prototype.constructor.call(this, message);
+
+  // Unfortunately errors are not enumerable in Chrome (at least), so `for prop in tmp` doesn't work.
+  for (var idx = 0; idx < errorProps.length; idx++) {
+    this[errorProps[idx]] = tmp[errorProps[idx]];
+  }
+
+  /* istanbul ignore else */
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, Exception);
+  }
+
+  try {
+    if (loc) {
+      this.lineNumber = line;
+
+      // Work around issue under safari where we can't directly set the column value
+      /* istanbul ignore next */
+      if (Object.defineProperty) {
+        Object.defineProperty(this, 'column', {
+          value: column,
+          enumerable: true });
+
+      } else {
+        this.column = column;
+      }
+    }
+  } catch (nop) {
+    /* Ignore if the browser is very particular */
+  }
+}
+
+Exception.prototype = new Error();
+
+exports['default'] = Exception;
+module.exports = exports['default'];
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;}; /**
+                                                                                                                                                                                                                                                                                        * Copyright (c) 2013-present, Facebook, Inc.
+                                                                                                                                                                                                                                                                                        *
+                                                                                                                                                                                                                                                                                        * This source code is licensed under the MIT license found in the
+                                                                                                                                                                                                                                                                                        * LICENSE file in the root directory of this source tree.
+                                                                                                                                                                                                                                                                                        */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' &&
+  Symbol.for &&
+  Symbol.for('react.element') ||
+  0xeac7;
+
+  var isValidElement = function isValidElement(object) {
+    return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' &&
+    object !== null &&
+    object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(79)(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(81)();
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.locationsAreEqual = exports.createLocation = undefined;
 
-var _resolvePathname = __webpack_require__(32);var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
-var _valueEqual = __webpack_require__(33);var _valueEqual2 = _interopRequireDefault(_valueEqual);
-var _PathUtils = __webpack_require__(8);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+var _resolvePathname = __webpack_require__(49);var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
+var _valueEqual = __webpack_require__(50);var _valueEqual2 = _interopRequireDefault(_valueEqual);
+var _PathUtils = __webpack_require__(10);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
 var createLocation = exports.createLocation = function createLocation(path, state, key, currentLocation) {
   var location = void 0;
@@ -761,7 +1051,7 @@ var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a
 };
 
 /***/ }),
-/* 10 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -821,7 +1111,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -863,7 +1153,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -902,7 +1192,7 @@ var ExecutionEnvironment = {
 module.exports = ExecutionEnvironment;
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -916,7 +1206,7 @@ module.exports = ExecutionEnvironment;
 
 
 
-var emptyFunction = __webpack_require__(6);
+var emptyFunction = __webpack_require__(7);
 
 /**
                                                  * Similar to invariant but only logs a warning if the condition is not met.
@@ -971,7 +1261,7 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -989,7 +1279,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1031,7 +1321,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1091,7 +1381,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1109,7 +1399,65 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 18 */
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+
+
+/**
+               * Use invariant() to assert state which your program assumes to be true.
+               *
+               * Provide sprintf-style format (only %s is supported) and arguments
+               * to provide information about what broke and what you were
+               * expecting.
+               *
+               * The invariant message will be stripped in production, but the invariant
+               * will remain to ensure logic does not differ in production.
+               */
+
+var invariant = function invariant(condition, format, a, b, c, d, e, f) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  }
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error(
+      'Minified exception occurred; use the non-minified dev environment ' +
+      'for the full error message and additional helpful warnings.');
+
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(
+      format.replace(/%s/g, function () {return args[argIndex++];}));
+
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+};
+
+module.exports = invariant;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1176,7 +1524,15 @@ var createPath = exports.createPath = function createPath(location) {
 };
 
 /***/ }),
-/* 19 */
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Router = __webpack_require__(25);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Router2.default; // Written in this round about way for babel-transform-imports
+
+/***/ }),
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1191,7 +1547,7 @@ Object.defineProperty(exports, "__esModule", { value: true });var _typeof = type
 var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
 var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
 var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
 
 /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * The public API for putting history on context.
@@ -1287,7 +1643,269 @@ Router.childContextTypes = {
 Router;
 
 /***/ }),
-/* 20 */
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+               * Copyright (c) 2013-present, Facebook, Inc.
+               *
+               * This source code is licensed under the MIT license found in the
+               * LICENSE file in the root directory of this source tree.
+               *
+               * 
+               */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+   * This function accepts and discards inputs; it has no side effects. This is
+   * primarily useful idiomatically for overridable function endpoints which
+   * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+   */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+module.exports = emptyFunction;
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+
+
+/**
+               * Use invariant() to assert state which your program assumes to be true.
+               *
+               * Provide sprintf-style format (only %s is supported) and arguments
+               * to provide information about what broke and what you were
+               * expecting.
+               *
+               * The invariant message will be stripped in production, but the invariant
+               * will remain to ensure logic does not differ in production.
+               */
+
+var validateFormat = function validateFormat(format) {};
+
+if (process.env.NODE_ENV !== 'production') {
+  validateFormat = function validateFormat(format) {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  };
+}
+
+function invariant(condition, format, a, b, c, d, e, f) {
+  validateFormat(format);
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+}
+
+module.exports = invariant;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+var addLeadingSlash = exports.addLeadingSlash = function addLeadingSlash(path) {
+  return path.charAt(0) === '/' ? path : '/' + path;
+};
+
+var stripLeadingSlash = exports.stripLeadingSlash = function stripLeadingSlash(path) {
+  return path.charAt(0) === '/' ? path.substr(1) : path;
+};
+
+var hasBasename = exports.hasBasename = function hasBasename(path, prefix) {
+  return new RegExp('^' + prefix + '(\\/|\\?|#|$)', 'i').test(path);
+};
+
+var stripBasename = exports.stripBasename = function stripBasename(path, prefix) {
+  return hasBasename(path, prefix) ? path.substr(prefix.length) : path;
+};
+
+var stripTrailingSlash = exports.stripTrailingSlash = function stripTrailingSlash(path) {
+  return path.charAt(path.length - 1) === '/' ? path.slice(0, -1) : path;
+};
+
+var parsePath = exports.parsePath = function parsePath(path) {
+  var pathname = path || '/';
+  var search = '';
+  var hash = '';
+
+  var hashIndex = pathname.indexOf('#');
+  if (hashIndex !== -1) {
+    hash = pathname.substr(hashIndex);
+    pathname = pathname.substr(0, hashIndex);
+  }
+
+  var searchIndex = pathname.indexOf('?');
+  if (searchIndex !== -1) {
+    search = pathname.substr(searchIndex);
+    pathname = pathname.substr(0, searchIndex);
+  }
+
+  return {
+    pathname: pathname,
+    search: search === '?' ? '' : search,
+    hash: hash === '#' ? '' : hash };
+
+};
+
+var createPath = exports.createPath = function createPath(location) {
+  var pathname = location.pathname,
+  search = location.search,
+  hash = location.hash;
+
+
+  var path = pathname || '/';
+
+  if (search && search !== '?') path += search.charAt(0) === '?' ? search : '?' + search;
+
+  if (hash && hash !== '#') path += hash.charAt(0) === '#' ? hash : '#' + hash;
+
+  return path;
+};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _pathToRegexp = __webpack_require__(96);var _pathToRegexp2 = _interopRequireDefault(_pathToRegexp);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var patternCache = {};
+var cacheLimit = 10000;
+var cacheCount = 0;
+
+var compilePath = function compilePath(pattern, options) {
+  var cacheKey = '' + options.end + options.strict + options.sensitive;
+  var cache = patternCache[cacheKey] || (patternCache[cacheKey] = {});
+
+  if (cache[pattern]) return cache[pattern];
+
+  var keys = [];
+  var re = (0, _pathToRegexp2.default)(pattern, keys, options);
+  var compiledPattern = { re: re, keys: keys };
+
+  if (cacheCount < cacheLimit) {
+    cache[pattern] = compiledPattern;
+    cacheCount++;
+  }
+
+  return compiledPattern;
+};
+
+/**
+    * Public API for matching a URL pathname to a path pattern.
+    */
+var matchPath = function matchPath(pathname) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (typeof options === 'string') options = { path: options };
+
+  var _options = options,
+  _options$path = _options.path,
+  path = _options$path === undefined ? '/' : _options$path,
+  _options$exact = _options.exact,
+  exact = _options$exact === undefined ? false : _options$exact,
+  _options$strict = _options.strict,
+  strict = _options$strict === undefined ? false : _options$strict,
+  _options$sensitive = _options.sensitive,
+  sensitive = _options$sensitive === undefined ? false : _options$sensitive;
+
+  var _compilePath = compilePath(path, { end: exact, strict: strict, sensitive: sensitive }),
+  re = _compilePath.re,
+  keys = _compilePath.keys;
+
+  var match = re.exec(pathname);
+
+  if (!match) return null;
+
+  var url = match[0],
+  values = match.slice(1);
+
+  var isExact = pathname === url;
+
+  if (exact && !isExact) return null;
+
+  return {
+    path: path, // the path pattern used to match
+    url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
+    isExact: isExact, // whether or not we matched exactly
+    params: keys.reduce(function (memo, key, index) {
+      memo[key.name] = values[index];
+      return memo;
+    }, {}) };
+
+};exports.default =
+
+matchPath;
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1370,82 +1988,16 @@ var createTransitionManager = function createTransitionManager() {
 createTransitionManager;
 
 /***/ }),
-/* 21 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _pathToRegexp = __webpack_require__(69);var _pathToRegexp2 = _interopRequireDefault(_pathToRegexp);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-var patternCache = {};
-var cacheLimit = 10000;
-var cacheCount = 0;
-
-var compilePath = function compilePath(pattern, options) {
-  var cacheKey = '' + options.end + options.strict + options.sensitive;
-  var cache = patternCache[cacheKey] || (patternCache[cacheKey] = {});
-
-  if (cache[pattern]) return cache[pattern];
-
-  var keys = [];
-  var re = (0, _pathToRegexp2.default)(pattern, keys, options);
-  var compiledPattern = { re: re, keys: keys };
-
-  if (cacheCount < cacheLimit) {
-    cache[pattern] = compiledPattern;
-    cacheCount++;
-  }
-
-  return compiledPattern;
-};
-
-/**
-    * Public API for matching a URL pathname to a path pattern.
-    */
-var matchPath = function matchPath(pathname) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  if (typeof options === 'string') options = { path: options };
-
-  var _options = options,
-  _options$path = _options.path,
-  path = _options$path === undefined ? '/' : _options$path,
-  _options$exact = _options.exact,
-  exact = _options$exact === undefined ? false : _options$exact,
-  _options$strict = _options.strict,
-  strict = _options$strict === undefined ? false : _options$strict,
-  _options$sensitive = _options.sensitive,
-  sensitive = _options$sensitive === undefined ? false : _options$sensitive;
-
-  var _compilePath = compilePath(path, { end: exact, strict: strict, sensitive: sensitive }),
-  re = _compilePath.re,
-  keys = _compilePath.keys;
-
-  var match = re.exec(pathname);
-
-  if (!match) return null;
-
-  var url = match[0],
-  values = match.slice(1);
-
-  var isExact = pathname === url;
-
-  if (exact && !isExact) return null;
-
-  return {
-    path: path, // the path pattern used to match
-    url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
-    isExact: isExact, // whether or not we matched exactly
-    params: keys.reduce(function (memo, key, index) {
-      memo[key.name] = values[index];
-      return memo;
-    }, {}) };
-
-};exports.default =
-
-matchPath;
+ // Create a simple path alias to allow browserify to resolve
+// the runtime on a supported path.
+module.exports = __webpack_require__(120)['default'];
 
 /***/ }),
-/* 22 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1469,7 +2021,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 23 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1483,7 +2035,7 @@ module.exports = emptyObject;
 
 
 
-var emptyFunction = __webpack_require__(11);
+var emptyFunction = __webpack_require__(15);
 
 /**
                                                  * Similar to invariant but only logs a warning if the condition is not met.
@@ -1538,7 +2090,7 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 24 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1553,7 +2105,7 @@ module.exports = warning;
                * @typechecks
                */
 
-var emptyFunction = __webpack_require__(6);
+var emptyFunction = __webpack_require__(7);
 
 /**
                                                  * Upstream version of event listener. Does not take into account specific
@@ -1619,7 +2171,7 @@ module.exports = EventListener;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 25 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1643,7 +2195,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1714,7 +2266,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 27 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1729,7 +2281,7 @@ module.exports = shallowEqual;
                * 
                */
 
-var isTextNode = __webpack_require__(43);
+var isTextNode = __webpack_require__(62);
 
 /*eslint-disable no-bitwise */
 
@@ -1757,7 +2309,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 28 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1787,7 +2339,7 @@ function focusNode(node) {
 module.exports = focusNode;
 
 /***/ }),
-/* 29 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1829,7 +2381,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 30 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1843,9 +2395,9 @@ module.exports = getActiveElement;
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(7);
-  var warning = __webpack_require__(13);
-  var ReactPropTypesSecret = __webpack_require__(14);
+  var invariant = __webpack_require__(8);
+  var warning = __webpack_require__(17);
+  var ReactPropTypesSecret = __webpack_require__(18);
   var loggedTypeFailures = {};
 }
 
@@ -1895,7 +2447,166 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 31 */
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var socket = io();
+
+var Subscribe = __webpack_require__(75);
+
+var ws = undefined;
+var requests = new Map();
+var token = 0;
+var regexp = new RegExp('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}');
+var connectingState = false;
+
+function _getRandom() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+        v = c == 'x' ?
+        r :
+        r & 0x3 | 0x8;
+        return v.toString(16);
+    });
+}
+
+
+function _connect(url)
+{
+
+    connectingState = false;
+
+    // On receive message
+    socket.on('message', function (msg) {
+
+        var message = JSON.parse(msg);
+        // Parse message
+        var data = message.data;
+
+        // Get topic from message
+        var topic = message.topic;
+
+        // Check topic
+        if (topic !== undefined) {
+            var group = message.token.match(regexp);
+            if (group) {
+
+                // Get random
+                var random = group[0];
+                if (random !== undefined) {
+
+                    // Search for resolve function by random
+                    if (requests.has(random)) {
+                        var resolveFn = requests.get(random).resolveFn;
+
+                        // Get referer
+                        var referer = requests.get(random).referer;
+
+                        // Call resolve function
+                        var _data = Object.assign({}, data, {
+                            referer: referer });
+
+                        resolveFn(_data);
+                    }
+                } else {
+                    // General websocket messages
+                }
+            }
+        }
+    });
+}
+
+function _close()
+{
+    /* if (ws == undefined) {
+         console.error("Websocket Not Connected");
+         return;
+     }
+     socket.close();
+     ws = undefined;*/
+}
+
+function _onConnect(callback)
+{
+    if (socket == undefined)
+    {
+        console.error("Websocket Not Connected");
+        return;
+    }
+    if (callback != undefined)
+    {
+        socket.on('connect', function () {
+            callback();
+        });
+    } else
+
+    {
+        socket.on('connect', function () {
+        });
+    }
+}
+
+function _onClose(callback)
+{
+    /* if (ws == undefined) {
+         console.error("Websocket Not Connected");
+         return;
+     }
+     if (callback != undefined) {
+         ws.onclose = () => {
+             callback();
+         };
+     }
+     else {
+         ws.onclose = () => {
+         };
+     }*/
+}
+
+function _send(subtopic, data, referer)
+{
+    var random = _getRandom();
+    var promise = new Promise(function (resolve, reject) {
+        var userInfos = sessionStorage.getItem("user");
+        var t =
+        {
+            "token": random,
+            "topic": subtopic,
+            "data": data };
+
+
+        if (connectingState == false)
+        {
+            t.user = userInfos;
+            connectingState = true;
+        }
+        requests.set(random,
+        {
+            resolveFn: function resolveFn(data) {
+                resolve(data);
+
+                // Purge random map
+                requests.delete(random);
+            },
+            referer: referer });
+
+
+        socket.emit(subtopic, JSON.stringify(t));
+    });
+    return promise;
+
+}
+
+module.exports.ws = ws;
+module.exports.connect = _connect;
+module.exports.close = _close;
+module.exports.onConnect = _onConnect;
+module.exports.onClose = _onClose;
+module.exports.send = _send;
+
+/***/ }),
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1909,7 +2620,7 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(15);
+var emptyFunction = __webpack_require__(19);
 
 /**
                                                  * Similar to invariant but only logs a warning if the condition is not met.
@@ -1964,7 +2675,416 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 32 */
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.locationsAreEqual = exports.createLocation = undefined;
+
+var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+
+var _resolvePathname = __webpack_require__(83);
+
+var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
+
+var _valueEqual = __webpack_require__(84);
+
+var _valueEqual2 = _interopRequireDefault(_valueEqual);
+
+var _PathUtils = __webpack_require__(23);
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var createLocation = exports.createLocation = function createLocation(path, state, key, currentLocation) {
+  var location = void 0;
+  if (typeof path === 'string') {
+    // Two-arg form: push(path, state)
+    location = (0, _PathUtils.parsePath)(path);
+    location.state = state;
+  } else {
+    // One-arg form: push(location)
+    location = _extends({}, path);
+
+    if (location.pathname === undefined) location.pathname = '';
+
+    if (location.search) {
+      if (location.search.charAt(0) !== '?') location.search = '?' + location.search;
+    } else {
+      location.search = '';
+    }
+
+    if (location.hash) {
+      if (location.hash.charAt(0) !== '#') location.hash = '#' + location.hash;
+    } else {
+      location.hash = '';
+    }
+
+    if (state !== undefined && location.state === undefined) location.state = state;
+  }
+
+  try {
+    location.pathname = decodeURI(location.pathname);
+  } catch (e) {
+    if (e instanceof URIError) {
+      throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' + 'This is likely caused by an invalid percent-encoding.');
+    } else {
+      throw e;
+    }
+  }
+
+  if (key) location.key = key;
+
+  if (currentLocation) {
+    // Resolve incomplete/relative pathname relative to current location.
+    if (!location.pathname) {
+      location.pathname = currentLocation.pathname;
+    } else if (location.pathname.charAt(0) !== '/') {
+      location.pathname = (0, _resolvePathname2.default)(location.pathname, currentLocation.pathname);
+    }
+  } else {
+    // When there is no prior location and pathname is empty, set it to /
+    if (!location.pathname) {
+      location.pathname = '/';
+    }
+  }
+
+  return location;
+};
+
+var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a, b) {
+  return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && (0, _valueEqual2.default)(a.state, b.state);
+};
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _warning = __webpack_require__(9);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var createTransitionManager = function createTransitionManager() {
+  var prompt = null;
+
+  var setPrompt = function setPrompt(nextPrompt) {
+    (0, _warning2.default)(prompt == null, 'A history supports only one prompt at a time');
+
+    prompt = nextPrompt;
+
+    return function () {
+      if (prompt === nextPrompt) prompt = null;
+    };
+  };
+
+  var confirmTransitionTo = function confirmTransitionTo(location, action, getUserConfirmation, callback) {
+    // TODO: If another transition starts while we're still confirming
+    // the previous one, we may end up in a weird state. Figure out the
+    // best way to handle this.
+    if (prompt != null) {
+      var result = typeof prompt === 'function' ? prompt(location, action) : prompt;
+
+      if (typeof result === 'string') {
+        if (typeof getUserConfirmation === 'function') {
+          getUserConfirmation(result, callback);
+        } else {
+          (0, _warning2.default)(false, 'A history needs a getUserConfirmation function in order to use a prompt message');
+
+          callback(true);
+        }
+      } else {
+        // Return false from a transition hook to cancel the transition.
+        callback(result !== false);
+      }
+    } else {
+      callback(true);
+    }
+  };
+
+  var listeners = [];
+
+  var appendListener = function appendListener(fn) {
+    var isActive = true;
+
+    var listener = function listener() {
+      if (isActive) fn.apply(undefined, arguments);
+    };
+
+    listeners.push(listener);
+
+    return function () {
+      isActive = false;
+      listeners = listeners.filter(function (item) {
+        return item !== listener;
+      });
+    };
+  };
+
+  var notifyListeners = function notifyListeners() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    listeners.forEach(function (listener) {
+      return listener.apply(undefined, args);
+    });
+  };
+
+  return {
+    setPrompt: setPrompt,
+    confirmTransitionTo: confirmTransitionTo,
+    appendListener: appendListener,
+    notifyListeners: notifyListeners };
+
+};
+
+exports.default = createTransitionManager;
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+var canUseDOM = exports.canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+var addEventListener = exports.addEventListener = function addEventListener(node, event, listener) {
+  return node.addEventListener ? node.addEventListener(event, listener, false) : node.attachEvent('on' + event, listener);
+};
+
+var removeEventListener = exports.removeEventListener = function removeEventListener(node, event, listener) {
+  return node.removeEventListener ? node.removeEventListener(event, listener, false) : node.detachEvent('on' + event, listener);
+};
+
+var getConfirmation = exports.getConfirmation = function getConfirmation(message, callback) {
+  return callback(window.confirm(message));
+}; // eslint-disable-line no-alert
+
+/**
+ * Returns true if the HTML5 history API is supported. Taken from Modernizr.
+ *
+ * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
+ * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
+ * changed to avoid false negatives for Windows Phones: https://github.com/reactjs/react-router/issues/586
+ */
+var supportsHistory = exports.supportsHistory = function supportsHistory() {
+  var ua = window.navigator.userAgent;
+
+  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) return false;
+
+  return window.history && 'pushState' in window.history;
+};
+
+/**
+    * Returns true if browser fires popstate on hash change.
+    * IE10 and IE11 do not.
+    */
+var supportsPopStateOnHashChange = exports.supportsPopStateOnHashChange = function supportsPopStateOnHashChange() {
+  return window.navigator.userAgent.indexOf('Trident') === -1;
+};
+
+/**
+    * Returns false if using go(n) with hash history causes a full page reload.
+    */
+var supportsGoWithoutReloadUsingHash = exports.supportsGoWithoutReloadUsingHash = function supportsGoWithoutReloadUsingHash() {
+  return window.navigator.userAgent.indexOf('Firefox') === -1;
+};
+
+/**
+    * Returns true if a given popstate event is an extraneous WebKit event.
+    * Accounts for the fact that Chrome on iOS fires real popstate events
+    * containing undefined state when pressing the back button.
+    */
+var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
+  return event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1;
+};
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+
+
+var emptyFunction = __webpack_require__(26);
+
+/**
+                                                 * Similar to invariant but only logs a warning if the condition is not met.
+                                                 * This can be used to log issues in development environments in critical
+                                                 * paths. Removing the logging code for production environments will keep the
+                                                 * same logic and follow the same code paths.
+                                                 */
+
+var warning = emptyFunction;
+
+if (process.env.NODE_ENV !== 'production') {
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
+      }
+
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
+}
+
+module.exports = warning;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+
+
+
+
+
+
+
+
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(12);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _invariant = __webpack_require__(22);var _invariant2 = _interopRequireDefault(_invariant);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+var isModifiedEvent = function isModifiedEvent(event) {
+  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+};
+
+/**
+    * The public API for rendering a history-aware <a>.
+    */
+
+var Link = function (_React$Component) {
+  _inherits(Link, _React$Component);
+
+  function Link() {
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, Link);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
+      if (_this.props.onClick) _this.props.onClick(event);
+
+      if (!event.defaultPrevented && // onClick prevented default
+      event.button === 0 && // ignore right clicks
+      !_this.props.target && // let browser handle "target=_blank" etc.
+      !isModifiedEvent(event) // ignore clicks with modifier keys
+      ) {
+          event.preventDefault();
+
+          var history = _this.context.router.history;
+          var _this$props = _this.props,
+          replace = _this$props.replace,
+          to = _this$props.to;
+
+
+          if (replace) {
+            history.replace(to);
+          } else {
+            history.push(to);
+          }
+        }
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  Link.prototype.render = function render() {
+    var _props = this.props,
+    replace = _props.replace,
+    to = _props.to,
+    innerRef = _props.innerRef,
+    props = _objectWithoutProperties(_props, ['replace', 'to', 'innerRef']); // eslint-disable-line no-unused-vars
+
+    (0, _invariant2.default)(this.context.router, 'You should not use <Link> outside a <Router>');
+
+    var href = this.context.router.history.createHref(typeof to === 'string' ? { pathname: to } : to);
+
+    return _react2.default.createElement('a', _extends({}, props, { onClick: this.handleClick, href: href, ref: innerRef }));
+  };
+
+  return Link;
+}(_react2.default.Component);
+
+Link.propTypes = {
+  onClick: _propTypes2.default.func,
+  target: _propTypes2.default.string,
+  replace: _propTypes2.default.bool,
+  to: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]).isRequired,
+  innerRef: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]) };
+
+Link.defaultProps = {
+  replace: false };
+
+Link.contextTypes = {
+  router: _propTypes2.default.shape({
+    history: _propTypes2.default.shape({
+      push: _propTypes2.default.func.isRequired,
+      replace: _propTypes2.default.func.isRequired,
+      createHref: _propTypes2.default.func.isRequired }).
+    isRequired }).
+  isRequired };exports.default =
+
+
+
+Link;
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2040,7 +3160,7 @@ function resolvePathname(to) {
 resolvePathname;
 
 /***/ }),
-/* 33 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2084,65 +3204,15 @@ function valueEqual(a, b) {
 valueEqual;
 
 /***/ }),
-/* 34 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var canUseDOM = exports.canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-
-var addEventListener = exports.addEventListener = function addEventListener(node, event, listener) {
-  return node.addEventListener ? node.addEventListener(event, listener, false) : node.attachEvent('on' + event, listener);
-};
-
-var removeEventListener = exports.removeEventListener = function removeEventListener(node, event, listener) {
-  return node.removeEventListener ? node.removeEventListener(event, listener, false) : node.detachEvent('on' + event, listener);
-};
-
-var getConfirmation = exports.getConfirmation = function getConfirmation(message, callback) {
-  return callback(window.confirm(message));
-}; // eslint-disable-line no-alert
-
-/**
- * Returns true if the HTML5 history API is supported. Taken from Modernizr.
- *
- * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
- * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
- * changed to avoid false negatives for Windows Phones: https://github.com/reactjs/react-router/issues/586
- */
-var supportsHistory = exports.supportsHistory = function supportsHistory() {
-  var ua = window.navigator.userAgent;
-
-  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) return false;
-
-  return window.history && 'pushState' in window.history;
-};
-
-/**
-    * Returns true if browser fires popstate on hash change.
-    * IE10 and IE11 do not.
-    */
-var supportsPopStateOnHashChange = exports.supportsPopStateOnHashChange = function supportsPopStateOnHashChange() {
-  return window.navigator.userAgent.indexOf('Trident') === -1;
-};
-
-/**
-    * Returns false if using go(n) with hash history causes a full page reload.
-    */
-var supportsGoWithoutReloadUsingHash = exports.supportsGoWithoutReloadUsingHash = function supportsGoWithoutReloadUsingHash() {
-  return window.navigator.userAgent.indexOf('Firefox') === -1;
-};
-
-/**
-    * Returns true if a given popstate event is an extraneous WebKit event.
-    * Accounts for the fact that Chrome on iOS fires real popstate events
-    * containing undefined state when pressing the back button.
-    */
-var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
-  return event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Route = __webpack_require__(52);var _Route2 = _interopRequireDefault(_Route);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Route2.default; // Written in this round about way for babel-transform-imports
 
 /***/ }),
-/* 35 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2157,8 +3227,8 @@ Object.defineProperty(exports, "__esModule", { value: true });var _typeof = type
 var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
 var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
 var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _matchPath = __webpack_require__(21);var _matchPath2 = _interopRequireDefault(_matchPath);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _matchPath = __webpack_require__(30);var _matchPath2 = _interopRequireDefault(_matchPath);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
 
 var isEmptyChildren = function isEmptyChildren(children) {
   return _react2.default.Children.count(children) === 0;
@@ -2282,35 +3352,206 @@ Route.childContextTypes = {
 Route;
 
 /***/ }),
-/* 36 */
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var canUseDOM = exports.canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+var addEventListener = exports.addEventListener = function addEventListener(node, event, listener) {
+  return node.addEventListener ? node.addEventListener(event, listener, false) : node.attachEvent('on' + event, listener);
+};
+
+var removeEventListener = exports.removeEventListener = function removeEventListener(node, event, listener) {
+  return node.removeEventListener ? node.removeEventListener(event, listener, false) : node.detachEvent('on' + event, listener);
+};
+
+var getConfirmation = exports.getConfirmation = function getConfirmation(message, callback) {
+  return callback(window.confirm(message));
+}; // eslint-disable-line no-alert
+
+/**
+ * Returns true if the HTML5 history API is supported. Taken from Modernizr.
+ *
+ * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
+ * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
+ * changed to avoid false negatives for Windows Phones: https://github.com/reactjs/react-router/issues/586
+ */
+var supportsHistory = exports.supportsHistory = function supportsHistory() {
+  var ua = window.navigator.userAgent;
+
+  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) return false;
+
+  return window.history && 'pushState' in window.history;
+};
+
+/**
+    * Returns true if browser fires popstate on hash change.
+    * IE10 and IE11 do not.
+    */
+var supportsPopStateOnHashChange = exports.supportsPopStateOnHashChange = function supportsPopStateOnHashChange() {
+  return window.navigator.userAgent.indexOf('Trident') === -1;
+};
+
+/**
+    * Returns false if using go(n) with hash history causes a full page reload.
+    */
+var supportsGoWithoutReloadUsingHash = exports.supportsGoWithoutReloadUsingHash = function supportsGoWithoutReloadUsingHash() {
+  return window.navigator.userAgent.indexOf('Firefox') === -1;
+};
+
+/**
+    * Returns true if a given popstate event is an extraneous WebKit event.
+    * Accounts for the fact that Chrome on iOS fires real popstate events
+    * containing undefined state when pressing the back button.
+    */
+var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
+  return event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1;
+};
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.HandlebarsEnvironment = HandlebarsEnvironment;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+var _utils = __webpack_require__(3);
+
+var _exception = __webpack_require__(11);
+
+var _exception2 = _interopRequireDefault(_exception);
+
+var _helpers = __webpack_require__(121);
+
+var _decorators = __webpack_require__(129);
+
+var _logger = __webpack_require__(131);
+
+var _logger2 = _interopRequireDefault(_logger);
+
+var VERSION = '4.0.11';
+exports.VERSION = VERSION;
+var COMPILER_REVISION = 7;
+
+exports.COMPILER_REVISION = COMPILER_REVISION;
+var REVISION_CHANGES = {
+  1: '<= 1.0.rc.2', // 1.0.rc.2 is actually rev2 but doesn't report it
+  2: '== 1.0.0-rc.3',
+  3: '== 1.0.0-rc.4',
+  4: '== 1.x.x',
+  5: '== 2.0.0-alpha.x',
+  6: '>= 2.0.0-beta.1',
+  7: '>= 4.0.0' };
+
+
+exports.REVISION_CHANGES = REVISION_CHANGES;
+var objectType = '[object Object]';
+
+function HandlebarsEnvironment(helpers, partials, decorators) {
+  this.helpers = helpers || {};
+  this.partials = partials || {};
+  this.decorators = decorators || {};
+
+  _helpers.registerDefaultHelpers(this);
+  _decorators.registerDefaultDecorators(this);
+}
+
+HandlebarsEnvironment.prototype = {
+  constructor: HandlebarsEnvironment,
+
+  logger: _logger2['default'],
+  log: _logger2['default'].log,
+
+  registerHelper: function registerHelper(name, fn) {
+    if (_utils.toString.call(name) === objectType) {
+      if (fn) {
+        throw new _exception2['default']('Arg not supported with multiple helpers');
+      }
+      _utils.extend(this.helpers, name);
+    } else {
+      this.helpers[name] = fn;
+    }
+  },
+  unregisterHelper: function unregisterHelper(name) {
+    delete this.helpers[name];
+  },
+
+  registerPartial: function registerPartial(name, partial) {
+    if (_utils.toString.call(name) === objectType) {
+      _utils.extend(this.partials, name);
+    } else {
+      if (typeof partial === 'undefined') {
+        throw new _exception2['default']('Attempting to register a partial called "' + name + '" as undefined');
+      }
+      this.partials[name] = partial;
+    }
+  },
+  unregisterPartial: function unregisterPartial(name) {
+    delete this.partials[name];
+  },
+
+  registerDecorator: function registerDecorator(name, fn) {
+    if (_utils.toString.call(name) === objectType) {
+      if (fn) {
+        throw new _exception2['default']('Arg not supported with multiple decorators');
+      }
+      _utils.extend(this.decorators, name);
+    } else {
+      this.decorators[name] = fn;
+    }
+  },
+  unregisterDecorator: function unregisterDecorator(name) {
+    delete this.decorators[name];
+  } };
+
+
+var log = _logger2['default'].log;
+
+exports.log = log;
+exports.createFrame = _utils.createFrame;
+exports.logger = _logger2['default'];
+
+/***/ }),
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _reactDom = __webpack_require__(41);var _reactDom2 = _interopRequireDefault(_reactDom);
+var _reactDom = __webpack_require__(60);var _reactDom2 = _interopRequireDefault(_reactDom);
+var _api = __webpack_require__(74);var _api2 = _interopRequireDefault(_api);
 
-var _reactRouterDom = __webpack_require__(91);
+var _reactRouterDom = __webpack_require__(77);
 
-var _App = __webpack_require__(75);var _App2 = _interopRequireDefault(_App);
+var _App = __webpack_require__(114);var _App2 = _interopRequireDefault(_App);
 
-var _index = __webpack_require__(76);var _index2 = _interopRequireDefault(_index);
-var _login = __webpack_require__(109);var _login2 = _interopRequireDefault(_login);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _index = __webpack_require__(115);var _index2 = _interopRequireDefault(_index);
+var _login = __webpack_require__(138);var _login2 = _interopRequireDefault(_login);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-setTimeout(function () {
-    _reactDom2.default.render(
-    _react2.default.createElement(_reactRouterDom.HashRouter, { history: _reactRouterDom.hashHistory },
-        _react2.default.createElement(_App2.default, null,
-            _react2.default.createElement(_reactRouterDom.Switch, null,
-                _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _index2.default }),
-                _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _login2.default })))),
+_api2.default.init(function () {
+
+    setTimeout(function () {
+        _reactDom2.default.render(
+        _react2.default.createElement(_reactRouterDom.HashRouter, { history: _reactRouterDom.hashHistory },
+            _react2.default.createElement(_App2.default, null,
+                _react2.default.createElement(_reactRouterDom.Switch, null,
+                    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _index2.default }),
+                    _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _login2.default })))),
 
 
-    document.getElementById('root'));
-},
-10);
+        document.getElementById('appBody'));
+    },
+    10);
+});
 
 /***/ }),
-/* 37 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2323,7 +3564,7 @@ setTimeout(function () {
  This source code is licensed under the MIT license found in the
  LICENSE file in the root directory of this source tree.
 */
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var f = __webpack_require__(5),p = __webpack_require__(22);__webpack_require__(10);var r = __webpack_require__(11);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var f = __webpack_require__(6),p = __webpack_require__(33);__webpack_require__(14);var r = __webpack_require__(15);
 function t(a) {for (var b = arguments.length - 1, d = "Minified React error #" + a + "; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d" + a, e = 0; e < b; e++) {d += "\x26args[]\x3d" + encodeURIComponent(arguments[e + 1]);}b = Error(d + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name = "Invariant Violation";b.framesToPop = 1;throw b;}
 var u = { isMounted: function isMounted() {return !1;}, enqueueForceUpdate: function enqueueForceUpdate() {}, enqueueReplaceState: function enqueueReplaceState() {}, enqueueSetState: function enqueueSetState() {} };function v(a, b, d) {this.props = a;this.context = b;this.refs = p;this.updater = d || u;}v.prototype.isReactComponent = {};v.prototype.setState = function (a, b) {"object" !== (typeof a === "undefined" ? "undefined" : _typeof(a)) && "function" !== typeof a && null != a ? t("85") : void 0;this.updater.enqueueSetState(this, a, b, "setState");};v.prototype.forceUpdate = function (a) {this.updater.enqueueForceUpdate(this, a, "forceUpdate");};
 function w(a, b, d) {this.props = a;this.context = b;this.refs = p;this.updater = d || u;}function x() {}x.prototype = v.prototype;var y = w.prototype = new x();y.constructor = w;f(y, v.prototype);y.isPureReactComponent = !0;function z(a, b, d) {this.props = a;this.context = b;this.refs = p;this.updater = d || u;}var A = z.prototype = new x();A.constructor = z;f(A, v.prototype);A.unstable_isAsyncReactComponent = !0;A.render = function () {return this.props.children;};
@@ -2339,7 +3580,7 @@ function R(a, b, d, e, c) {var g = "";null != d && (g = ("" + d).replace(J, "$\x
 module.exports = { Children: { map: S.map, forEach: S.forEach, count: S.count, toArray: S.toArray, only: function only(a) {G.isValidElement(a) ? void 0 : t("143");return a;} }, Component: B.Component, PureComponent: B.PureComponent, unstable_AsyncComponent: B.AsyncComponent, createElement: G.createElement, cloneElement: G.cloneElement, isValidElement: G.isValidElement, createFactory: G.createFactory, version: "16.0.0", __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: { ReactCurrentOwner: C, assign: f } };
 
 /***/ }),
-/* 38 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2359,12 +3600,12 @@ if (process.env.NODE_ENV !== "production") {
 
     'use strict';
 
-    var objectAssign$1 = __webpack_require__(5);
-    var require$$0 = __webpack_require__(23);
-    var emptyObject = __webpack_require__(22);
-    var invariant = __webpack_require__(10);
-    var emptyFunction = __webpack_require__(11);
-    var checkPropTypes = __webpack_require__(39);
+    var objectAssign$1 = __webpack_require__(6);
+    var require$$0 = __webpack_require__(34);
+    var emptyObject = __webpack_require__(33);
+    var invariant = __webpack_require__(14);
+    var emptyFunction = __webpack_require__(15);
+    var checkPropTypes = __webpack_require__(58);
 
     /**
                                                                 * Copyright (c) 2013-present, Facebook, Inc.
@@ -4044,7 +5285,7 @@ if (process.env.NODE_ENV !== "production") {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4058,9 +5299,9 @@ if (process.env.NODE_ENV !== "production") {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(10);
-  var warning = __webpack_require__(23);
-  var ReactPropTypesSecret = __webpack_require__(40);
+  var invariant = __webpack_require__(14);
+  var warning = __webpack_require__(34);
+  var ReactPropTypesSecret = __webpack_require__(59);
   var loggedTypeFailures = {};
 }
 
@@ -4110,7 +5351,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 40 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4128,7 +5369,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 41 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4166,14 +5407,14 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(42);
+  module.exports = __webpack_require__(61);
 } else {
-  module.exports = __webpack_require__(45);
+  module.exports = __webpack_require__(64);
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 42 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4187,7 +5428,7 @@ if (process.env.NODE_ENV === 'production') {
  LICENSE file in the root directory of this source tree.
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var aa = __webpack_require__(1);__webpack_require__(7);var l = __webpack_require__(12),n = __webpack_require__(5),ba = __webpack_require__(24),ca = __webpack_require__(6),da = __webpack_require__(25),ea = __webpack_require__(26),fa = __webpack_require__(27),ha = __webpack_require__(28),ia = __webpack_require__(29);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var aa = __webpack_require__(1);__webpack_require__(8);var l = __webpack_require__(16),n = __webpack_require__(6),ba = __webpack_require__(35),ca = __webpack_require__(7),da = __webpack_require__(36),ea = __webpack_require__(37),fa = __webpack_require__(38),ha = __webpack_require__(39),ia = __webpack_require__(40);
 function w(a) {for (var b = arguments.length - 1, c = "Minified React error #" + a + "; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d" + a, d = 0; d < b; d++) {c += "\x26args[]\x3d" + encodeURIComponent(arguments[d + 1]);}b = Error(c + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name = "Invariant Violation";b.framesToPop = 1;throw b;}aa ? void 0 : w("227");
 function ja(a) {switch (a) {case "svg":return "http://www.w3.org/2000/svg";case "math":return "http://www.w3.org/1998/Math/MathML";default:return "http://www.w3.org/1999/xhtml";}}
 var ka = { Namespaces: { html: "http://www.w3.org/1999/xhtml", mathml: "http://www.w3.org/1998/Math/MathML", svg: "http://www.w3.org/2000/svg" }, getIntrinsicNamespace: ja, getChildNamespace: function getChildNamespace(a, b) {return null == a || "http://www.w3.org/1999/xhtml" === a ? ja(b) : "http://www.w3.org/2000/svg" === a && "foreignObject" === b ? "http://www.w3.org/1999/xhtml" : a;} },la = null,oa = {};
@@ -4435,7 +5676,7 @@ var ek = { createPortal: dk, hydrate: function hydrate(a, b, c) {return ck(null,
   unstable_deferredUpdates: Xj.deferredUpdates, flushSync: Xj.flushSync, __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: { EventPluginHub: Jb, EventPluginRegistry: sa, EventPropagators: Th, ReactControlledComponent: nb, ReactDOMComponentTree: G, ReactDOMEventListener: L } };Cj({ findFiberByHostInstance: G.getClosestInstanceFromNode, findHostInstanceByFiber: Xj.findHostInstance, bundleType: 0, version: "16.0.0", rendererPackageName: "react-dom" });module.exports = ek;
 
 /***/ }),
-/* 43 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4450,7 +5691,7 @@ var ek = { createPortal: dk, hydrate: function hydrate(a, b, c) {return ck(null,
                * @typechecks
                */
 
-var isNode = __webpack_require__(44);
+var isNode = __webpack_require__(63);
 
 /**
                                    * @param {*} object The object to check.
@@ -4463,7 +5704,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 44 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4491,7 +5732,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 45 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4512,22 +5753,22 @@ if(process.env.NODE_ENV!=="production"){
 'use strict';
 
 var react=__webpack_require__(1);
-var invariant=__webpack_require__(7);
-var ExecutionEnvironment=__webpack_require__(12);
-var _assign=__webpack_require__(5);
-var EventListener=__webpack_require__(24);
-var require$$0=__webpack_require__(13);
-var hyphenateStyleName=__webpack_require__(46);
-var emptyFunction=__webpack_require__(6);
-var camelizeStyleName=__webpack_require__(48);
-var performanceNow=__webpack_require__(50);
-var propTypes=__webpack_require__(52);
-var emptyObject=__webpack_require__(25);
-var checkPropTypes=__webpack_require__(30);
-var shallowEqual=__webpack_require__(26);
-var containsNode=__webpack_require__(27);
-var focusNode=__webpack_require__(28);
-var getActiveElement=__webpack_require__(29);
+var invariant=__webpack_require__(8);
+var ExecutionEnvironment=__webpack_require__(16);
+var _assign=__webpack_require__(6);
+var EventListener=__webpack_require__(35);
+var require$$0=__webpack_require__(17);
+var hyphenateStyleName=__webpack_require__(65);
+var emptyFunction=__webpack_require__(7);
+var camelizeStyleName=__webpack_require__(67);
+var performanceNow=__webpack_require__(69);
+var propTypes=__webpack_require__(71);
+var emptyObject=__webpack_require__(36);
+var checkPropTypes=__webpack_require__(41);
+var shallowEqual=__webpack_require__(37);
+var containsNode=__webpack_require__(38);
+var focusNode=__webpack_require__(39);
+var getActiveElement=__webpack_require__(40);
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -21719,7 +22960,7 @@ module.exports=ReactDOMFiberEntry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21734,7 +22975,7 @@ module.exports=ReactDOMFiberEntry;
 
 
 
-var hyphenate = __webpack_require__(47);
+var hyphenate = __webpack_require__(66);
 
 var msPattern = /^ms-/;
 
@@ -21761,7 +23002,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 47 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21797,7 +23038,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 48 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21812,7 +23053,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(49);
+var camelize = __webpack_require__(68);
 
 var msPattern = /^-ms-/;
 
@@ -21840,7 +23081,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 49 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21875,7 +23116,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 50 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21890,7 +23131,7 @@ module.exports = camelize;
                * @typechecks
                */
 
-var performance = __webpack_require__(51);
+var performance = __webpack_require__(70);
 
 var performanceNow;
 
@@ -21912,7 +23153,7 @@ if (performance.now) {
 module.exports = performanceNow;
 
 /***/ }),
-/* 51 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21927,7 +23168,7 @@ module.exports = performanceNow;
 
 
 
-var ExecutionEnvironment = __webpack_require__(12);
+var ExecutionEnvironment = __webpack_require__(16);
 
 var performance;
 
@@ -21938,7 +23179,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = performance || {};
 
 /***/ }),
-/* 52 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21964,16 +23205,16 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(53)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(72)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(54)();
+  module.exports = __webpack_require__(73)();
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 53 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21986,13 +23227,13 @@ if (process.env.NODE_ENV !== 'production') {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
-var emptyFunction = __webpack_require__(6);
-var invariant = __webpack_require__(7);
-var warning = __webpack_require__(13);
-var assign = __webpack_require__(5);
+var emptyFunction = __webpack_require__(7);
+var invariant = __webpack_require__(8);
+var warning = __webpack_require__(17);
+var assign = __webpack_require__(6);
 
-var ReactPropTypesSecret = __webpack_require__(14);
-var checkPropTypes = __webpack_require__(30);
+var ReactPropTypesSecret = __webpack_require__(18);
+var checkPropTypes = __webpack_require__(41);
 
 module.exports = function (isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -22522,7 +23763,7 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 54 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22535,9 +23776,9 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 
 
 
-var emptyFunction = __webpack_require__(6);
-var invariant = __webpack_require__(7);
-var ReactPropTypesSecret = __webpack_require__(14);
+var emptyFunction = __webpack_require__(7);
+var invariant = __webpack_require__(8);
+var ReactPropTypesSecret = __webpack_require__(18);
 
 module.exports = function () {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -22586,8 +23827,130 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 55 */,
-/* 56 */
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var _websocket = __webpack_require__(42);var _websocket2 = _interopRequireDefault(_websocket);
+var _siteinfos = __webpack_require__(76);var _siteinfos2 = _interopRequireDefault(_siteinfos);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var wsUrl = "ws://localhost";
+
+function _init(callback)
+{
+    _websocket2.default.connect(wsUrl);
+    _websocket2.default.onConnect(function () {
+        _websocket2.default.send("/api/site/infos", {}).then(function (response) {
+            for (var key in response) {
+                _siteinfos2.default.set(key, response[key]);}
+            callback();
+        });
+
+    });
+}
+
+function _login(obj)
+{
+    return _websocket2.default.send("/api/users/login", obj);
+}
+
+module.exports.login = _login;
+module.exports.init = _init;
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var socket = __webpack_require__(42);
+
+var componentList = [];
+
+function _add(component) {
+    componentList.push(component);
+}
+
+function _publish(data)
+{
+    componentList.map(function (_this) {
+
+        _this.messageEvent(data, _this);
+
+    });
+}
+
+function _remove(component) {
+    for (var i = 0; i < componentList.length; i++) {
+        if (componentList[i].constructor.name === component.constructor.name) {
+            componentList.splice(i, 1);
+            break;
+        }
+    }
+}
+
+module.exports.add = _add;
+module.exports.remove = _remove;
+module.exports.publish = _publish;
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var variableInfoSite = {};
+
+function _set(key, val)
+{
+    variableInfoSite[key] = val;
+}
+
+function _get(key)
+{
+    return variableInfoSite[key];
+}
+
+function _getAll() {
+    return variableInfoSite;
+}
+
+module.exports.set = _set;
+module.exports.get = _get;
+module.exports.getAll = _getAll;
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.withRouter = exports.matchPath = exports.Switch = exports.StaticRouter = exports.Router = exports.Route = exports.Redirect = exports.Prompt = exports.NavLink = exports.MemoryRouter = exports.Link = exports.HashRouter = exports.BrowserRouter = undefined;var _BrowserRouter2 = __webpack_require__(78);var _BrowserRouter3 = _interopRequireDefault(_BrowserRouter2);
+
+var _HashRouter2 = __webpack_require__(88);var _HashRouter3 = _interopRequireDefault(_HashRouter2);
+
+var _Link2 = __webpack_require__(48);var _Link3 = _interopRequireDefault(_Link2);
+
+var _MemoryRouter2 = __webpack_require__(90);var _MemoryRouter3 = _interopRequireDefault(_MemoryRouter2);
+
+var _NavLink2 = __webpack_require__(95);var _NavLink3 = _interopRequireDefault(_NavLink2);
+
+var _Prompt2 = __webpack_require__(98);var _Prompt3 = _interopRequireDefault(_Prompt2);
+
+var _Redirect2 = __webpack_require__(100);var _Redirect3 = _interopRequireDefault(_Redirect2);
+
+var _Route2 = __webpack_require__(51);var _Route3 = _interopRequireDefault(_Route2);
+
+var _Router2 = __webpack_require__(24);var _Router3 = _interopRequireDefault(_Router2);
+
+var _StaticRouter2 = __webpack_require__(106);var _StaticRouter3 = _interopRequireDefault(_StaticRouter2);
+
+var _Switch2 = __webpack_require__(108);var _Switch3 = _interopRequireDefault(_Switch2);
+
+var _matchPath2 = __webpack_require__(110);var _matchPath3 = _interopRequireDefault(_matchPath2);
+
+var _withRouter2 = __webpack_require__(111);var _withRouter3 = _interopRequireDefault(_withRouter2);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.BrowserRouter = _BrowserRouter3.default;exports.HashRouter = _HashRouter3.default;exports.Link = _Link3.default;exports.MemoryRouter = _MemoryRouter3.default;exports.NavLink = _NavLink3.default;exports.Prompt = _Prompt3.default;exports.Redirect = _Redirect3.default;exports.Route = _Route3.default;exports.Router = _Router3.default;exports.StaticRouter = _StaticRouter3.default;exports.Switch = _Switch3.default;exports.matchPath = _matchPath3.default;exports.
+withRouter = _withRouter3.default;
+
+/***/ }),
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22597,55 +23960,55 @@ Object.defineProperty(exports, "__esModule", { value: true });var _typeof = type
 
 
 
-var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _warning = __webpack_require__(9);var _warning2 = _interopRequireDefault(_warning);
 var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _createMemoryHistory = __webpack_require__(60);var _createMemoryHistory2 = _interopRequireDefault(_createMemoryHistory);
-var _Router = __webpack_require__(19);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+var _propTypes = __webpack_require__(12);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _createBrowserHistory = __webpack_require__(82);var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
+var _Router = __webpack_require__(24);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
 
 /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * The public API for a <Router> that stores location in memory.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * The public API for a <Router> that uses HTML5 history.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
-var MemoryRouter = function (_React$Component) {
-  _inherits(MemoryRouter, _React$Component);
+var BrowserRouter = function (_React$Component) {
+  _inherits(BrowserRouter, _React$Component);
 
-  function MemoryRouter() {
+  function BrowserRouter() {
     var _temp, _this, _ret;
 
-    _classCallCheck(this, MemoryRouter);
+    _classCallCheck(this, BrowserRouter);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.history = (0, _createMemoryHistory2.default)(_this.props), _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.history = (0, _createBrowserHistory2.default)(_this.props), _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  MemoryRouter.prototype.componentWillMount = function componentWillMount() {
-    (0, _warning2.default)(!this.props.history, '<MemoryRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { MemoryRouter as Router }`.');
+  BrowserRouter.prototype.componentWillMount = function componentWillMount() {
+    (0, _warning2.default)(!this.props.history, '<BrowserRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { BrowserRouter as Router }`.');
   };
 
-  MemoryRouter.prototype.render = function render() {
+  BrowserRouter.prototype.render = function render() {
     return _react2.default.createElement(_Router2.default, { history: this.history, children: this.props.children });
   };
 
-  return MemoryRouter;
+  return BrowserRouter;
 }(_react2.default.Component);
 
-MemoryRouter.propTypes = {
-  initialEntries: _propTypes2.default.array,
-  initialIndex: _propTypes2.default.number,
+BrowserRouter.propTypes = {
+  basename: _propTypes2.default.string,
+  forceRefresh: _propTypes2.default.bool,
   getUserConfirmation: _propTypes2.default.func,
   keyLength: _propTypes2.default.number,
   children: _propTypes2.default.node };exports.default =
 
 
 
-MemoryRouter;
+BrowserRouter;
 
 /***/ }),
-/* 57 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22658,13 +24021,13 @@ MemoryRouter;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
-var emptyFunction = __webpack_require__(15);
-var invariant = __webpack_require__(16);
-var warning = __webpack_require__(31);
-var assign = __webpack_require__(5);
+var emptyFunction = __webpack_require__(19);
+var invariant = __webpack_require__(20);
+var warning = __webpack_require__(43);
+var assign = __webpack_require__(6);
 
-var ReactPropTypesSecret = __webpack_require__(17);
-var checkPropTypes = __webpack_require__(58);
+var ReactPropTypesSecret = __webpack_require__(21);
+var checkPropTypes = __webpack_require__(80);
 
 module.exports = function (isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -23194,7 +24557,7 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 58 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23208,9 +24571,9 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(16);
-  var warning = __webpack_require__(31);
-  var ReactPropTypesSecret = __webpack_require__(17);
+  var invariant = __webpack_require__(20);
+  var warning = __webpack_require__(43);
+  var ReactPropTypesSecret = __webpack_require__(21);
   var loggedTypeFailures = {};
 }
 
@@ -23260,7 +24623,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 59 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23273,9 +24636,9 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(15);
-var invariant = __webpack_require__(16);
-var ReactPropTypesSecret = __webpack_require__(17);
+var emptyFunction = __webpack_require__(19);
+var invariant = __webpack_require__(20);
+var ReactPropTypesSecret = __webpack_require__(21);
 
 module.exports = function () {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -23324,7 +24687,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 60 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23336,558 +24699,25 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
-var _warning = __webpack_require__(2);
+var _warning = __webpack_require__(9);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _PathUtils = __webpack_require__(18);
+var _invariant = __webpack_require__(22);
 
-var _LocationUtils = __webpack_require__(61);
+var _invariant2 = _interopRequireDefault(_invariant);
 
-var _createTransitionManager = __webpack_require__(62);
+var _LocationUtils = __webpack_require__(44);
+
+var _PathUtils = __webpack_require__(23);
+
+var _createTransitionManager = __webpack_require__(45);
 
 var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
 
-function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-var clamp = function clamp(n, lowerBound, upperBound) {
-  return Math.min(Math.max(n, lowerBound), upperBound);
-};
-
-/**
-    * Creates a history object that stores locations in memory.
-    */
-var createMemoryHistory = function createMemoryHistory() {
-  var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var getUserConfirmation = props.getUserConfirmation,
-  _props$initialEntries = props.initialEntries,
-  initialEntries = _props$initialEntries === undefined ? ['/'] : _props$initialEntries,
-  _props$initialIndex = props.initialIndex,
-  initialIndex = _props$initialIndex === undefined ? 0 : _props$initialIndex,
-  _props$keyLength = props.keyLength,
-  keyLength = _props$keyLength === undefined ? 6 : _props$keyLength;
-
-
-  var transitionManager = (0, _createTransitionManager2.default)();
-
-  var setState = function setState(nextState) {
-    _extends(history, nextState);
-
-    history.length = history.entries.length;
-
-    transitionManager.notifyListeners(history.location, history.action);
-  };
-
-  var createKey = function createKey() {
-    return Math.random().toString(36).substr(2, keyLength);
-  };
-
-  var index = clamp(initialIndex, 0, initialEntries.length - 1);
-  var entries = initialEntries.map(function (entry) {
-    return typeof entry === 'string' ? (0, _LocationUtils.createLocation)(entry, undefined, createKey()) : (0, _LocationUtils.createLocation)(entry, undefined, entry.key || createKey());
-  });
-
-  // Public interface
-
-  var createHref = _PathUtils.createPath;
-
-  var push = function push(path, state) {
-    (0, _warning2.default)(!((typeof path === 'undefined' ? 'undefined' : _typeof(path)) === 'object' && path.state !== undefined && state !== undefined), 'You should avoid providing a 2nd state argument to push when the 1st ' + 'argument is a location-like object that already has state; it is ignored');
-
-    var action = 'PUSH';
-    var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);
-
-    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
-      if (!ok) return;
-
-      var prevIndex = history.index;
-      var nextIndex = prevIndex + 1;
-
-      var nextEntries = history.entries.slice(0);
-      if (nextEntries.length > nextIndex) {
-        nextEntries.splice(nextIndex, nextEntries.length - nextIndex, location);
-      } else {
-        nextEntries.push(location);
-      }
-
-      setState({
-        action: action,
-        location: location,
-        index: nextIndex,
-        entries: nextEntries });
-
-    });
-  };
-
-  var replace = function replace(path, state) {
-    (0, _warning2.default)(!((typeof path === 'undefined' ? 'undefined' : _typeof(path)) === 'object' && path.state !== undefined && state !== undefined), 'You should avoid providing a 2nd state argument to replace when the 1st ' + 'argument is a location-like object that already has state; it is ignored');
-
-    var action = 'REPLACE';
-    var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);
-
-    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
-      if (!ok) return;
-
-      history.entries[history.index] = location;
-
-      setState({ action: action, location: location });
-    });
-  };
-
-  var go = function go(n) {
-    var nextIndex = clamp(history.index + n, 0, history.entries.length - 1);
-
-    var action = 'POP';
-    var location = history.entries[nextIndex];
-
-    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
-      if (ok) {
-        setState({
-          action: action,
-          location: location,
-          index: nextIndex });
-
-      } else {
-        // Mimic the behavior of DOM histories by
-        // causing a render after a cancelled POP.
-        setState();
-      }
-    });
-  };
-
-  var goBack = function goBack() {
-    return go(-1);
-  };
-
-  var goForward = function goForward() {
-    return go(1);
-  };
-
-  var canGo = function canGo(n) {
-    var nextIndex = history.index + n;
-    return nextIndex >= 0 && nextIndex < history.entries.length;
-  };
-
-  var block = function block() {
-    var prompt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    return transitionManager.setPrompt(prompt);
-  };
-
-  var listen = function listen(listener) {
-    return transitionManager.appendListener(listener);
-  };
-
-  var history = {
-    length: entries.length,
-    action: 'POP',
-    location: entries[index],
-    index: index,
-    entries: entries,
-    createHref: createHref,
-    push: push,
-    replace: replace,
-    go: go,
-    goBack: goBack,
-    goForward: goForward,
-    canGo: canGo,
-    block: block,
-    listen: listen };
-
-
-  return history;
-};
-
-exports.default = createMemoryHistory;
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.locationsAreEqual = exports.createLocation = undefined;
-
-var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
-
-var _resolvePathname = __webpack_require__(32);
-
-var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
-
-var _valueEqual = __webpack_require__(33);
-
-var _valueEqual2 = _interopRequireDefault(_valueEqual);
-
-var _PathUtils = __webpack_require__(18);
+var _DOMUtils = __webpack_require__(46);
 
 function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-var createLocation = exports.createLocation = function createLocation(path, state, key, currentLocation) {
-  var location = void 0;
-  if (typeof path === 'string') {
-    // Two-arg form: push(path, state)
-    location = (0, _PathUtils.parsePath)(path);
-    location.state = state;
-  } else {
-    // One-arg form: push(location)
-    location = _extends({}, path);
-
-    if (location.pathname === undefined) location.pathname = '';
-
-    if (location.search) {
-      if (location.search.charAt(0) !== '?') location.search = '?' + location.search;
-    } else {
-      location.search = '';
-    }
-
-    if (location.hash) {
-      if (location.hash.charAt(0) !== '#') location.hash = '#' + location.hash;
-    } else {
-      location.hash = '';
-    }
-
-    if (state !== undefined && location.state === undefined) location.state = state;
-  }
-
-  try {
-    location.pathname = decodeURI(location.pathname);
-  } catch (e) {
-    if (e instanceof URIError) {
-      throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' + 'This is likely caused by an invalid percent-encoding.');
-    } else {
-      throw e;
-    }
-  }
-
-  if (key) location.key = key;
-
-  if (currentLocation) {
-    // Resolve incomplete/relative pathname relative to current location.
-    if (!location.pathname) {
-      location.pathname = currentLocation.pathname;
-    } else if (location.pathname.charAt(0) !== '/') {
-      location.pathname = (0, _resolvePathname2.default)(location.pathname, currentLocation.pathname);
-    }
-  } else {
-    // When there is no prior location and pathname is empty, set it to /
-    if (!location.pathname) {
-      location.pathname = '/';
-    }
-  }
-
-  return location;
-};
-
-var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a, b) {
-  return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && (0, _valueEqual2.default)(a.state, b.state);
-};
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _warning = __webpack_require__(2);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-var createTransitionManager = function createTransitionManager() {
-  var prompt = null;
-
-  var setPrompt = function setPrompt(nextPrompt) {
-    (0, _warning2.default)(prompt == null, 'A history supports only one prompt at a time');
-
-    prompt = nextPrompt;
-
-    return function () {
-      if (prompt === nextPrompt) prompt = null;
-    };
-  };
-
-  var confirmTransitionTo = function confirmTransitionTo(location, action, getUserConfirmation, callback) {
-    // TODO: If another transition starts while we're still confirming
-    // the previous one, we may end up in a weird state. Figure out the
-    // best way to handle this.
-    if (prompt != null) {
-      var result = typeof prompt === 'function' ? prompt(location, action) : prompt;
-
-      if (typeof result === 'string') {
-        if (typeof getUserConfirmation === 'function') {
-          getUserConfirmation(result, callback);
-        } else {
-          (0, _warning2.default)(false, 'A history needs a getUserConfirmation function in order to use a prompt message');
-
-          callback(true);
-        }
-      } else {
-        // Return false from a transition hook to cancel the transition.
-        callback(result !== false);
-      }
-    } else {
-      callback(true);
-    }
-  };
-
-  var listeners = [];
-
-  var appendListener = function appendListener(fn) {
-    var isActive = true;
-
-    var listener = function listener() {
-      if (isActive) fn.apply(undefined, arguments);
-    };
-
-    listeners.push(listener);
-
-    return function () {
-      isActive = false;
-      listeners = listeners.filter(function (item) {
-        return item !== listener;
-      });
-    };
-  };
-
-  var notifyListeners = function notifyListeners() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    listeners.forEach(function (listener) {
-      return listener.apply(undefined, args);
-    });
-  };
-
-  return {
-    setPrompt: setPrompt,
-    confirmTransitionTo: confirmTransitionTo,
-    appendListener: appendListener,
-    notifyListeners: notifyListeners };
-
-};
-
-exports.default = createTransitionManager;
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-
-
-
-
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        * The public API for prompting the user before navigating away
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        * from a screen with a component.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        */
-
-var Prompt = function (_React$Component) {
-  _inherits(Prompt, _React$Component);
-
-  function Prompt() {
-    _classCallCheck(this, Prompt);
-
-    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
-  }
-
-  Prompt.prototype.enable = function enable(message) {
-    if (this.unblock) this.unblock();
-
-    this.unblock = this.context.router.history.block(message);
-  };
-
-  Prompt.prototype.disable = function disable() {
-    if (this.unblock) {
-      this.unblock();
-      this.unblock = null;
-    }
-  };
-
-  Prompt.prototype.componentWillMount = function componentWillMount() {
-    (0, _invariant2.default)(this.context.router, 'You should not use <Prompt> outside a <Router>');
-
-    if (this.props.when) this.enable(this.props.message);
-  };
-
-  Prompt.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    if (nextProps.when) {
-      if (!this.props.when || this.props.message !== nextProps.message) this.enable(nextProps.message);
-    } else {
-      this.disable();
-    }
-  };
-
-  Prompt.prototype.componentWillUnmount = function componentWillUnmount() {
-    this.disable();
-  };
-
-  Prompt.prototype.render = function render() {
-    return null;
-  };
-
-  return Prompt;
-}(_react2.default.Component);
-
-Prompt.propTypes = {
-  when: _propTypes2.default.bool,
-  message: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]).isRequired };
-
-Prompt.defaultProps = {
-  when: true };
-
-Prompt.contextTypes = {
-  router: _propTypes2.default.shape({
-    history: _propTypes2.default.shape({
-      block: _propTypes2.default.func.isRequired }).
-    isRequired }).
-  isRequired };exports.default =
-
-
-
-Prompt;
-
-/***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-
-
-
-
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
-var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
-var _history = __webpack_require__(65);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * The public API for updating the location programmatically
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * with a component.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var Redirect = function (_React$Component) {
-  _inherits(Redirect, _React$Component);
-
-  function Redirect() {
-    _classCallCheck(this, Redirect);
-
-    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
-  }
-
-  Redirect.prototype.isStatic = function isStatic() {
-    return this.context.router && this.context.router.staticContext;
-  };
-
-  Redirect.prototype.componentWillMount = function componentWillMount() {
-    (0, _invariant2.default)(this.context.router, 'You should not use <Redirect> outside a <Router>');
-
-    if (this.isStatic()) this.perform();
-  };
-
-  Redirect.prototype.componentDidMount = function componentDidMount() {
-    if (!this.isStatic()) this.perform();
-  };
-
-  Redirect.prototype.componentDidUpdate = function componentDidUpdate(prevProps) {
-    var prevTo = (0, _history.createLocation)(prevProps.to);
-    var nextTo = (0, _history.createLocation)(this.props.to);
-
-    if ((0, _history.locationsAreEqual)(prevTo, nextTo)) {
-      (0, _warning2.default)(false, 'You tried to redirect to the same route you\'re currently on: ' + ('"' + nextTo.pathname + nextTo.search + '"'));
-      return;
-    }
-
-    this.perform();
-  };
-
-  Redirect.prototype.perform = function perform() {
-    var history = this.context.router.history;
-    var _props = this.props,
-    push = _props.push,
-    to = _props.to;
-
-
-    if (push) {
-      history.push(to);
-    } else {
-      history.replace(to);
-    }
-  };
-
-  Redirect.prototype.render = function render() {
-    return null;
-  };
-
-  return Redirect;
-}(_react2.default.Component);
-
-Redirect.propTypes = {
-  push: _propTypes2.default.bool,
-  from: _propTypes2.default.string,
-  to: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]).isRequired };
-
-Redirect.defaultProps = {
-  push: false };
-
-Redirect.contextTypes = {
-  router: _propTypes2.default.shape({
-    history: _propTypes2.default.shape({
-      push: _propTypes2.default.func.isRequired,
-      replace: _propTypes2.default.func.isRequired }).
-    isRequired,
-    staticContext: _propTypes2.default.object }).
-  isRequired };exports.default =
-
-
-
-Redirect;
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.createPath = exports.parsePath = exports.locationsAreEqual = exports.createLocation = exports.createMemoryHistory = exports.createHashHistory = exports.createBrowserHistory = undefined;var _LocationUtils = __webpack_require__(9);Object.defineProperty(exports, 'createLocation', { enumerable: true, get: function get() {return _LocationUtils.
-
-
-
-
-
-
-    createLocation;} });Object.defineProperty(exports, 'locationsAreEqual', { enumerable: true, get: function get() {return _LocationUtils.locationsAreEqual;} });var _PathUtils = __webpack_require__(8);Object.defineProperty(exports, 'parsePath', { enumerable: true, get: function get() {return _PathUtils.
-    parsePath;} });Object.defineProperty(exports, 'createPath', { enumerable: true, get: function get() {return _PathUtils.createPath;} });var _createBrowserHistory2 = __webpack_require__(66);var _createBrowserHistory3 = _interopRequireDefault(_createBrowserHistory2);var _createHashHistory2 = __webpack_require__(67);var _createHashHistory3 = _interopRequireDefault(_createHashHistory2);var _createMemoryHistory2 = __webpack_require__(68);var _createMemoryHistory3 = _interopRequireDefault(_createMemoryHistory2);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.createBrowserHistory = _createBrowserHistory3.default;exports.createHashHistory = _createHashHistory3.default;exports.createMemoryHistory = _createMemoryHistory3.default;
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-
-
-var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
-var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
-var _LocationUtils = __webpack_require__(9);
-var _PathUtils = __webpack_require__(8);
-var _createTransitionManager = __webpack_require__(20);var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
-var _DOMUtils = __webpack_require__(34);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
 var PopStateEvent = 'popstate';
 var HashChangeEvent = 'hashchange';
@@ -24165,23 +24995,896 @@ var createBrowserHistory = function createBrowserHistory() {
 
 
   return history;
-};exports.default =
+};
 
-createBrowserHistory;
+exports.default = createBrowserHistory;
 
 /***/ }),
-/* 67 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", { value: true });function isAbsolute(pathname) {
+  return pathname.charAt(0) === '/';
+}
 
-var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
-var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
-var _LocationUtils = __webpack_require__(9);
-var _PathUtils = __webpack_require__(8);
-var _createTransitionManager = __webpack_require__(20);var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
-var _DOMUtils = __webpack_require__(34);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+// About 1.5x faster than the two-arg version of Array#splice()
+function spliceOne(list, index) {
+  for (var i = index, k = i + 1, n = list.length; k < n; i += 1, k += 1) {
+    list[i] = list[k];
+  }
+
+  list.pop();
+}
+
+// This implementation is based heavily on node's url.parse
+function resolvePathname(to) {
+  var from = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+  var toParts = to && to.split('/') || [];
+  var fromParts = from && from.split('/') || [];
+
+  var isToAbs = to && isAbsolute(to);
+  var isFromAbs = from && isAbsolute(from);
+  var mustEndAbs = isToAbs || isFromAbs;
+
+  if (to && isAbsolute(to)) {
+    // to is absolute
+    fromParts = toParts;
+  } else if (toParts.length) {
+    // to is relative, drop the filename
+    fromParts.pop();
+    fromParts = fromParts.concat(toParts);
+  }
+
+  if (!fromParts.length) return '/';
+
+  var hasTrailingSlash = void 0;
+  if (fromParts.length) {
+    var last = fromParts[fromParts.length - 1];
+    hasTrailingSlash = last === '.' || last === '..' || last === '';
+  } else {
+    hasTrailingSlash = false;
+  }
+
+  var up = 0;
+  for (var i = fromParts.length; i >= 0; i--) {
+    var part = fromParts[i];
+
+    if (part === '.') {
+      spliceOne(fromParts, i);
+    } else if (part === '..') {
+      spliceOne(fromParts, i);
+      up++;
+    } else if (up) {
+      spliceOne(fromParts, i);
+      up--;
+    }
+  }
+
+  if (!mustEndAbs) for (; up--; up) {
+    fromParts.unshift('..');
+  }if (mustEndAbs && fromParts[0] !== '' && (!fromParts[0] || !isAbsolute(fromParts[0]))) fromParts.unshift('');
+
+  var result = fromParts.join('/');
+
+  if (hasTrailingSlash && result.substr(-1) !== '/') result += '/';
+
+  return result;
+}exports.default =
+
+resolvePathname;
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};
+
+function valueEqual(a, b) {
+  if (a === b) return true;
+
+  if (a == null || b == null) return false;
+
+  if (Array.isArray(a)) {
+    return Array.isArray(b) && a.length === b.length && a.every(function (item, index) {
+      return valueEqual(item, b[index]);
+    });
+  }
+
+  var aType = typeof a === 'undefined' ? 'undefined' : _typeof(a);
+  var bType = typeof b === 'undefined' ? 'undefined' : _typeof(b);
+
+  if (aType !== bType) return false;
+
+  if (aType === 'object') {
+    var aValue = a.valueOf();
+    var bValue = b.valueOf();
+
+    if (aValue !== a || bValue !== b) return valueEqual(aValue, bValue);
+
+    var aKeys = Object.keys(a);
+    var bKeys = Object.keys(b);
+
+    if (aKeys.length !== bKeys.length) return false;
+
+    return aKeys.every(function (key) {
+      return valueEqual(a[key], b[key]);
+    });
+  }
+
+  return false;
+}exports.default =
+
+valueEqual;
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+var emptyFunction = __webpack_require__(26);
+var invariant = __webpack_require__(27);
+var warning = __webpack_require__(47);
+var assign = __webpack_require__(6);
+
+var ReactPropTypesSecret = __webpack_require__(28);
+var checkPropTypes = __webpack_require__(86);
+
+module.exports = function (isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+     * Collection of methods that allow declaration and validation of props that are
+     * supplied to React components. Example usage:
+     *
+     *   var Props = require('ReactPropTypes');
+     *   var MyArticle = React.createClass({
+     *     propTypes: {
+     *       // An optional string prop named "description".
+     *       description: Props.string,
+     *
+     *       // A required enum prop named "category".
+     *       category: Props.oneOf(['News','Photos']).isRequired,
+     *
+     *       // A prop named "dialog" that requires an instance of Dialog.
+     *       dialog: Props.instanceOf(Dialog).isRequired
+     *     },
+     *     render: function() { ... }
+     *   });
+     *
+     * A more formal specification of how these methods are used:
+     *
+     *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+     *   decl := ReactPropTypes.{type}(.isRequired)?
+     *
+     * Each and every declaration produces a function with the same signature. This
+     * allows the creation of custom validation functions. For example:
+     *
+     *  var MyLink = React.createClass({
+     *    propTypes: {
+     *      // An optional string or URI prop named "href".
+     *      href: function(props, propName, componentName) {
+     *        var propValue = props[propName];
+     *        if (propValue != null && typeof propValue !== 'string' &&
+     *            !(propValue instanceof URI)) {
+     *          return new Error(
+     *            'Expected a string or an URI for ' + propName + ' in ' +
+     *            componentName
+     *          );
+     *        }
+     *      }
+     *    },
+     *    render: function() {...}
+     *  });
+     *
+     * @internal
+     */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker };
+
+
+  /**
+                                            * inlined Object.is polyfill to avoid requiring consumers ship their own
+                                            * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+                                            */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+                                     * We use an Error-like object for backward compatibility as people may call
+                                     * PropTypes directly and inspect their output. However, we don't use real
+                                     * Errors anymore. We don't inspect their stack anyway, and creating them
+                                     * is prohibitively expensive if they are created too often, such as what
+                                     * happens in oneOfType() for any type before the one that matched.
+                                     */
+  function PropTypeError(message) {
+    this.message = message;
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (process.env.NODE_ENV !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          invariant(
+          false,
+          'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+          'Use `PropTypes.checkPropTypes()` to call them. ' +
+          'Read more at http://fb.me/use-check-prop-types');
+
+        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+          !manualPropTypeCallCache[cacheKey] &&
+          // Avoid spamming the console because they are often not actionable except for lib authors
+          manualPropTypeWarningCount < 3)
+          {
+            warning(
+            false,
+            'You are manually calling a React.PropTypes validation ' +
+            'function for the `%s` prop on `%s`. This is deprecated ' +
+            'and will throw in the standalone `prop-types` package. ' +
+            'You may be seeing this warning due to a third-party PropTypes ' +
+            'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+            propFullName,
+            componentName);
+
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues);
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (propValue.hasOwnProperty(key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+      if (typeof checker !== 'function') {
+        warning(
+        false,
+        'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+        'received %s at index %s.',
+        getPostfixForTypeWarning(checker),
+        i);
+
+        return emptyFunction.thatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
+          return null;
+        }
+      }
+
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          continue;
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from
+      // props.
+      var allKeys = assign({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          return new PropTypeError(
+          'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+          '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+          '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
+
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue === 'undefined' ? 'undefined' : _typeof(propValue)) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;}
+
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue === 'undefined' ? 'undefined' : _typeof(propValue);
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+      default:
+        return type;}
+
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+if (process.env.NODE_ENV !== 'production') {
+  var invariant = __webpack_require__(27);
+  var warning = __webpack_require__(47);
+  var ReactPropTypesSecret = __webpack_require__(28);
+  var loggedTypeFailures = {};
+}
+
+/**
+   * Assert that the values match with the type specs.
+   * Error messages are memorized and will only be shown once.
+   *
+   * @param {object} typeSpecs Map of name to a ReactPropType
+   * @param {object} values Runtime values that need to be type-checked
+   * @param {string} location e.g. "prop", "context", "child context"
+   * @param {string} componentName Name of the component for error messages.
+   * @param {?Function} getStack Returns the component stack.
+   * @private
+   */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (process.env.NODE_ENV !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, _typeof(typeSpecs[typeSpecName]));
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error === 'undefined' ? 'undefined' : _typeof(error));
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+        }
+      }
+    }
+  }
+}
+
+module.exports = checkPropTypes;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var emptyFunction = __webpack_require__(26);
+var invariant = __webpack_require__(27);
+var ReactPropTypesSecret = __webpack_require__(28);
+
+module.exports = function () {
+  function shim(props, propName, componentName, location, propFullName, secret) {
+    if (secret === ReactPropTypesSecret) {
+      // It is still safe when called from React.
+      return;
+    }
+    invariant(
+    false,
+    'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+    'Use PropTypes.checkPropTypes() to call them. ' +
+    'Read more at http://fb.me/use-check-prop-types');
+
+  };
+  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  };
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+  var ReactPropTypes = {
+    array: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
+
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim,
+    exact: getShim };
+
+
+  ReactPropTypes.checkPropTypes = emptyFunction;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+
+
+
+
+var _warning = __webpack_require__(9);var _warning2 = _interopRequireDefault(_warning);
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(12);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _createHashHistory = __webpack_require__(89);var _createHashHistory2 = _interopRequireDefault(_createHashHistory);
+var _Router = __webpack_require__(24);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+/**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * The public API for a <Router> that uses window.location.hash.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              */
+
+var HashRouter = function (_React$Component) {
+  _inherits(HashRouter, _React$Component);
+
+  function HashRouter() {
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, HashRouter);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.history = (0, _createHashHistory2.default)(_this.props), _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  HashRouter.prototype.componentWillMount = function componentWillMount() {
+    (0, _warning2.default)(!this.props.history, '<HashRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { HashRouter as Router }`.');
+  };
+
+  HashRouter.prototype.render = function render() {
+    return _react2.default.createElement(_Router2.default, { history: this.history, children: this.props.children });
+  };
+
+  return HashRouter;
+}(_react2.default.Component);
+
+HashRouter.propTypes = {
+  basename: _propTypes2.default.string,
+  getUserConfirmation: _propTypes2.default.func,
+  hashType: _propTypes2.default.oneOf(['hashbang', 'noslash', 'slash']),
+  children: _propTypes2.default.node };exports.default =
+
+
+
+HashRouter;
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+
+var _warning = __webpack_require__(9);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _invariant = __webpack_require__(22);
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _LocationUtils = __webpack_require__(44);
+
+var _PathUtils = __webpack_require__(23);
+
+var _createTransitionManager = __webpack_require__(45);
+
+var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
+
+var _DOMUtils = __webpack_require__(46);
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 var HashChangeEvent = 'hashchange';
 
@@ -24478,23 +26181,102 @@ var createHashHistory = function createHashHistory() {
 
 
   return history;
-};exports.default =
+};
 
-createHashHistory;
+exports.default = createHashHistory;
 
 /***/ }),
-/* 68 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+Object.defineProperty(exports, "__esModule", { value: true });
+var _MemoryRouter = __webpack_require__(91);var _MemoryRouter2 = _interopRequireDefault(_MemoryRouter);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _MemoryRouter2.default; // Written in this round about way for babel-transform-imports
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+
 
 
 
 var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
-var _PathUtils = __webpack_require__(8);
-var _LocationUtils = __webpack_require__(9);
-var _createTransitionManager = __webpack_require__(20);var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _createMemoryHistory = __webpack_require__(92);var _createMemoryHistory2 = _interopRequireDefault(_createMemoryHistory);
+var _Router = __webpack_require__(25);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+/**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * The public API for a <Router> that stores location in memory.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              */
+
+var MemoryRouter = function (_React$Component) {
+  _inherits(MemoryRouter, _React$Component);
+
+  function MemoryRouter() {
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, MemoryRouter);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.history = (0, _createMemoryHistory2.default)(_this.props), _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  MemoryRouter.prototype.componentWillMount = function componentWillMount() {
+    (0, _warning2.default)(!this.props.history, '<MemoryRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { MemoryRouter as Router }`.');
+  };
+
+  MemoryRouter.prototype.render = function render() {
+    return _react2.default.createElement(_Router2.default, { history: this.history, children: this.props.children });
+  };
+
+  return MemoryRouter;
+}(_react2.default.Component);
+
+MemoryRouter.propTypes = {
+  initialEntries: _propTypes2.default.array,
+  initialIndex: _propTypes2.default.number,
+  getUserConfirmation: _propTypes2.default.func,
+  keyLength: _propTypes2.default.number,
+  children: _propTypes2.default.node };exports.default =
+
+
+
+MemoryRouter;
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+exports.__esModule = true;
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};
+
+var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+
+var _warning = __webpack_require__(2);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _PathUtils = __webpack_require__(29);
+
+var _LocationUtils = __webpack_require__(93);
+
+var _createTransitionManager = __webpack_require__(94);
+
+var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 var clamp = function clamp(n, lowerBound, upperBound) {
   return Math.min(Math.max(n, lowerBound), upperBound);
@@ -24641,16 +26423,266 @@ var createMemoryHistory = function createMemoryHistory() {
 
 
   return history;
-};exports.default =
+};
 
-createMemoryHistory;
+exports.default = createMemoryHistory;
 
 /***/ }),
-/* 69 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var isarray = __webpack_require__(70);
+
+
+exports.__esModule = true;
+exports.locationsAreEqual = exports.createLocation = undefined;
+
+var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
+
+var _resolvePathname = __webpack_require__(49);
+
+var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
+
+var _valueEqual = __webpack_require__(50);
+
+var _valueEqual2 = _interopRequireDefault(_valueEqual);
+
+var _PathUtils = __webpack_require__(29);
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var createLocation = exports.createLocation = function createLocation(path, state, key, currentLocation) {
+  var location = void 0;
+  if (typeof path === 'string') {
+    // Two-arg form: push(path, state)
+    location = (0, _PathUtils.parsePath)(path);
+    location.state = state;
+  } else {
+    // One-arg form: push(location)
+    location = _extends({}, path);
+
+    if (location.pathname === undefined) location.pathname = '';
+
+    if (location.search) {
+      if (location.search.charAt(0) !== '?') location.search = '?' + location.search;
+    } else {
+      location.search = '';
+    }
+
+    if (location.hash) {
+      if (location.hash.charAt(0) !== '#') location.hash = '#' + location.hash;
+    } else {
+      location.hash = '';
+    }
+
+    if (state !== undefined && location.state === undefined) location.state = state;
+  }
+
+  try {
+    location.pathname = decodeURI(location.pathname);
+  } catch (e) {
+    if (e instanceof URIError) {
+      throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' + 'This is likely caused by an invalid percent-encoding.');
+    } else {
+      throw e;
+    }
+  }
+
+  if (key) location.key = key;
+
+  if (currentLocation) {
+    // Resolve incomplete/relative pathname relative to current location.
+    if (!location.pathname) {
+      location.pathname = currentLocation.pathname;
+    } else if (location.pathname.charAt(0) !== '/') {
+      location.pathname = (0, _resolvePathname2.default)(location.pathname, currentLocation.pathname);
+    }
+  } else {
+    // When there is no prior location and pathname is empty, set it to /
+    if (!location.pathname) {
+      location.pathname = '/';
+    }
+  }
+
+  return location;
+};
+
+var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a, b) {
+  return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && (0, _valueEqual2.default)(a.state, b.state);
+};
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _warning = __webpack_require__(2);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var createTransitionManager = function createTransitionManager() {
+  var prompt = null;
+
+  var setPrompt = function setPrompt(nextPrompt) {
+    (0, _warning2.default)(prompt == null, 'A history supports only one prompt at a time');
+
+    prompt = nextPrompt;
+
+    return function () {
+      if (prompt === nextPrompt) prompt = null;
+    };
+  };
+
+  var confirmTransitionTo = function confirmTransitionTo(location, action, getUserConfirmation, callback) {
+    // TODO: If another transition starts while we're still confirming
+    // the previous one, we may end up in a weird state. Figure out the
+    // best way to handle this.
+    if (prompt != null) {
+      var result = typeof prompt === 'function' ? prompt(location, action) : prompt;
+
+      if (typeof result === 'string') {
+        if (typeof getUserConfirmation === 'function') {
+          getUserConfirmation(result, callback);
+        } else {
+          (0, _warning2.default)(false, 'A history needs a getUserConfirmation function in order to use a prompt message');
+
+          callback(true);
+        }
+      } else {
+        // Return false from a transition hook to cancel the transition.
+        callback(result !== false);
+      }
+    } else {
+      callback(true);
+    }
+  };
+
+  var listeners = [];
+
+  var appendListener = function appendListener(fn) {
+    var isActive = true;
+
+    var listener = function listener() {
+      if (isActive) fn.apply(undefined, arguments);
+    };
+
+    listeners.push(listener);
+
+    return function () {
+      isActive = false;
+      listeners = listeners.filter(function (item) {
+        return item !== listener;
+      });
+    };
+  };
+
+  var notifyListeners = function notifyListeners() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    listeners.forEach(function (listener) {
+      return listener.apply(undefined, args);
+    });
+  };
+
+  return {
+    setPrompt: setPrompt,
+    confirmTransitionTo: confirmTransitionTo,
+    appendListener: appendListener,
+    notifyListeners: notifyListeners };
+
+};
+
+exports.default = createTransitionManager;
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+
+
+
+
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(12);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _Route = __webpack_require__(51);var _Route2 = _interopRequireDefault(_Route);
+var _Link = __webpack_require__(48);var _Link2 = _interopRequireDefault(_Link);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}
+
+/**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * A <Link> wrapper that knows if it's "active" or not.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
+var NavLink = function NavLink(_ref) {
+  var to = _ref.to,
+  exact = _ref.exact,
+  strict = _ref.strict,
+  location = _ref.location,
+  activeClassName = _ref.activeClassName,
+  className = _ref.className,
+  activeStyle = _ref.activeStyle,
+  style = _ref.style,
+  getIsActive = _ref.isActive,
+  ariaCurrent = _ref.ariaCurrent,
+  rest = _objectWithoutProperties(_ref, ['to', 'exact', 'strict', 'location', 'activeClassName', 'className', 'activeStyle', 'style', 'isActive', 'ariaCurrent']);
+
+  return _react2.default.createElement(_Route2.default, {
+    path: (typeof to === 'undefined' ? 'undefined' : _typeof(to)) === 'object' ? to.pathname : to,
+    exact: exact,
+    strict: strict,
+    location: location,
+    children: function children(_ref2) {
+      var location = _ref2.location,
+      match = _ref2.match;
+
+      var isActive = !!(getIsActive ? getIsActive(match, location) : match);
+
+      return _react2.default.createElement(_Link2.default, _extends({
+        to: to,
+        className: isActive ? [className, activeClassName].filter(function (i) {
+          return i;
+        }).join(' ') : className,
+        style: isActive ? _extends({}, style, activeStyle) : style,
+        'aria-current': isActive && ariaCurrent },
+      rest));
+    } });
+
+};
+
+NavLink.propTypes = {
+  to: _Link2.default.propTypes.to,
+  exact: _propTypes2.default.bool,
+  strict: _propTypes2.default.bool,
+  location: _propTypes2.default.object,
+  activeClassName: _propTypes2.default.string,
+  className: _propTypes2.default.string,
+  activeStyle: _propTypes2.default.object,
+  style: _propTypes2.default.object,
+  isActive: _propTypes2.default.func,
+  ariaCurrent: _propTypes2.default.oneOf(['page', 'step', 'location', 'true']) };
+
+
+NavLink.defaultProps = {
+  activeClassName: 'active',
+  ariaCurrent: 'true' };exports.default =
+
+
+NavLink;
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var isarray = __webpack_require__(97);
 
 /**
                                                                                                                                                                                                                                                                                                                          * Expose `pathToRegexp`.
@@ -25078,7 +27110,7 @@ function pathToRegexp(path, keys, options) {
 }
 
 /***/ }),
-/* 70 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25087,179 +27119,15 @@ module.exports = Array.isArray || function (arr) {
 };
 
 /***/ }),
-/* 71 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-
-
-
-
-
-
-
-
-var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
-var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _PathUtils = __webpack_require__(18);
-var _Router = __webpack_require__(19);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
-
-var normalizeLocation = function normalizeLocation(object) {
-  var _object$pathname = object.pathname,
-  pathname = _object$pathname === undefined ? '/' : _object$pathname,
-  _object$search = object.search,
-  search = _object$search === undefined ? '' : _object$search,
-  _object$hash = object.hash,
-  hash = _object$hash === undefined ? '' : _object$hash;
-
-
-  return {
-    pathname: pathname,
-    search: search === '?' ? '' : search,
-    hash: hash === '#' ? '' : hash };
-
-};
-
-var addBasename = function addBasename(basename, location) {
-  if (!basename) return location;
-
-  return _extends({}, location, {
-    pathname: (0, _PathUtils.addLeadingSlash)(basename) + location.pathname });
-
-};
-
-var stripBasename = function stripBasename(basename, location) {
-  if (!basename) return location;
-
-  var base = (0, _PathUtils.addLeadingSlash)(basename);
-
-  if (location.pathname.indexOf(base) !== 0) return location;
-
-  return _extends({}, location, {
-    pathname: location.pathname.substr(base.length) });
-
-};
-
-var createLocation = function createLocation(location) {
-  return typeof location === 'string' ? (0, _PathUtils.parsePath)(location) : normalizeLocation(location);
-};
-
-var createURL = function createURL(location) {
-  return typeof location === 'string' ? location : (0, _PathUtils.createPath)(location);
-};
-
-var staticHandler = function staticHandler(methodName) {
-  return function () {
-    (0, _invariant2.default)(false, 'You cannot %s with <StaticRouter>', methodName);
-  };
-};
-
-var noop = function noop() {};
-
-/**
-                                * The public top-level API for a "static" <Router>, so-called because it
-                                * can't actually change the current location. Instead, it just records
-                                * location changes in a context object. Useful mainly in testing and
-                                * server-rendering scenarios.
-                                */
-
-var StaticRouter = function (_React$Component) {
-  _inherits(StaticRouter, _React$Component);
-
-  function StaticRouter() {
-    var _temp, _this, _ret;
-
-    _classCallCheck(this, StaticRouter);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.createHref = function (path) {
-      return (0, _PathUtils.addLeadingSlash)(_this.props.basename + createURL(path));
-    }, _this.handlePush = function (location) {
-      var _this$props = _this.props,
-      basename = _this$props.basename,
-      context = _this$props.context;
-
-      context.action = 'PUSH';
-      context.location = addBasename(basename, createLocation(location));
-      context.url = createURL(context.location);
-    }, _this.handleReplace = function (location) {
-      var _this$props2 = _this.props,
-      basename = _this$props2.basename,
-      context = _this$props2.context;
-
-      context.action = 'REPLACE';
-      context.location = addBasename(basename, createLocation(location));
-      context.url = createURL(context.location);
-    }, _this.handleListen = function () {
-      return noop;
-    }, _this.handleBlock = function () {
-      return noop;
-    }, _temp), _possibleConstructorReturn(_this, _ret);
-  }
-
-  StaticRouter.prototype.getChildContext = function getChildContext() {
-    return {
-      router: {
-        staticContext: this.props.context } };
-
-
-  };
-
-  StaticRouter.prototype.componentWillMount = function componentWillMount() {
-    (0, _warning2.default)(!this.props.history, '<StaticRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { StaticRouter as Router }`.');
-  };
-
-  StaticRouter.prototype.render = function render() {
-    var _props = this.props,
-    basename = _props.basename,
-    context = _props.context,
-    location = _props.location,
-    props = _objectWithoutProperties(_props, ['basename', 'context', 'location']);
-
-    var history = {
-      createHref: this.createHref,
-      action: 'POP',
-      location: stripBasename(basename, createLocation(location)),
-      push: this.handlePush,
-      replace: this.handleReplace,
-      go: staticHandler('go'),
-      goBack: staticHandler('goBack'),
-      goForward: staticHandler('goForward'),
-      listen: this.handleListen,
-      block: this.handleBlock };
-
-
-    return _react2.default.createElement(_Router2.default, _extends({}, props, { history: history }));
-  };
-
-  return StaticRouter;
-}(_react2.default.Component);
-
-StaticRouter.propTypes = {
-  basename: _propTypes2.default.string,
-  context: _propTypes2.default.object.isRequired,
-  location: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]) };
-
-StaticRouter.defaultProps = {
-  basename: '',
-  location: '/' };
-
-StaticRouter.childContextTypes = {
-  router: _propTypes2.default.object.isRequired };exports.default =
-
-
-
-StaticRouter;
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Prompt = __webpack_require__(99);var _Prompt2 = _interopRequireDefault(_Prompt);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Prompt2.default; // Written in this round about way for babel-transform-imports
 
 /***/ }),
-/* 72 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25270,1050 +27138,89 @@ Object.defineProperty(exports, "__esModule", { value: true });var _typeof = type
 
 
 var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
-var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
-var _matchPath = __webpack_require__(21);var _matchPath2 = _interopRequireDefault(_matchPath);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
 
 /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * The public API for rendering the first <Route> that matches.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        * The public API for prompting the user before navigating away
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        * from a screen with a component.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        */
 
-var Switch = function (_React$Component) {
-  _inherits(Switch, _React$Component);
+var Prompt = function (_React$Component) {
+  _inherits(Prompt, _React$Component);
 
-  function Switch() {
-    _classCallCheck(this, Switch);
+  function Prompt() {
+    _classCallCheck(this, Prompt);
 
     return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
   }
 
-  Switch.prototype.componentWillMount = function componentWillMount() {
-    (0, _invariant2.default)(this.context.router, 'You should not use <Switch> outside a <Router>');
+  Prompt.prototype.enable = function enable(message) {
+    if (this.unblock) this.unblock();
+
+    this.unblock = this.context.router.history.block(message);
   };
 
-  Switch.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    (0, _warning2.default)(!(nextProps.location && !this.props.location), '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.');
-
-    (0, _warning2.default)(!(!nextProps.location && this.props.location), '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.');
+  Prompt.prototype.disable = function disable() {
+    if (this.unblock) {
+      this.unblock();
+      this.unblock = null;
+    }
   };
 
-  Switch.prototype.render = function render() {
-    var route = this.context.router.route;
-    var children = this.props.children;
+  Prompt.prototype.componentWillMount = function componentWillMount() {
+    (0, _invariant2.default)(this.context.router, 'You should not use <Prompt> outside a <Router>');
 
-    var location = this.props.location || route.location;
-
-    var match = void 0,
-    child = void 0;
-    _react2.default.Children.forEach(children, function (element) {
-      if (!_react2.default.isValidElement(element)) return;
-
-      var _element$props = element.props,
-      pathProp = _element$props.path,
-      exact = _element$props.exact,
-      strict = _element$props.strict,
-      sensitive = _element$props.sensitive,
-      from = _element$props.from;
-
-      var path = pathProp || from;
-
-      if (match == null) {
-        child = element;
-        match = path ? (0, _matchPath2.default)(location.pathname, { path: path, exact: exact, strict: strict, sensitive: sensitive }) : route.match;
-      }
-    });
-
-    return match ? _react2.default.cloneElement(child, { location: location, computedMatch: match }) : null;
+    if (this.props.when) this.enable(this.props.message);
   };
 
-  return Switch;
+  Prompt.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+    if (nextProps.when) {
+      if (!this.props.when || this.props.message !== nextProps.message) this.enable(nextProps.message);
+    } else {
+      this.disable();
+    }
+  };
+
+  Prompt.prototype.componentWillUnmount = function componentWillUnmount() {
+    this.disable();
+  };
+
+  Prompt.prototype.render = function render() {
+    return null;
+  };
+
+  return Prompt;
 }(_react2.default.Component);
 
-Switch.contextTypes = {
-  router: _propTypes2.default.shape({
-    route: _propTypes2.default.object.isRequired }).
-  isRequired };
+Prompt.propTypes = {
+  when: _propTypes2.default.bool,
+  message: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]).isRequired };
 
-Switch.propTypes = {
-  children: _propTypes2.default.node,
-  location: _propTypes2.default.object };exports.default =
+Prompt.defaultProps = {
+  when: true };
 
-
-
-Switch;
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-
-
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(3);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _hoistNonReactStatics = __webpack_require__(74);var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
-var _Route = __webpack_require__(35);var _Route2 = _interopRequireDefault(_Route);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * A public higher-order component to access the imperative API
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
-var withRouter = function withRouter(Component) {
-  var C = function C(props) {
-    var wrappedComponentRef = props.wrappedComponentRef,
-    remainingProps = _objectWithoutProperties(props, ['wrappedComponentRef']);
-
-    return _react2.default.createElement(_Route2.default, { render: function render(routeComponentProps) {
-        return _react2.default.createElement(Component, _extends({}, remainingProps, routeComponentProps, { ref: wrappedComponentRef }));
-      } });
-  };
-
-  C.displayName = 'withRouter(' + (Component.displayName || Component.name) + ')';
-  C.WrappedComponent = Component;
-  C.propTypes = {
-    wrappedComponentRef: _propTypes2.default.func };
-
-
-  return (0, _hoistNonReactStatics2.default)(C, Component);
-};exports.default =
-
-withRouter;
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright 2015, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-
-var REACT_STATICS = {
-    childContextTypes: true,
-    contextTypes: true,
-    defaultProps: true,
-    displayName: true,
-    getDefaultProps: true,
-    mixins: true,
-    propTypes: true,
-    type: true };
-
-
-var KNOWN_STATICS = {
-    name: true,
-    length: true,
-    prototype: true,
-    caller: true,
-    callee: true,
-    arguments: true,
-    arity: true };
-
-
-var defineProperty = Object.defineProperty;
-var getOwnPropertyNames = Object.getOwnPropertyNames;
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-var getPrototypeOf = Object.getPrototypeOf;
-var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
-
-module.exports = function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
-    if (typeof sourceComponent !== 'string') {// don't hoist over string (html) components
-
-        if (objectPrototype) {
-            var inheritedComponent = getPrototypeOf(sourceComponent);
-            if (inheritedComponent && inheritedComponent !== objectPrototype) {
-                hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
-            }
-        }
-
-        var keys = getOwnPropertyNames(sourceComponent);
-
-        if (getOwnPropertySymbols) {
-            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
-        }
-
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i];
-            if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
-                var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-                try {// Avoid failures from read-only properties
-                    defineProperty(targetComponent, key, descriptor);
-                } catch (e) {}
-            }
-        }
-
-        return targetComponent;
-    }
-
-    return targetComponent;
-};
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
-
-App = function (_Component) {_inherits(App, _Component);
-    function App(props) {_classCallCheck(this, App);return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this,
-        props));
-    }_createClass(App, [{ key: "render", value: function render()
-        {
-            return (
-                _react2.default.createElement("div", { className: "inner-page" },
-                    this.props.children));
-
-
-        } }]);return App;}(_react.Component);
-
-/*
-                                              App.propTypes = {
-                                                  children: PropTypes.object.isRequired
-                                              };*/exports.default =
-
-App;
-
-/***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
-
-var tempalteIndex = __webpack_require__(110);var
-
-IndexPage = function (_Component) {_inherits(IndexPage, _Component);
-    function IndexPage(props) {_classCallCheck(this, IndexPage);return _possibleConstructorReturn(this, (IndexPage.__proto__ || Object.getPrototypeOf(IndexPage)).call(this,
-        props));
-    }_createClass(IndexPage, [{ key: "componentWillMount", value: function componentWillMount()
-
-        {
-
-        } }, { key: "componentDidMount", value: function componentDidMount()
-
-        {
-
-        } }, { key: "render", value: function render()
-
-
-        {
-            return tempalteIndex;
-        } }]);return IndexPage;}(_react.Component);exports.default =
-
-
-IndexPage;
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2014-2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-
-
-/**
-               * Similar to invariant but only logs a warning if the condition is not met.
-               * This can be used to log issues in development environments in critical
-               * paths. Removing the logging code for production environments will keep the
-               * same logic and follow the same code paths.
-               */
-
-var warning = function warning() {};
-
-if (process.env.NODE_ENV !== 'production') {
-  warning = function warning(condition, format, args) {
-    var len = arguments.length;
-    args = new Array(len > 2 ? len - 2 : 0);
-    for (var key = 2; key < len; key++) {
-      args[key - 2] = arguments[key];
-    }
-    if (format === undefined) {
-      throw new Error(
-      '`warning(condition, format, ...args)` requires a warning ' +
-      'message argument');
-
-    }
-
-    if (format.length < 10 || /^[s\W]*$/.test(format)) {
-      throw new Error(
-      'The warning format should be able to uniquely identify this ' +
-      'warning. Please, use a more descriptive format than: ' + format);
-
-    }
-
-    if (!condition) {
-      var argIndex = 0;
-      var message = 'Warning: ' +
-      format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    }
-  };
-}
-
-module.exports = warning;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;}; /**
-                                                                                                                                                                                                                                                                                        * Copyright (c) 2013-present, Facebook, Inc.
-                                                                                                                                                                                                                                                                                        *
-                                                                                                                                                                                                                                                                                        * This source code is licensed under the MIT license found in the
-                                                                                                                                                                                                                                                                                        * LICENSE file in the root directory of this source tree.
-                                                                                                                                                                                                                                                                                        */
-
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = typeof Symbol === 'function' &&
-  Symbol.for &&
-  Symbol.for('react.element') ||
-  0xeac7;
-
-  var isValidElement = function isValidElement(object) {
-    return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' &&
-    object !== null &&
-    object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(93)(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(95)();
-}
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
-               * Copyright (c) 2013-present, Facebook, Inc.
-               *
-               * This source code is licensed under the MIT license found in the
-               * LICENSE file in the root directory of this source tree.
-               *
-               * 
-               */
-
-function makeEmptyFunction(arg) {
-  return function () {
-    return arg;
-  };
-}
-
-/**
-   * This function accepts and discards inputs; it has no side effects. This is
-   * primarily useful idiomatically for overridable function endpoints which
-   * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-   */
-var emptyFunction = function emptyFunction() {};
-
-emptyFunction.thatReturns = makeEmptyFunction;
-emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-emptyFunction.thatReturnsThis = function () {
-  return this;
-};
-emptyFunction.thatReturnsArgument = function (arg) {
-  return arg;
-};
-
-module.exports = emptyFunction;
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
-
-
-/**
-               * Use invariant() to assert state which your program assumes to be true.
-               *
-               * Provide sprintf-style format (only %s is supported) and arguments
-               * to provide information about what broke and what you were
-               * expecting.
-               *
-               * The invariant message will be stripped in production, but the invariant
-               * will remain to ensure logic does not differ in production.
-               */
-
-var validateFormat = function validateFormat(format) {};
-
-if (process.env.NODE_ENV !== 'production') {
-  validateFormat = function validateFormat(format) {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  };
-}
-
-function invariant(condition, format, a, b, c, d, e, f) {
-  validateFormat(format);
-
-  if (!condition) {
-    var error;
-    if (format === undefined) {
-      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-    } else {
-      var args = [a, b, c, d, e, f];
-      var argIndex = 0;
-      error = new Error(format.replace(/%s/g, function () {
-        return args[argIndex++];
-      }));
-      error.name = 'Invariant Violation';
-    }
-
-    error.framesToPop = 1; // we don't care about invariant's own frame
-    throw error;
-  }
-}
-
-module.exports = invariant;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-
-
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
-
-module.exports = ReactPropTypesSecret;
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2013-2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-
-
-/**
-               * Use invariant() to assert state which your program assumes to be true.
-               *
-               * Provide sprintf-style format (only %s is supported) and arguments
-               * to provide information about what broke and what you were
-               * expecting.
-               *
-               * The invariant message will be stripped in production, but the invariant
-               * will remain to ensure logic does not differ in production.
-               */
-
-var invariant = function invariant(condition, format, a, b, c, d, e, f) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  }
-
-  if (!condition) {
-    var error;
-    if (format === undefined) {
-      error = new Error(
-      'Minified exception occurred; use the non-minified dev environment ' +
-      'for the full error message and additional helpful warnings.');
-
-    } else {
-      var args = [a, b, c, d, e, f];
-      var argIndex = 0;
-      error = new Error(
-      format.replace(/%s/g, function () {return args[argIndex++];}));
-
-      error.name = 'Invariant Violation';
-    }
-
-    error.framesToPop = 1; // we don't care about invariant's own frame
-    throw error;
-  }
-};
-
-module.exports = invariant;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-var addLeadingSlash = exports.addLeadingSlash = function addLeadingSlash(path) {
-  return path.charAt(0) === '/' ? path : '/' + path;
-};
-
-var stripLeadingSlash = exports.stripLeadingSlash = function stripLeadingSlash(path) {
-  return path.charAt(0) === '/' ? path.substr(1) : path;
-};
-
-var hasBasename = exports.hasBasename = function hasBasename(path, prefix) {
-  return new RegExp('^' + prefix + '(\\/|\\?|#|$)', 'i').test(path);
-};
-
-var stripBasename = exports.stripBasename = function stripBasename(path, prefix) {
-  return hasBasename(path, prefix) ? path.substr(prefix.length) : path;
-};
-
-var stripTrailingSlash = exports.stripTrailingSlash = function stripTrailingSlash(path) {
-  return path.charAt(path.length - 1) === '/' ? path.slice(0, -1) : path;
-};
-
-var parsePath = exports.parsePath = function parsePath(path) {
-  var pathname = path || '/';
-  var search = '';
-  var hash = '';
-
-  var hashIndex = pathname.indexOf('#');
-  if (hashIndex !== -1) {
-    hash = pathname.substr(hashIndex);
-    pathname = pathname.substr(0, hashIndex);
-  }
-
-  var searchIndex = pathname.indexOf('?');
-  if (searchIndex !== -1) {
-    search = pathname.substr(searchIndex);
-    pathname = pathname.substr(0, searchIndex);
-  }
-
-  return {
-    pathname: pathname,
-    search: search === '?' ? '' : search,
-    hash: hash === '#' ? '' : hash };
-
-};
-
-var createPath = exports.createPath = function createPath(location) {
-  var pathname = location.pathname,
-  search = location.search,
-  hash = location.hash;
-
-
-  var path = pathname || '/';
-
-  if (search && search !== '?') path += search.charAt(0) === '?' ? search : '?' + search;
-
-  if (hash && hash !== '#') path += hash.charAt(0) === '#' ? hash : '#' + hash;
-
-  return path;
-};
-
-/***/ }),
-/* 84 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Router = __webpack_require__(19);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Router2.default; // Written in this round about way for babel-transform-imports
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
-
-
-var emptyFunction = __webpack_require__(79);
-
-/**
-                                                 * Similar to invariant but only logs a warning if the condition is not met.
-                                                 * This can be used to log issues in development environments in critical
-                                                 * paths. Removing the logging code for production environments will keep the
-                                                 * same logic and follow the same code paths.
-                                                 */
-
-var warning = emptyFunction;
-
-if (process.env.NODE_ENV !== 'production') {
-  var printWarning = function printWarning(format) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  warning = function warning(condition, format) {
-    if (format === undefined) {
-      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (format.indexOf('Failed Composite propType: ') === 0) {
-      return; // Ignore CompositeComponent proptype check.
-    }
-
-    if (!condition) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
-      }
-
-      printWarning.apply(undefined, [format].concat(args));
-    }
-  };
-}
-
-module.exports = warning;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.locationsAreEqual = exports.createLocation = undefined;
-
-var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
-
-var _resolvePathname = __webpack_require__(97);
-
-var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
-
-var _valueEqual = __webpack_require__(98);
-
-var _valueEqual2 = _interopRequireDefault(_valueEqual);
-
-var _PathUtils = __webpack_require__(83);
-
-function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-var createLocation = exports.createLocation = function createLocation(path, state, key, currentLocation) {
-  var location = void 0;
-  if (typeof path === 'string') {
-    // Two-arg form: push(path, state)
-    location = (0, _PathUtils.parsePath)(path);
-    location.state = state;
-  } else {
-    // One-arg form: push(location)
-    location = _extends({}, path);
-
-    if (location.pathname === undefined) location.pathname = '';
-
-    if (location.search) {
-      if (location.search.charAt(0) !== '?') location.search = '?' + location.search;
-    } else {
-      location.search = '';
-    }
-
-    if (location.hash) {
-      if (location.hash.charAt(0) !== '#') location.hash = '#' + location.hash;
-    } else {
-      location.hash = '';
-    }
-
-    if (state !== undefined && location.state === undefined) location.state = state;
-  }
-
-  try {
-    location.pathname = decodeURI(location.pathname);
-  } catch (e) {
-    if (e instanceof URIError) {
-      throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' + 'This is likely caused by an invalid percent-encoding.');
-    } else {
-      throw e;
-    }
-  }
-
-  if (key) location.key = key;
-
-  if (currentLocation) {
-    // Resolve incomplete/relative pathname relative to current location.
-    if (!location.pathname) {
-      location.pathname = currentLocation.pathname;
-    } else if (location.pathname.charAt(0) !== '/') {
-      location.pathname = (0, _resolvePathname2.default)(location.pathname, currentLocation.pathname);
-    }
-  } else {
-    // When there is no prior location and pathname is empty, set it to /
-    if (!location.pathname) {
-      location.pathname = '/';
-    }
-  }
-
-  return location;
-};
-
-var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a, b) {
-  return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && (0, _valueEqual2.default)(a.state, b.state);
-};
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _warning = __webpack_require__(77);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-var createTransitionManager = function createTransitionManager() {
-  var prompt = null;
-
-  var setPrompt = function setPrompt(nextPrompt) {
-    (0, _warning2.default)(prompt == null, 'A history supports only one prompt at a time');
-
-    prompt = nextPrompt;
-
-    return function () {
-      if (prompt === nextPrompt) prompt = null;
-    };
-  };
-
-  var confirmTransitionTo = function confirmTransitionTo(location, action, getUserConfirmation, callback) {
-    // TODO: If another transition starts while we're still confirming
-    // the previous one, we may end up in a weird state. Figure out the
-    // best way to handle this.
-    if (prompt != null) {
-      var result = typeof prompt === 'function' ? prompt(location, action) : prompt;
-
-      if (typeof result === 'string') {
-        if (typeof getUserConfirmation === 'function') {
-          getUserConfirmation(result, callback);
-        } else {
-          (0, _warning2.default)(false, 'A history needs a getUserConfirmation function in order to use a prompt message');
-
-          callback(true);
-        }
-      } else {
-        // Return false from a transition hook to cancel the transition.
-        callback(result !== false);
-      }
-    } else {
-      callback(true);
-    }
-  };
-
-  var listeners = [];
-
-  var appendListener = function appendListener(fn) {
-    var isActive = true;
-
-    var listener = function listener() {
-      if (isActive) fn.apply(undefined, arguments);
-    };
-
-    listeners.push(listener);
-
-    return function () {
-      isActive = false;
-      listeners = listeners.filter(function (item) {
-        return item !== listener;
-      });
-    };
-  };
-
-  var notifyListeners = function notifyListeners() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    listeners.forEach(function (listener) {
-      return listener.apply(undefined, args);
-    });
-  };
-
-  return {
-    setPrompt: setPrompt,
-    confirmTransitionTo: confirmTransitionTo,
-    appendListener: appendListener,
-    notifyListeners: notifyListeners };
-
-};
-
-exports.default = createTransitionManager;
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-var canUseDOM = exports.canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-
-var addEventListener = exports.addEventListener = function addEventListener(node, event, listener) {
-  return node.addEventListener ? node.addEventListener(event, listener, false) : node.attachEvent('on' + event, listener);
-};
-
-var removeEventListener = exports.removeEventListener = function removeEventListener(node, event, listener) {
-  return node.removeEventListener ? node.removeEventListener(event, listener, false) : node.detachEvent('on' + event, listener);
-};
-
-var getConfirmation = exports.getConfirmation = function getConfirmation(message, callback) {
-  return callback(window.confirm(message));
-}; // eslint-disable-line no-alert
-
-/**
- * Returns true if the HTML5 history API is supported. Taken from Modernizr.
- *
- * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
- * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
- * changed to avoid false negatives for Windows Phones: https://github.com/reactjs/react-router/issues/586
- */
-var supportsHistory = exports.supportsHistory = function supportsHistory() {
-  var ua = window.navigator.userAgent;
-
-  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) return false;
-
-  return window.history && 'pushState' in window.history;
-};
-
-/**
-    * Returns true if browser fires popstate on hash change.
-    * IE10 and IE11 do not.
-    */
-var supportsPopStateOnHashChange = exports.supportsPopStateOnHashChange = function supportsPopStateOnHashChange() {
-  return window.navigator.userAgent.indexOf('Trident') === -1;
-};
-
-/**
-    * Returns false if using go(n) with hash history causes a full page reload.
-    */
-var supportsGoWithoutReloadUsingHash = exports.supportsGoWithoutReloadUsingHash = function supportsGoWithoutReloadUsingHash() {
-  return window.navigator.userAgent.indexOf('Firefox') === -1;
-};
-
-/**
-    * Returns true if a given popstate event is an extraneous WebKit event.
-    * Accounts for the fact that Chrome on iOS fires real popstate events
-    * containing undefined state when pressing the back button.
-    */
-var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
-  return event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1;
-};
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-
-
-
-
-
-
-
-
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(78);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _invariant = __webpack_require__(82);var _invariant2 = _interopRequireDefault(_invariant);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
-
-var isModifiedEvent = function isModifiedEvent(event) {
-  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
-};
-
-/**
-    * The public API for rendering a history-aware <a>.
-    */
-
-var Link = function (_React$Component) {
-  _inherits(Link, _React$Component);
-
-  function Link() {
-    var _temp, _this, _ret;
-
-    _classCallCheck(this, Link);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.handleClick = function (event) {
-      if (_this.props.onClick) _this.props.onClick(event);
-
-      if (!event.defaultPrevented && // onClick prevented default
-      event.button === 0 && // ignore right clicks
-      !_this.props.target && // let browser handle "target=_blank" etc.
-      !isModifiedEvent(event) // ignore clicks with modifier keys
-      ) {
-          event.preventDefault();
-
-          var history = _this.context.router.history;
-          var _this$props = _this.props,
-          replace = _this$props.replace,
-          to = _this$props.to;
-
-
-          if (replace) {
-            history.replace(to);
-          } else {
-            history.push(to);
-          }
-        }
-    }, _temp), _possibleConstructorReturn(_this, _ret);
-  }
-
-  Link.prototype.render = function render() {
-    var _props = this.props,
-    replace = _props.replace,
-    to = _props.to,
-    innerRef = _props.innerRef,
-    props = _objectWithoutProperties(_props, ['replace', 'to', 'innerRef']); // eslint-disable-line no-unused-vars
-
-    (0, _invariant2.default)(this.context.router, 'You should not use <Link> outside a <Router>');
-
-    var href = this.context.router.history.createHref(typeof to === 'string' ? { pathname: to } : to);
-
-    return _react2.default.createElement('a', _extends({}, props, { onClick: this.handleClick, href: href, ref: innerRef }));
-  };
-
-  return Link;
-}(_react2.default.Component);
-
-Link.propTypes = {
-  onClick: _propTypes2.default.func,
-  target: _propTypes2.default.string,
-  replace: _propTypes2.default.bool,
-  to: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]).isRequired,
-  innerRef: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]) };
-
-Link.defaultProps = {
-  replace: false };
-
-Link.contextTypes = {
+Prompt.contextTypes = {
   router: _propTypes2.default.shape({
     history: _propTypes2.default.shape({
-      push: _propTypes2.default.func.isRequired,
-      replace: _propTypes2.default.func.isRequired,
-      createHref: _propTypes2.default.func.isRequired }).
+      block: _propTypes2.default.func.isRequired }).
     isRequired }).
   isRequired };exports.default =
 
 
 
-Link;
+Prompt;
 
 /***/ }),
-/* 90 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var _Route = __webpack_require__(35);var _Route2 = _interopRequireDefault(_Route);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Route2.default; // Written in this round about way for babel-transform-imports
+var _Redirect = __webpack_require__(101);var _Redirect2 = _interopRequireDefault(_Redirect);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Redirect2.default; // Written in this round about way for babel-transform-imports
 
 /***/ }),
-/* 91 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.withRouter = exports.matchPath = exports.Switch = exports.StaticRouter = exports.Router = exports.Route = exports.Redirect = exports.Prompt = exports.NavLink = exports.MemoryRouter = exports.Link = exports.HashRouter = exports.BrowserRouter = undefined;var _BrowserRouter2 = __webpack_require__(92);var _BrowserRouter3 = _interopRequireDefault(_BrowserRouter2);
-
-var _HashRouter2 = __webpack_require__(99);var _HashRouter3 = _interopRequireDefault(_HashRouter2);
-
-var _Link2 = __webpack_require__(89);var _Link3 = _interopRequireDefault(_Link2);
-
-var _MemoryRouter2 = __webpack_require__(101);var _MemoryRouter3 = _interopRequireDefault(_MemoryRouter2);
-
-var _NavLink2 = __webpack_require__(102);var _NavLink3 = _interopRequireDefault(_NavLink2);
-
-var _Prompt2 = __webpack_require__(103);var _Prompt3 = _interopRequireDefault(_Prompt2);
-
-var _Redirect2 = __webpack_require__(104);var _Redirect3 = _interopRequireDefault(_Redirect2);
-
-var _Route2 = __webpack_require__(90);var _Route3 = _interopRequireDefault(_Route2);
-
-var _Router2 = __webpack_require__(84);var _Router3 = _interopRequireDefault(_Router2);
-
-var _StaticRouter2 = __webpack_require__(105);var _StaticRouter3 = _interopRequireDefault(_StaticRouter2);
-
-var _Switch2 = __webpack_require__(106);var _Switch3 = _interopRequireDefault(_Switch2);
-
-var _matchPath2 = __webpack_require__(107);var _matchPath3 = _interopRequireDefault(_matchPath2);
-
-var _withRouter2 = __webpack_require__(108);var _withRouter3 = _interopRequireDefault(_withRouter2);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.BrowserRouter = _BrowserRouter3.default;exports.HashRouter = _HashRouter3.default;exports.Link = _Link3.default;exports.MemoryRouter = _MemoryRouter3.default;exports.NavLink = _NavLink3.default;exports.Prompt = _Prompt3.default;exports.Redirect = _Redirect3.default;exports.Route = _Route3.default;exports.Router = _Router3.default;exports.StaticRouter = _StaticRouter3.default;exports.Switch = _Switch3.default;exports.matchPath = _matchPath3.default;exports.
-withRouter = _withRouter3.default;
-
-/***/ }),
-/* 92 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26323,764 +27230,124 @@ Object.defineProperty(exports, "__esModule", { value: true });var _typeof = type
 
 
 
-var _warning = __webpack_require__(77);var _warning2 = _interopRequireDefault(_warning);
 var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(78);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _createBrowserHistory = __webpack_require__(96);var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
-var _Router = __webpack_require__(84);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
+var _history = __webpack_require__(102);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
 
 /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * The public API for a <Router> that uses HTML5 history.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * The public API for updating the location programmatically
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * with a component.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
-var BrowserRouter = function (_React$Component) {
-  _inherits(BrowserRouter, _React$Component);
+var Redirect = function (_React$Component) {
+  _inherits(Redirect, _React$Component);
 
-  function BrowserRouter() {
-    var _temp, _this, _ret;
+  function Redirect() {
+    _classCallCheck(this, Redirect);
 
-    _classCallCheck(this, BrowserRouter);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.history = (0, _createBrowserHistory2.default)(_this.props), _temp), _possibleConstructorReturn(_this, _ret);
+    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
   }
 
-  BrowserRouter.prototype.componentWillMount = function componentWillMount() {
-    (0, _warning2.default)(!this.props.history, '<BrowserRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { BrowserRouter as Router }`.');
+  Redirect.prototype.isStatic = function isStatic() {
+    return this.context.router && this.context.router.staticContext;
   };
 
-  BrowserRouter.prototype.render = function render() {
-    return _react2.default.createElement(_Router2.default, { history: this.history, children: this.props.children });
+  Redirect.prototype.componentWillMount = function componentWillMount() {
+    (0, _invariant2.default)(this.context.router, 'You should not use <Redirect> outside a <Router>');
+
+    if (this.isStatic()) this.perform();
   };
 
-  return BrowserRouter;
-}(_react2.default.Component);
-
-BrowserRouter.propTypes = {
-  basename: _propTypes2.default.string,
-  forceRefresh: _propTypes2.default.bool,
-  getUserConfirmation: _propTypes2.default.func,
-  keyLength: _propTypes2.default.number,
-  children: _propTypes2.default.node };exports.default =
-
-
-
-BrowserRouter;
-
-/***/ }),
-/* 93 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-var emptyFunction = __webpack_require__(79);
-var invariant = __webpack_require__(80);
-var warning = __webpack_require__(85);
-var assign = __webpack_require__(5);
-
-var ReactPropTypesSecret = __webpack_require__(81);
-var checkPropTypes = __webpack_require__(94);
-
-module.exports = function (isValidElement, throwOnDirectAccess) {
-  /* global Symbol */
-  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-
-  /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */
-  function getIteratorFn(maybeIterable) {
-    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
-
-  /**
-     * Collection of methods that allow declaration and validation of props that are
-     * supplied to React components. Example usage:
-     *
-     *   var Props = require('ReactPropTypes');
-     *   var MyArticle = React.createClass({
-     *     propTypes: {
-     *       // An optional string prop named "description".
-     *       description: Props.string,
-     *
-     *       // A required enum prop named "category".
-     *       category: Props.oneOf(['News','Photos']).isRequired,
-     *
-     *       // A prop named "dialog" that requires an instance of Dialog.
-     *       dialog: Props.instanceOf(Dialog).isRequired
-     *     },
-     *     render: function() { ... }
-     *   });
-     *
-     * A more formal specification of how these methods are used:
-     *
-     *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-     *   decl := ReactPropTypes.{type}(.isRequired)?
-     *
-     * Each and every declaration produces a function with the same signature. This
-     * allows the creation of custom validation functions. For example:
-     *
-     *  var MyLink = React.createClass({
-     *    propTypes: {
-     *      // An optional string or URI prop named "href".
-     *      href: function(props, propName, componentName) {
-     *        var propValue = props[propName];
-     *        if (propValue != null && typeof propValue !== 'string' &&
-     *            !(propValue instanceof URI)) {
-     *          return new Error(
-     *            'Expected a string or an URI for ' + propName + ' in ' +
-     *            componentName
-     *          );
-     *        }
-     *      }
-     *    },
-     *    render: function() {...}
-     *  });
-     *
-     * @internal
-     */
-
-  var ANONYMOUS = '<<anonymous>>';
-
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
-  var ReactPropTypes = {
-    array: createPrimitiveTypeChecker('array'),
-    bool: createPrimitiveTypeChecker('boolean'),
-    func: createPrimitiveTypeChecker('function'),
-    number: createPrimitiveTypeChecker('number'),
-    object: createPrimitiveTypeChecker('object'),
-    string: createPrimitiveTypeChecker('string'),
-    symbol: createPrimitiveTypeChecker('symbol'),
-
-    any: createAnyTypeChecker(),
-    arrayOf: createArrayOfTypeChecker,
-    element: createElementTypeChecker(),
-    instanceOf: createInstanceTypeChecker,
-    node: createNodeChecker(),
-    objectOf: createObjectOfTypeChecker,
-    oneOf: createEnumTypeChecker,
-    oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker,
-    exact: createStrictShapeTypeChecker };
-
-
-  /**
-                                            * inlined Object.is polyfill to avoid requiring consumers ship their own
-                                            * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-                                            */
-  /*eslint-disable no-self-compare*/
-  function is(x, y) {
-    // SameValue algorithm
-    if (x === y) {
-      // Steps 1-5, 7-10
-      // Steps 6.b-6.e: +0 != -0
-      return x !== 0 || 1 / x === 1 / y;
-    } else {
-      // Step 6.a: NaN == NaN
-      return x !== x && y !== y;
-    }
-  }
-  /*eslint-enable no-self-compare*/
-
-  /**
-                                     * We use an Error-like object for backward compatibility as people may call
-                                     * PropTypes directly and inspect their output. However, we don't use real
-                                     * Errors anymore. We don't inspect their stack anyway, and creating them
-                                     * is prohibitively expensive if they are created too often, such as what
-                                     * happens in oneOfType() for any type before the one that matched.
-                                     */
-  function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-  }
-  // Make `instanceof Error` still work for returned errors.
-  PropTypeError.prototype = Error.prototype;
-
-  function createChainableTypeChecker(validate) {
-    if (process.env.NODE_ENV !== 'production') {
-      var manualPropTypeCallCache = {};
-      var manualPropTypeWarningCount = 0;
-    }
-    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-      componentName = componentName || ANONYMOUS;
-      propFullName = propFullName || propName;
-
-      if (secret !== ReactPropTypesSecret) {
-        if (throwOnDirectAccess) {
-          // New behavior only for users of `prop-types` package
-          invariant(
-          false,
-          'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-          'Use `PropTypes.checkPropTypes()` to call them. ' +
-          'Read more at http://fb.me/use-check-prop-types');
-
-        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
-          // Old behavior for people using React.PropTypes
-          var cacheKey = componentName + ':' + propName;
-          if (
-          !manualPropTypeCallCache[cacheKey] &&
-          // Avoid spamming the console because they are often not actionable except for lib authors
-          manualPropTypeWarningCount < 3)
-          {
-            warning(
-            false,
-            'You are manually calling a React.PropTypes validation ' +
-            'function for the `%s` prop on `%s`. This is deprecated ' +
-            'and will throw in the standalone `prop-types` package. ' +
-            'You may be seeing this warning due to a third-party PropTypes ' +
-            'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
-            propFullName,
-            componentName);
-
-            manualPropTypeCallCache[cacheKey] = true;
-            manualPropTypeWarningCount++;
-          }
-        }
-      }
-      if (props[propName] == null) {
-        if (isRequired) {
-          if (props[propName] === null) {
-            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-          }
-          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-        }
-        return null;
-      } else {
-        return validate(props, propName, componentName, location, propFullName);
-      }
-    }
-
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-
-    return chainedCheckType;
-  }
-
-  function createPrimitiveTypeChecker(expectedType) {
-    function validate(props, propName, componentName, location, propFullName, secret) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== expectedType) {
-        // `propValue` being instance of, say, date/regexp, pass the 'object'
-        // check, but we can offer a more precise error message here rather than
-        // 'of type `object`'.
-        var preciseType = getPreciseType(propValue);
-
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
-  }
-
-  function createArrayOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-      }
-      var propValue = props[propName];
-      if (!Array.isArray(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-      }
-      for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
-        if (error instanceof Error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!isValidElement(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createInstanceTypeChecker(expectedClass) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!(props[propName] instanceof expectedClass)) {
-        var expectedClassName = expectedClass.name || ANONYMOUS;
-        var actualClassName = getClassName(props[propName]);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createEnumTypeChecker(expectedValues) {
-    if (!Array.isArray(expectedValues)) {
-      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
-      return emptyFunction.thatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      for (var i = 0; i < expectedValues.length; i++) {
-        if (is(propValue, expectedValues[i])) {
-          return null;
-        }
-      }
-
-      var valuesString = JSON.stringify(expectedValues);
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createObjectOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-      }
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-      }
-      for (var key in propValue) {
-        if (propValue.hasOwnProperty(key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-          if (error instanceof Error) {
-            return error;
-          }
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createUnionTypeChecker(arrayOfTypeCheckers) {
-    if (!Array.isArray(arrayOfTypeCheckers)) {
-      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-      return emptyFunction.thatReturnsNull;
-    }
-
-    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-      var checker = arrayOfTypeCheckers[i];
-      if (typeof checker !== 'function') {
-        warning(
-        false,
-        'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-        'received %s at index %s.',
-        getPostfixForTypeWarning(checker),
-        i);
-
-        return emptyFunction.thatReturnsNull;
-      }
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-        var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
-          return null;
-        }
-      }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createNodeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!isNode(props[propName])) {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      for (var key in shapeTypes) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createStrictShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      // We need to check all keys in case some are required but missing from
-      // props.
-      var allKeys = assign({}, props[propName], shapeTypes);
-      for (var key in allKeys) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          return new PropTypeError(
-          'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
-          '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
-          '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
-
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function isNode(propValue) {
-    switch (typeof propValue === 'undefined' ? 'undefined' : _typeof(propValue)) {
-      case 'number':
-      case 'string':
-      case 'undefined':
-        return true;
-      case 'boolean':
-        return !propValue;
-      case 'object':
-        if (Array.isArray(propValue)) {
-          return propValue.every(isNode);
-        }
-        if (propValue === null || isValidElement(propValue)) {
-          return true;
-        }
-
-        var iteratorFn = getIteratorFn(propValue);
-        if (iteratorFn) {
-          var iterator = iteratorFn.call(propValue);
-          var step;
-          if (iteratorFn !== propValue.entries) {
-            while (!(step = iterator.next()).done) {
-              if (!isNode(step.value)) {
-                return false;
-              }
-            }
-          } else {
-            // Iterator will provide entry [k,v] tuples rather than values.
-            while (!(step = iterator.next()).done) {
-              var entry = step.value;
-              if (entry) {
-                if (!isNode(entry[1])) {
-                  return false;
-                }
-              }
-            }
-          }
-        } else {
-          return false;
-        }
-
-        return true;
-      default:
-        return false;}
-
-  }
-
-  function isSymbol(propType, propValue) {
-    // Native Symbol.
-    if (propType === 'symbol') {
-      return true;
-    }
-
-    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-    if (propValue['@@toStringTag'] === 'Symbol') {
-      return true;
-    }
-
-    // Fallback for non-spec compliant Symbols which are polyfilled.
-    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // Equivalent of `typeof` but with special handling for array and regexp.
-  function getPropType(propValue) {
-    var propType = typeof propValue === 'undefined' ? 'undefined' : _typeof(propValue);
-    if (Array.isArray(propValue)) {
-      return 'array';
-    }
-    if (propValue instanceof RegExp) {
-      // Old webkits (at least until Android 4.0) return 'function' rather than
-      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-      // passes PropTypes.object.
-      return 'object';
-    }
-    if (isSymbol(propType, propValue)) {
-      return 'symbol';
-    }
-    return propType;
-  }
-
-  // This handles more types than `getPropType`. Only used for error messages.
-  // See `createPrimitiveTypeChecker`.
-  function getPreciseType(propValue) {
-    if (typeof propValue === 'undefined' || propValue === null) {
-      return '' + propValue;
-    }
-    var propType = getPropType(propValue);
-    if (propType === 'object') {
-      if (propValue instanceof Date) {
-        return 'date';
-      } else if (propValue instanceof RegExp) {
-        return 'regexp';
-      }
-    }
-    return propType;
-  }
-
-  // Returns a string that is postfixed to a warning about an invalid type.
-  // For example, "undefined" or "of type array"
-  function getPostfixForTypeWarning(value) {
-    var type = getPreciseType(value);
-    switch (type) {
-      case 'array':
-      case 'object':
-        return 'an ' + type;
-      case 'boolean':
-      case 'date':
-      case 'regexp':
-        return 'a ' + type;
-      default:
-        return type;}
-
-  }
-
-  // Returns class name of the object, if any.
-  function getClassName(propValue) {
-    if (!propValue.constructor || !propValue.constructor.name) {
-      return ANONYMOUS;
-    }
-    return propValue.constructor.name;
-  }
-
-  ReactPropTypes.checkPropTypes = checkPropTypes;
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 94 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(80);
-  var warning = __webpack_require__(85);
-  var ReactPropTypesSecret = __webpack_require__(81);
-  var loggedTypeFailures = {};
-}
-
-/**
-   * Assert that the values match with the type specs.
-   * Error messages are memorized and will only be shown once.
-   *
-   * @param {object} typeSpecs Map of name to a ReactPropType
-   * @param {object} values Runtime values that need to be type-checked
-   * @param {string} location e.g. "prop", "context", "child context"
-   * @param {string} componentName Name of the component for error messages.
-   * @param {?Function} getStack Returns the component stack.
-   * @private
-   */
-function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-  if (process.env.NODE_ENV !== 'production') {
-    for (var typeSpecName in typeSpecs) {
-      if (typeSpecs.hasOwnProperty(typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, _typeof(typeSpecs[typeSpecName]));
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
-        } catch (ex) {
-          error = ex;
-        }
-        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error === 'undefined' ? 'undefined' : _typeof(error));
-        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures[error.message] = true;
-
-          var stack = getStack ? getStack() : '';
-
-          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
-        }
-      }
-    }
-  }
-}
-
-module.exports = checkPropTypes;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-
-
-var emptyFunction = __webpack_require__(79);
-var invariant = __webpack_require__(80);
-var ReactPropTypesSecret = __webpack_require__(81);
-
-module.exports = function () {
-  function shim(props, propName, componentName, location, propFullName, secret) {
-    if (secret === ReactPropTypesSecret) {
-      // It is still safe when called from React.
+  Redirect.prototype.componentDidMount = function componentDidMount() {
+    if (!this.isStatic()) this.perform();
+  };
+
+  Redirect.prototype.componentDidUpdate = function componentDidUpdate(prevProps) {
+    var prevTo = (0, _history.createLocation)(prevProps.to);
+    var nextTo = (0, _history.createLocation)(this.props.to);
+
+    if ((0, _history.locationsAreEqual)(prevTo, nextTo)) {
+      (0, _warning2.default)(false, 'You tried to redirect to the same route you\'re currently on: ' + ('"' + nextTo.pathname + nextTo.search + '"'));
       return;
     }
-    invariant(
-    false,
-    'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-    'Use PropTypes.checkPropTypes() to call them. ' +
-    'Read more at http://fb.me/use-check-prop-types');
 
+    this.perform();
   };
-  shim.isRequired = shim;
-  function getShim() {
-    return shim;
+
+  Redirect.prototype.perform = function perform() {
+    var history = this.context.router.history;
+    var _props = this.props,
+    push = _props.push,
+    to = _props.to;
+
+
+    if (push) {
+      history.push(to);
+    } else {
+      history.replace(to);
+    }
   };
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
-  var ReactPropTypes = {
-    array: shim,
-    bool: shim,
-    func: shim,
-    number: shim,
-    object: shim,
-    string: shim,
-    symbol: shim,
 
-    any: shim,
-    arrayOf: getShim,
-    element: shim,
-    instanceOf: getShim,
-    node: shim,
-    objectOf: getShim,
-    oneOf: getShim,
-    oneOfType: getShim,
-    shape: getShim,
-    exact: getShim };
+  Redirect.prototype.render = function render() {
+    return null;
+  };
+
+  return Redirect;
+}(_react2.default.Component);
+
+Redirect.propTypes = {
+  push: _propTypes2.default.bool,
+  from: _propTypes2.default.string,
+  to: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]).isRequired };
+
+Redirect.defaultProps = {
+  push: false };
+
+Redirect.contextTypes = {
+  router: _propTypes2.default.shape({
+    history: _propTypes2.default.shape({
+      push: _propTypes2.default.func.isRequired,
+      replace: _propTypes2.default.func.isRequired }).
+    isRequired,
+    staticContext: _propTypes2.default.object }).
+  isRequired };exports.default =
 
 
-  ReactPropTypes.checkPropTypes = emptyFunction;
-  ReactPropTypes.PropTypes = ReactPropTypes;
 
-  return ReactPropTypes;
-};
+Redirect;
 
 /***/ }),
-/* 96 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+Object.defineProperty(exports, "__esModule", { value: true });exports.createPath = exports.parsePath = exports.locationsAreEqual = exports.createLocation = exports.createMemoryHistory = exports.createHashHistory = exports.createBrowserHistory = undefined;var _LocationUtils = __webpack_require__(13);Object.defineProperty(exports, 'createLocation', { enumerable: true, get: function get() {return _LocationUtils.
 
-exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};
 
-var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
-var _warning = __webpack_require__(77);
 
-var _warning2 = _interopRequireDefault(_warning);
 
-var _invariant = __webpack_require__(82);
+    createLocation;} });Object.defineProperty(exports, 'locationsAreEqual', { enumerable: true, get: function get() {return _LocationUtils.locationsAreEqual;} });var _PathUtils = __webpack_require__(10);Object.defineProperty(exports, 'parsePath', { enumerable: true, get: function get() {return _PathUtils.
+    parsePath;} });Object.defineProperty(exports, 'createPath', { enumerable: true, get: function get() {return _PathUtils.createPath;} });var _createBrowserHistory2 = __webpack_require__(103);var _createBrowserHistory3 = _interopRequireDefault(_createBrowserHistory2);var _createHashHistory2 = __webpack_require__(104);var _createHashHistory3 = _interopRequireDefault(_createHashHistory2);var _createMemoryHistory2 = __webpack_require__(105);var _createMemoryHistory3 = _interopRequireDefault(_createMemoryHistory2);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.createBrowserHistory = _createBrowserHistory3.default;exports.createHashHistory = _createHashHistory3.default;exports.createMemoryHistory = _createMemoryHistory3.default;
 
-var _invariant2 = _interopRequireDefault(_invariant);
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
 
-var _LocationUtils = __webpack_require__(86);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
 
-var _PathUtils = __webpack_require__(83);
 
-var _createTransitionManager = __webpack_require__(87);
 
-var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
-
-var _DOMUtils = __webpack_require__(88);
-
-function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
+var _LocationUtils = __webpack_require__(13);
+var _PathUtils = __webpack_require__(10);
+var _createTransitionManager = __webpack_require__(31);var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
+var _DOMUtils = __webpack_require__(53);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
 var PopStateEvent = 'popstate';
 var HashChangeEvent = 'hashchange';
@@ -27358,217 +27625,23 @@ var createBrowserHistory = function createBrowserHistory() {
 
 
   return history;
-};
+};exports.default =
 
-exports.default = createBrowserHistory;
+createBrowserHistory;
 
 /***/ }),
-/* 97 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });function isAbsolute(pathname) {
-  return pathname.charAt(0) === '/';
-}
-
-// About 1.5x faster than the two-arg version of Array#splice()
-function spliceOne(list, index) {
-  for (var i = index, k = i + 1, n = list.length; k < n; i += 1, k += 1) {
-    list[i] = list[k];
-  }
-
-  list.pop();
-}
-
-// This implementation is based heavily on node's url.parse
-function resolvePathname(to) {
-  var from = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-
-  var toParts = to && to.split('/') || [];
-  var fromParts = from && from.split('/') || [];
-
-  var isToAbs = to && isAbsolute(to);
-  var isFromAbs = from && isAbsolute(from);
-  var mustEndAbs = isToAbs || isFromAbs;
-
-  if (to && isAbsolute(to)) {
-    // to is absolute
-    fromParts = toParts;
-  } else if (toParts.length) {
-    // to is relative, drop the filename
-    fromParts.pop();
-    fromParts = fromParts.concat(toParts);
-  }
-
-  if (!fromParts.length) return '/';
-
-  var hasTrailingSlash = void 0;
-  if (fromParts.length) {
-    var last = fromParts[fromParts.length - 1];
-    hasTrailingSlash = last === '.' || last === '..' || last === '';
-  } else {
-    hasTrailingSlash = false;
-  }
-
-  var up = 0;
-  for (var i = fromParts.length; i >= 0; i--) {
-    var part = fromParts[i];
-
-    if (part === '.') {
-      spliceOne(fromParts, i);
-    } else if (part === '..') {
-      spliceOne(fromParts, i);
-      up++;
-    } else if (up) {
-      spliceOne(fromParts, i);
-      up--;
-    }
-  }
-
-  if (!mustEndAbs) for (; up--; up) {
-    fromParts.unshift('..');
-  }if (mustEndAbs && fromParts[0] !== '' && (!fromParts[0] || !isAbsolute(fromParts[0]))) fromParts.unshift('');
-
-  var result = fromParts.join('/');
-
-  if (hasTrailingSlash && result.substr(-1) !== '/') result += '/';
-
-  return result;
-}exports.default =
-
-resolvePathname;
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};
-
-function valueEqual(a, b) {
-  if (a === b) return true;
-
-  if (a == null || b == null) return false;
-
-  if (Array.isArray(a)) {
-    return Array.isArray(b) && a.length === b.length && a.every(function (item, index) {
-      return valueEqual(item, b[index]);
-    });
-  }
-
-  var aType = typeof a === 'undefined' ? 'undefined' : _typeof(a);
-  var bType = typeof b === 'undefined' ? 'undefined' : _typeof(b);
-
-  if (aType !== bType) return false;
-
-  if (aType === 'object') {
-    var aValue = a.valueOf();
-    var bValue = b.valueOf();
-
-    if (aValue !== a || bValue !== b) return valueEqual(aValue, bValue);
-
-    var aKeys = Object.keys(a);
-    var bKeys = Object.keys(b);
-
-    if (aKeys.length !== bKeys.length) return false;
-
-    return aKeys.every(function (key) {
-      return valueEqual(a[key], b[key]);
-    });
-  }
-
-  return false;
-}exports.default =
-
-valueEqual;
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
-
-
-
-
-
-var _warning = __webpack_require__(77);var _warning2 = _interopRequireDefault(_warning);
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(78);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _createHashHistory = __webpack_require__(100);var _createHashHistory2 = _interopRequireDefault(_createHashHistory);
-var _Router = __webpack_require__(84);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * The public API for a <Router> that uses window.location.hash.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              */
-
-var HashRouter = function (_React$Component) {
-  _inherits(HashRouter, _React$Component);
-
-  function HashRouter() {
-    var _temp, _this, _ret;
-
-    _classCallCheck(this, HashRouter);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.history = (0, _createHashHistory2.default)(_this.props), _temp), _possibleConstructorReturn(_this, _ret);
-  }
-
-  HashRouter.prototype.componentWillMount = function componentWillMount() {
-    (0, _warning2.default)(!this.props.history, '<HashRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { HashRouter as Router }`.');
-  };
-
-  HashRouter.prototype.render = function render() {
-    return _react2.default.createElement(_Router2.default, { history: this.history, children: this.props.children });
-  };
-
-  return HashRouter;
-}(_react2.default.Component);
-
-HashRouter.propTypes = {
-  basename: _propTypes2.default.string,
-  getUserConfirmation: _propTypes2.default.func,
-  hashType: _propTypes2.default.oneOf(['hashbang', 'noslash', 'slash']),
-  children: _propTypes2.default.node };exports.default =
-
-
-
-HashRouter;
-
-/***/ }),
-/* 100 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
-
-var _warning = __webpack_require__(77);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _invariant = __webpack_require__(82);
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-var _LocationUtils = __webpack_require__(86);
-
-var _PathUtils = __webpack_require__(83);
-
-var _createTransitionManager = __webpack_require__(87);
-
-var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
-
-var _DOMUtils = __webpack_require__(88);
-
-function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+Object.defineProperty(exports, "__esModule", { value: true });
+
+var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
+var _LocationUtils = __webpack_require__(13);
+var _PathUtils = __webpack_require__(10);
+var _createTransitionManager = __webpack_require__(31);var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
+var _DOMUtils = __webpack_require__(53);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
 var HashChangeEvent = 'hashchange';
 
@@ -27865,20 +27938,12 @@ var createHashHistory = function createHashHistory() {
 
 
   return history;
-};
+};exports.default =
 
-exports.default = createHashHistory;
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var _MemoryRouter = __webpack_require__(56);var _MemoryRouter2 = _interopRequireDefault(_MemoryRouter);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _MemoryRouter2.default; // Written in this round about way for babel-transform-imports
+createHashHistory;
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27886,95 +27951,159 @@ Object.defineProperty(exports, "__esModule", { value: true });var _typeof2 = typ
 
 
 
+var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _PathUtils = __webpack_require__(10);
+var _LocationUtils = __webpack_require__(13);
+var _createTransitionManager = __webpack_require__(31);var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
-
-var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
-var _propTypes = __webpack_require__(78);var _propTypes2 = _interopRequireDefault(_propTypes);
-var _Route = __webpack_require__(90);var _Route2 = _interopRequireDefault(_Route);
-var _Link = __webpack_require__(89);var _Link2 = _interopRequireDefault(_Link);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {return typeof obj === "undefined" ? "undefined" : _typeof2(obj);} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * A <Link> wrapper that knows if it's "active" or not.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
-var NavLink = function NavLink(_ref) {
-  var to = _ref.to,
-  exact = _ref.exact,
-  strict = _ref.strict,
-  location = _ref.location,
-  activeClassName = _ref.activeClassName,
-  className = _ref.className,
-  activeStyle = _ref.activeStyle,
-  style = _ref.style,
-  getIsActive = _ref.isActive,
-  ariaCurrent = _ref.ariaCurrent,
-  rest = _objectWithoutProperties(_ref, ['to', 'exact', 'strict', 'location', 'activeClassName', 'className', 'activeStyle', 'style', 'isActive', 'ariaCurrent']);
-
-  return _react2.default.createElement(_Route2.default, {
-    path: (typeof to === 'undefined' ? 'undefined' : _typeof(to)) === 'object' ? to.pathname : to,
-    exact: exact,
-    strict: strict,
-    location: location,
-    children: function children(_ref2) {
-      var location = _ref2.location,
-      match = _ref2.match;
-
-      var isActive = !!(getIsActive ? getIsActive(match, location) : match);
-
-      return _react2.default.createElement(_Link2.default, _extends({
-        to: to,
-        className: isActive ? [className, activeClassName].filter(function (i) {
-          return i;
-        }).join(' ') : className,
-        style: isActive ? _extends({}, style, activeStyle) : style,
-        'aria-current': isActive && ariaCurrent },
-      rest));
-    } });
-
+var clamp = function clamp(n, lowerBound, upperBound) {
+  return Math.min(Math.max(n, lowerBound), upperBound);
 };
 
-NavLink.propTypes = {
-  to: _Link2.default.propTypes.to,
-  exact: _propTypes2.default.bool,
-  strict: _propTypes2.default.bool,
-  location: _propTypes2.default.object,
-  activeClassName: _propTypes2.default.string,
-  className: _propTypes2.default.string,
-  activeStyle: _propTypes2.default.object,
-  style: _propTypes2.default.object,
-  isActive: _propTypes2.default.func,
-  ariaCurrent: _propTypes2.default.oneOf(['page', 'step', 'location', 'true']) };
+/**
+    * Creates a history object that stores locations in memory.
+    */
+var createMemoryHistory = function createMemoryHistory() {
+  var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var getUserConfirmation = props.getUserConfirmation,
+  _props$initialEntries = props.initialEntries,
+  initialEntries = _props$initialEntries === undefined ? ['/'] : _props$initialEntries,
+  _props$initialIndex = props.initialIndex,
+  initialIndex = _props$initialIndex === undefined ? 0 : _props$initialIndex,
+  _props$keyLength = props.keyLength,
+  keyLength = _props$keyLength === undefined ? 6 : _props$keyLength;
 
 
-NavLink.defaultProps = {
-  activeClassName: 'active',
-  ariaCurrent: 'true' };exports.default =
+  var transitionManager = (0, _createTransitionManager2.default)();
+
+  var setState = function setState(nextState) {
+    _extends(history, nextState);
+
+    history.length = history.entries.length;
+
+    transitionManager.notifyListeners(history.location, history.action);
+  };
+
+  var createKey = function createKey() {
+    return Math.random().toString(36).substr(2, keyLength);
+  };
+
+  var index = clamp(initialIndex, 0, initialEntries.length - 1);
+  var entries = initialEntries.map(function (entry) {
+    return typeof entry === 'string' ? (0, _LocationUtils.createLocation)(entry, undefined, createKey()) : (0, _LocationUtils.createLocation)(entry, undefined, entry.key || createKey());
+  });
+
+  // Public interface
+
+  var createHref = _PathUtils.createPath;
+
+  var push = function push(path, state) {
+    (0, _warning2.default)(!((typeof path === 'undefined' ? 'undefined' : _typeof(path)) === 'object' && path.state !== undefined && state !== undefined), 'You should avoid providing a 2nd state argument to push when the 1st ' + 'argument is a location-like object that already has state; it is ignored');
+
+    var action = 'PUSH';
+    var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);
+
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+
+      var prevIndex = history.index;
+      var nextIndex = prevIndex + 1;
+
+      var nextEntries = history.entries.slice(0);
+      if (nextEntries.length > nextIndex) {
+        nextEntries.splice(nextIndex, nextEntries.length - nextIndex, location);
+      } else {
+        nextEntries.push(location);
+      }
+
+      setState({
+        action: action,
+        location: location,
+        index: nextIndex,
+        entries: nextEntries });
+
+    });
+  };
+
+  var replace = function replace(path, state) {
+    (0, _warning2.default)(!((typeof path === 'undefined' ? 'undefined' : _typeof(path)) === 'object' && path.state !== undefined && state !== undefined), 'You should avoid providing a 2nd state argument to replace when the 1st ' + 'argument is a location-like object that already has state; it is ignored');
+
+    var action = 'REPLACE';
+    var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);
+
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+
+      history.entries[history.index] = location;
+
+      setState({ action: action, location: location });
+    });
+  };
+
+  var go = function go(n) {
+    var nextIndex = clamp(history.index + n, 0, history.entries.length - 1);
+
+    var action = 'POP';
+    var location = history.entries[nextIndex];
+
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (ok) {
+        setState({
+          action: action,
+          location: location,
+          index: nextIndex });
+
+      } else {
+        // Mimic the behavior of DOM histories by
+        // causing a render after a cancelled POP.
+        setState();
+      }
+    });
+  };
+
+  var goBack = function goBack() {
+    return go(-1);
+  };
+
+  var goForward = function goForward() {
+    return go(1);
+  };
+
+  var canGo = function canGo(n) {
+    var nextIndex = history.index + n;
+    return nextIndex >= 0 && nextIndex < history.entries.length;
+  };
+
+  var block = function block() {
+    var prompt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    return transitionManager.setPrompt(prompt);
+  };
+
+  var listen = function listen(listener) {
+    return transitionManager.appendListener(listener);
+  };
+
+  var history = {
+    length: entries.length,
+    action: 'POP',
+    location: entries[index],
+    index: index,
+    entries: entries,
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    goBack: goBack,
+    goForward: goForward,
+    canGo: canGo,
+    block: block,
+    listen: listen };
 
 
-NavLink;
+  return history;
+};exports.default =
 
-/***/ }),
-/* 103 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Prompt = __webpack_require__(63);var _Prompt2 = _interopRequireDefault(_Prompt);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Prompt2.default; // Written in this round about way for babel-transform-imports
-
-/***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var _Redirect = __webpack_require__(64);var _Redirect2 = _interopRequireDefault(_Redirect);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Redirect2.default; // Written in this round about way for babel-transform-imports
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var _StaticRouter = __webpack_require__(71);var _StaticRouter2 = _interopRequireDefault(_StaticRouter);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _StaticRouter2.default; // Written in this round about way for babel-transform-imports
+createMemoryHistory;
 
 /***/ }),
 /* 106 */
@@ -27982,15 +28111,179 @@ var _StaticRouter = __webpack_require__(71);var _StaticRouter2 = _interopRequire
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var _Switch = __webpack_require__(72);var _Switch2 = _interopRequireDefault(_Switch);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Switch2.default; // Written in this round about way for babel-transform-imports
+var _StaticRouter = __webpack_require__(107);var _StaticRouter2 = _interopRequireDefault(_StaticRouter);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _StaticRouter2.default; // Written in this round about way for babel-transform-imports
 
 /***/ }),
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var _matchPath = __webpack_require__(21);var _matchPath2 = _interopRequireDefault(_matchPath);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _matchPath2.default; // Written in this round about way for babel-transform-imports
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+
+
+
+
+
+
+
+
+var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _PathUtils = __webpack_require__(29);
+var _Router = __webpack_require__(25);var _Router2 = _interopRequireDefault(_Router);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+var normalizeLocation = function normalizeLocation(object) {
+  var _object$pathname = object.pathname,
+  pathname = _object$pathname === undefined ? '/' : _object$pathname,
+  _object$search = object.search,
+  search = _object$search === undefined ? '' : _object$search,
+  _object$hash = object.hash,
+  hash = _object$hash === undefined ? '' : _object$hash;
+
+
+  return {
+    pathname: pathname,
+    search: search === '?' ? '' : search,
+    hash: hash === '#' ? '' : hash };
+
+};
+
+var addBasename = function addBasename(basename, location) {
+  if (!basename) return location;
+
+  return _extends({}, location, {
+    pathname: (0, _PathUtils.addLeadingSlash)(basename) + location.pathname });
+
+};
+
+var stripBasename = function stripBasename(basename, location) {
+  if (!basename) return location;
+
+  var base = (0, _PathUtils.addLeadingSlash)(basename);
+
+  if (location.pathname.indexOf(base) !== 0) return location;
+
+  return _extends({}, location, {
+    pathname: location.pathname.substr(base.length) });
+
+};
+
+var createLocation = function createLocation(location) {
+  return typeof location === 'string' ? (0, _PathUtils.parsePath)(location) : normalizeLocation(location);
+};
+
+var createURL = function createURL(location) {
+  return typeof location === 'string' ? location : (0, _PathUtils.createPath)(location);
+};
+
+var staticHandler = function staticHandler(methodName) {
+  return function () {
+    (0, _invariant2.default)(false, 'You cannot %s with <StaticRouter>', methodName);
+  };
+};
+
+var noop = function noop() {};
+
+/**
+                                * The public top-level API for a "static" <Router>, so-called because it
+                                * can't actually change the current location. Instead, it just records
+                                * location changes in a context object. Useful mainly in testing and
+                                * server-rendering scenarios.
+                                */
+
+var StaticRouter = function (_React$Component) {
+  _inherits(StaticRouter, _React$Component);
+
+  function StaticRouter() {
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, StaticRouter);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.createHref = function (path) {
+      return (0, _PathUtils.addLeadingSlash)(_this.props.basename + createURL(path));
+    }, _this.handlePush = function (location) {
+      var _this$props = _this.props,
+      basename = _this$props.basename,
+      context = _this$props.context;
+
+      context.action = 'PUSH';
+      context.location = addBasename(basename, createLocation(location));
+      context.url = createURL(context.location);
+    }, _this.handleReplace = function (location) {
+      var _this$props2 = _this.props,
+      basename = _this$props2.basename,
+      context = _this$props2.context;
+
+      context.action = 'REPLACE';
+      context.location = addBasename(basename, createLocation(location));
+      context.url = createURL(context.location);
+    }, _this.handleListen = function () {
+      return noop;
+    }, _this.handleBlock = function () {
+      return noop;
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  StaticRouter.prototype.getChildContext = function getChildContext() {
+    return {
+      router: {
+        staticContext: this.props.context } };
+
+
+  };
+
+  StaticRouter.prototype.componentWillMount = function componentWillMount() {
+    (0, _warning2.default)(!this.props.history, '<StaticRouter> ignores the history prop. To use a custom history, ' + 'use `import { Router }` instead of `import { StaticRouter as Router }`.');
+  };
+
+  StaticRouter.prototype.render = function render() {
+    var _props = this.props,
+    basename = _props.basename,
+    context = _props.context,
+    location = _props.location,
+    props = _objectWithoutProperties(_props, ['basename', 'context', 'location']);
+
+    var history = {
+      createHref: this.createHref,
+      action: 'POP',
+      location: stripBasename(basename, createLocation(location)),
+      push: this.handlePush,
+      replace: this.handleReplace,
+      go: staticHandler('go'),
+      goBack: staticHandler('goBack'),
+      goForward: staticHandler('goForward'),
+      listen: this.handleListen,
+      block: this.handleBlock };
+
+
+    return _react2.default.createElement(_Router2.default, _extends({}, props, { history: history }));
+  };
+
+  return StaticRouter;
+}(_react2.default.Component);
+
+StaticRouter.propTypes = {
+  basename: _propTypes2.default.string,
+  context: _propTypes2.default.object.isRequired,
+  location: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]) };
+
+StaticRouter.defaultProps = {
+  basename: '',
+  location: '/' };
+
+StaticRouter.childContextTypes = {
+  router: _propTypes2.default.object.isRequired };exports.default =
+
+
+
+StaticRouter;
 
 /***/ }),
 /* 108 */
@@ -27998,10 +28291,4178 @@ var _matchPath = __webpack_require__(21);var _matchPath2 = _interopRequireDefaul
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var _withRouter = __webpack_require__(73);var _withRouter2 = _interopRequireDefault(_withRouter);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _withRouter2.default; // Written in this round about way for babel-transform-imports
+var _Switch = __webpack_require__(109);var _Switch2 = _interopRequireDefault(_Switch);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _Switch2.default; // Written in this round about way for babel-transform-imports
 
 /***/ }),
 /* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+
+
+
+
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _warning = __webpack_require__(2);var _warning2 = _interopRequireDefault(_warning);
+var _invariant = __webpack_require__(4);var _invariant2 = _interopRequireDefault(_invariant);
+var _matchPath = __webpack_require__(30);var _matchPath2 = _interopRequireDefault(_matchPath);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+/**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * The public API for rendering the first <Route> that matches.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */
+
+var Switch = function (_React$Component) {
+  _inherits(Switch, _React$Component);
+
+  function Switch() {
+    _classCallCheck(this, Switch);
+
+    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
+  }
+
+  Switch.prototype.componentWillMount = function componentWillMount() {
+    (0, _invariant2.default)(this.context.router, 'You should not use <Switch> outside a <Router>');
+  };
+
+  Switch.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+    (0, _warning2.default)(!(nextProps.location && !this.props.location), '<Switch> elements should not change from uncontrolled to controlled (or vice versa). You initially used no "location" prop and then provided one on a subsequent render.');
+
+    (0, _warning2.default)(!(!nextProps.location && this.props.location), '<Switch> elements should not change from controlled to uncontrolled (or vice versa). You provided a "location" prop initially but omitted it on a subsequent render.');
+  };
+
+  Switch.prototype.render = function render() {
+    var route = this.context.router.route;
+    var children = this.props.children;
+
+    var location = this.props.location || route.location;
+
+    var match = void 0,
+    child = void 0;
+    _react2.default.Children.forEach(children, function (element) {
+      if (!_react2.default.isValidElement(element)) return;
+
+      var _element$props = element.props,
+      pathProp = _element$props.path,
+      exact = _element$props.exact,
+      strict = _element$props.strict,
+      sensitive = _element$props.sensitive,
+      from = _element$props.from;
+
+      var path = pathProp || from;
+
+      if (match == null) {
+        child = element;
+        match = path ? (0, _matchPath2.default)(location.pathname, { path: path, exact: exact, strict: strict, sensitive: sensitive }) : route.match;
+      }
+    });
+
+    return match ? _react2.default.cloneElement(child, { location: location, computedMatch: match }) : null;
+  };
+
+  return Switch;
+}(_react2.default.Component);
+
+Switch.contextTypes = {
+  router: _propTypes2.default.shape({
+    route: _propTypes2.default.object.isRequired }).
+  isRequired };
+
+Switch.propTypes = {
+  children: _propTypes2.default.node,
+  location: _propTypes2.default.object };exports.default =
+
+
+
+Switch;
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _matchPath = __webpack_require__(30);var _matchPath2 = _interopRequireDefault(_matchPath);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _matchPath2.default; // Written in this round about way for babel-transform-imports
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _withRouter = __webpack_require__(112);var _withRouter2 = _interopRequireDefault(_withRouter);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}exports.default = _withRouter2.default; // Written in this round about way for babel-transform-imports
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+
+
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _propTypes = __webpack_require__(5);var _propTypes2 = _interopRequireDefault(_propTypes);
+var _hoistNonReactStatics = __webpack_require__(113);var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
+var _Route = __webpack_require__(52);var _Route2 = _interopRequireDefault(_Route);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _objectWithoutProperties(obj, keys) {var target = {};for (var i in obj) {if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];}return target;}
+
+/**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * A public higher-order component to access the imperative API
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
+var withRouter = function withRouter(Component) {
+  var C = function C(props) {
+    var wrappedComponentRef = props.wrappedComponentRef,
+    remainingProps = _objectWithoutProperties(props, ['wrappedComponentRef']);
+
+    return _react2.default.createElement(_Route2.default, { render: function render(routeComponentProps) {
+        return _react2.default.createElement(Component, _extends({}, remainingProps, routeComponentProps, { ref: wrappedComponentRef }));
+      } });
+  };
+
+  C.displayName = 'withRouter(' + (Component.displayName || Component.name) + ')';
+  C.WrappedComponent = Component;
+  C.propTypes = {
+    wrappedComponentRef: _propTypes2.default.func };
+
+
+  return (0, _hoistNonReactStatics2.default)(C, Component);
+};exports.default =
+
+withRouter;
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2015, Yahoo! Inc.
+ * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+ */
+
+
+var REACT_STATICS = {
+    childContextTypes: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    mixins: true,
+    propTypes: true,
+    type: true };
+
+
+var KNOWN_STATICS = {
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    callee: true,
+    arguments: true,
+    arity: true };
+
+
+var defineProperty = Object.defineProperty;
+var getOwnPropertyNames = Object.getOwnPropertyNames;
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var getPrototypeOf = Object.getPrototypeOf;
+var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
+
+module.exports = function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
+    if (typeof sourceComponent !== 'string') {// don't hoist over string (html) components
+
+        if (objectPrototype) {
+            var inheritedComponent = getPrototypeOf(sourceComponent);
+            if (inheritedComponent && inheritedComponent !== objectPrototype) {
+                hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
+            }
+        }
+
+        var keys = getOwnPropertyNames(sourceComponent);
+
+        if (getOwnPropertySymbols) {
+            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
+        }
+
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i];
+            if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
+                var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
+                try {// Avoid failures from read-only properties
+                    defineProperty(targetComponent, key, descriptor);
+                } catch (e) {}
+            }
+        }
+
+        return targetComponent;
+    }
+
+    return targetComponent;
+};
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+
+App = function (_Component) {_inherits(App, _Component);
+    function App(props) {_classCallCheck(this, App);return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this,
+        props));
+    }_createClass(App, [{ key: "render", value: function render()
+
+        {
+            return (
+                _react2.default.createElement("div", { className: "inner-page" },
+                    this.props.children));
+
+
+        } }]);return App;}(_react.Component);exports.default =
+
+
+App;
+
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+var _translate = __webpack_require__(116);
+var _siteinfos = __webpack_require__(76);var _siteinfos2 = _interopRequireDefault(_siteinfos);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}
+
+var compiled = __webpack_require__(119);var
+
+
+
+IndexPage = function (_Component) {_inherits(IndexPage, _Component);
+    function IndexPage(props) {_classCallCheck(this, IndexPage);return _possibleConstructorReturn(this, (IndexPage.__proto__ || Object.getPrototypeOf(IndexPage)).call(this,
+        props));
+    }_createClass(IndexPage, [{ key: 'componentWillMount', value: function componentWillMount()
+
+        {
+
+        } }, { key: 'componentDidMount', value: function componentDidMount()
+
+
+        {
+
+        } }, { key: 'render', value: function render()
+
+        {
+
+            return _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: compiled(object.Assign({}, { i18n: this.props.i18n }, _siteinfos2.default.getAll())) } });
+        } }]);return IndexPage;}(_react.Component);exports.default =
+
+
+(0, _translate.translate)(['COMMON'])(IndexPage);
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.get = exports.translate = undefined;var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();
+
+
+
+
+var _react = __webpack_require__(1);var _react2 = _interopRequireDefault(_react);
+
+var _en = __webpack_require__(117);var _en2 = _interopRequireDefault(_en);
+var _fr = __webpack_require__(118);var _fr2 = _interopRequireDefault(_fr);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;} /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Created on Tue Jan 16 2017
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Copyright (c) 2017 Yann GARRAS - Y3S SAS
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */ //import config from 'vendor/Config/config.js';
+var config = {};config.config = {};
+config.config.locale = "fr";
+/**
+                              * Check if every translation is here
+                              */
+function checkObject(object, object1) {
+    if (object1 == undefined) {
+        console.error("Missing translation ");
+        console.error(object);
+        return;
+    }
+
+    for (var key in object) {
+        if (object.hasOwnProperty(key)) {
+            if (object[key] instanceof Object)
+            checkObject(object[key], object1[key]);else
+            if (object1[key] == undefined) {
+                console.error("Missing translation " + key);
+                console.error(object);
+            }
+        }
+    }
+}
+var isLocal = document.
+location.
+href.
+search("localhost") != -1;
+if (isLocal)
+checkObject(_fr2.default, _en2.default);
+
+var languages = {
+    en: _en2.default,
+    fr: _fr2.default };
+
+
+function get(key) {
+    return languages[config.config.locale][key];
+}
+
+function translate(key) {
+    return function (Component) {var
+        TranslationComponent = function (_React$Component) {_inherits(TranslationComponent, _React$Component);function TranslationComponent() {_classCallCheck(this, TranslationComponent);return _possibleConstructorReturn(this, (TranslationComponent.__proto__ || Object.getPrototypeOf(TranslationComponent)).apply(this, arguments));}_createClass(TranslationComponent, [{ key: 'render', value: function render()
+                {
+                    //-- ARRT
+                    //-- si la langue selectionner ne comporte pas de traduction, alors on passe directement en anglais
+                    if (languages[config.config.locale] == undefined || languages[config.config.locale] == null) {
+                        config.config.locale = "en";
+                    }
+
+                    if (typeof key === 'string') {
+                        var strings = languages[config.config.locale][key];
+                        return _react2.default.createElement(Component, _extends({}, this.props, this.state, { i18n: strings }));
+                    } else
+                    if (Array.isArray(key) == true) {
+                        var strings = [];
+                        for (var $i in key) {
+                            strings[key[$i]] = languages[config.config.locale][key[$i]];
+                        }
+                        return _react2.default.createElement(Component, _extends({}, this.props, this.state, { i18n: strings }));
+                    } else
+                    {
+                        console.error("***** translate : key incompatible Type !!! *****");
+                    }
+                } }]);return TranslationComponent;}(_react2.default.Component);
+
+
+        return TranslationComponent;
+    };
+}exports.
+
+translate = translate;exports.get = get;
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default =
+
+{
+    COMMON: {
+        'TRANSLATION_INFO': 'Traduit par <a href="http://www.phpbb-fr.com">phpBB-fr.com</a>',
+        'DIRECTION': 'ltr',
+        'DATE_FORMAT': '|d M Y|', // 01 janv. 2007 (with Relative days enabled)
+        'DATETIME_FORMAT': '|d M Y, H:i|', // 01 janv. 2007, 13:37 (with Relative days enabled)
+        'USER_LANG': 'fr',
+
+        // You can define different rules for the determination of plural forms here.
+        // See http://wiki.phpbb.com/Plural_Rules for more information
+        // or ask the translation manager for help.
+        'PLURAL_RULE': 2,
+
+        '1_DAY': '1 jour',
+        '1_MONTH': '1 mois',
+        '1_YEAR': '1 an',
+        '2_WEEKS': '2 semaines',
+        '3_MONTHS': '3 mois',
+        '6_MONTHS': '6 mois',
+        '7_DAYS': '7 jours',
+
+        'ACCOUNT_ALREADY_ACTIVATED': 'Votre compte est déjà activé.',
+        'ACCOUNT_DEACTIVATED': 'Votre compte a été désactivé manuellement et n’est réactivable que par un administrateur.',
+        'ACCOUNT_NOT_ACTIVATED': 'Votre compte n’a pas encore été activé.',
+        'ACP': 'Panneau d’administration',
+        'ACP_SHORT': 'PCA',
+        'ACTIVE': 'Actif',
+        'ACTIVE_ERROR': 'Le nom d’utilisateur indiqué est actuellement inactif. Si vous avez des problèmes pour activer votre compte, contactez l’administrateur du forum.',
+        'ADMINISTRATOR': 'Administrateur',
+        'ADMINISTRATORS': 'Administrateurs',
+        'AGE': 'Âge',
+        'AIM': 'AIM',
+        'AJAX_ERROR_TITLE': 'Erreur AJAX',
+        'AJAX_ERROR_TEXT': 'Quelque chose s’est mal passé lors du traitement de votre demande.',
+        'AJAX_ERROR_TEXT_ABORT': 'Requête annulée par l’utilisateur.',
+        'AJAX_ERROR_TEXT_TIMEOUT': 'Votre demande a expiré. Essayez à nouveau.',
+        'AJAX_ERROR_TEXT_PARSERERROR': 'Quelque chose s’est mal passé lors du traitement de votre demande et le serveur a renvoyé une réponse invalide.',
+        'ALLOWED': 'Autorisé',
+        'ALL_FILES': 'Tous les fichiers',
+        'ALL_FORUMS': 'Tous les forums',
+        'ALL_MESSAGES': 'Tous les messages',
+        'ALL_POSTS': 'Tous',
+        'ALL_TIMES': 'Heures au format <span title="%2$s">%1$s</span>',
+        'ALL_TOPICS': 'Tous',
+        'ALT_TEXT': 'Texte alternatif',
+        'AND': 'et',
+        'ARE_WATCHING_FORUM': 'Vous surveillez maintenant les nouveaux messages de ce forum.',
+        'ARE_WATCHING_TOPIC': 'Vous surveillez maintenant les nouveaux messages de ce sujet.',
+        'ASCENDING': 'Croissant',
+        'ATTACHMENTS': 'Fichiers joints',
+        'ATTACHED_IMAGE_NOT_IMAGE': 'Le fichier image que vous essayez de joindre n’est pas valide.',
+        'AUTHOR': 'Auteur',
+        'AUTH_NO_PROFILE_CREATED': 'Impossible de créer le nouveau profil du membre.',
+        'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY': 'Entrée de base de données non valide.',
+        'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE': 'Le type de service founit au gestionnaire de service OAuth n’est pas valide.',
+        'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED': 'Le service OAuth n’a pas été créé.',
+        'AUTH_PROVIDER_OAUTH_SERVICE_BITLY': 'Bitly',
+        'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK': 'Facebook',
+        'AUTH_PROVIDER_OAUTH_SERVICE_GOOGLE': 'Google',
+        'AUTH_PROVIDER_OAUTH_SERVICE_TWITTER': 'Twitter',
+        'AUTH_PROVIDER_OAUTH_TOKEN_ERROR_NOT_STORED': 'Le jeton OAuth n’a pas été mémorisé.',
+        'AUTH_PROVIDER_OAUTH_TOKEN_ERROR_INCORRECTLY_STORED': 'Le jeton OAuth n’a pas été mémorisé correctement.',
+        'AVATAR_DISALLOWED_CONTENT': 'Le transfert a été interrompu car le contenu du fichier a été identifié comme étant un vecteur potentiel d’attaque.',
+        'AVATAR_DISALLOWED_EXTENSION': 'Ce fichier ne peut pas être affiché car l’extension <strong>%s</strong> n’est pas autorisée.',
+        'AVATAR_EMPTY_REMOTE_DATA': 'L’avatar indiqué n’a pas pu être transféré car les données distantes semblent être invalides ou corrompues.',
+        'AVATAR_EMPTY_FILEUPLOAD': 'Le fichier avatar transféré est vide.',
+        'AVATAR_INVALID_FILENAME': '%s n’est pas un nom de fichier valide.',
+        'AVATAR_NOT_UPLOADED': 'L’avatar n’a pas pu être transféré.',
+        'AVATAR_NO_TEMP_DIR': 'Le répertoire temporaire n’existe pas ou n’est pas accessible en écriture.',
+        'AVATAR_NO_SIZE': 'Impossible de déterminer la largeur ou la hauteur de l’avatar lié, saisissez-les manuellement.',
+        'AVATAR_PARTIAL_UPLOAD': 'Le fichier n’a pu être que partiellement transféré.',
+        'AVATAR_PHP_SIZE_NA': 'Le fichier image de l’avatar est trop volumineux.<br />Le maximum réglé dans php.ini n’a pas pu être déterminé.',
+        'AVATAR_PHP_SIZE_OVERRUN': 'Le fichier image de l’avatar est trop volumineux. Le maximum autorisée est %1$d %2$s.<br />Notez que ce paramètre est inscrit dans php.ini et ne peut pas être dépassé.',
+        'AVATAR_REMOTE_UPLOAD_TIMEOUT': 'Le fichier image de l’avatar n’a pas pu être transféré parce que le délai d’attente de la demande a expiré.',
+        'AVATAR_PHP_UPLOAD_STOPPED': 'Une extension PHP a arrêté le transfert du fichier.',
+        'AVATAR_URL_INVALID': 'L’adresse URL indiquée n’est pas valide.',
+        'AVATAR_URL_NOT_FOUND': 'Le fichier indiqué est introuvable.',
+        'AVATAR_WRONG_FILESIZE': 'Le fichier image de l’avatar doit être compris entre 0 et %1$d %2$s.',
+        'AVATAR_WRONG_SIZE': 'L’avatar envoyé a une largeur de %5$s et une hauteur de %6$s. Les avatars doivent faire au moins %1$s de large et %2$s de haut, mais au plus %3$s de large et %4$s de haut.',
+
+        'BACK_TO_TOP': 'Haut',
+        'BACK_TO_PREV': 'Retour à la page précédente',
+        'BAN_TRIGGERED_BY_EMAIL': 'Votre adresse e-mail a été bannie.',
+        'BAN_TRIGGERED_BY_IP': 'Votre adresse IP a été bannie.',
+        'BAN_TRIGGERED_BY_USER': 'Votre nom d’utilisateur a été banni.',
+        'BBCODE_GUIDE': 'Guide du BBCode',
+        'BCC': 'CCI',
+        'BIRTHDAYS': 'Anniversaires',
+        'BOARD_BAN_PERM': 'Vous avez été banni <strong>définitivement</strong> de ce forum.<br /><br />Contactez l’%2$sAdministrateur du forum%3$s pour plus d’informations.',
+        'BOARD_BAN_REASON': 'Raison du bannissement : <strong>%s</strong>',
+        'BOARD_BAN_TIME': 'Vous avez été banni de ce forum jusqu’au <strong>%1$s</strong>.<br /><br />Contactez l’%2$sAdministrateur du forum%3$s pour plus d’informations.',
+        'BOARD_DISABLE': 'Désolé, mais ce forum est actuellement indisponible.',
+        'BOARD_DISABLED': 'Ce forum est actuellement désactivé.',
+        'BOARD_UNAVAILABLE': 'Désolé, mais le forum est temporairement indisponible, réessayez dans quelques minutes.',
+        'BROWSING_FORUM': 'Utilisateurs parcourant ce forum : %1$s',
+        'BROWSING_FORUM_GUESTS': {
+            1: 'Utilisateurs parcourant ce forum : %2$s et %1$d invité',
+            2: 'Utilisateurs parcourant ce forum : %2$s et %1$d invités' },
+
+        'BUTTON_EDIT': 'Modifier',
+        'BUTTON_FORUM_LOCKED': 'Verrouillé',
+        'BUTTON_NEW_TOPIC': 'Nouveau sujet',
+        'BUTTON_PM': 'MP',
+        'BUTTON_PM_FORWARD': 'Transférer',
+        'BUTTON_PM_NEW': 'Nouveau MP',
+        'BUTTON_PM_REPLY': 'Répondre',
+        'BUTTON_PM_REPLY_ALL': 'Répondre à tous',
+        'BUTTON_POST_REPLY': 'Répondre',
+        'BUTTON_QUOTE': 'Citer',
+        'BUTTON_TOPIC_LOCKED': 'Verrouillé',
+        'BYTES': 'Octets',
+        'BYTES_SHORT': 'o',
+
+        'CANCEL': 'Annuler',
+        'CHANGE': 'Modifier',
+        'CHANGE_FONT_SIZE': 'Modifier la taille de la police',
+        'CHANGING_PREFERENCES': 'Modifie les préférences du forum',
+        'CHANGING_PROFILE': 'Modifie son profil',
+        'CHARACTERS': {
+            1: '%d caractère',
+            2: '%d caractères' },
+
+        'COLLAPSE_VIEW': 'Réduire la vue',
+        'CLOSE_WINDOW': 'Fermer la fenêtre',
+        'COLOUR_SWATCH': 'Palette de couleurs',
+        'COLON': ' :',
+        'COMMA_SEPARATOR': ', ', // Used in pagination of ACP & prosilver, use localised comma if appropriate, eg: Ideographic or Arabic
+        'CONFIRM': 'Confirmer',
+        'CONFIRM_CODE': 'Code de confirmation',
+        'CONFIRM_CODE_EXPLAIN': 'Saisissez le code exactement comme vous le voyez dans l’image. Notez que le code n’est pas sensible à la casse.',
+        'CONFIRM_CODE_WRONG': 'Le code de confirmation que vous avez saisi est incorrect.',
+        'CONFIRM_OPERATION': 'Êtes-vous sûr de vouloir effectuer cette opération ?',
+        'CONFIRM_AVATAR_DELETE': 'Êtes-vous sûr de vouloir supprimer cet avatar ?',
+        'CONGRATULATIONS': 'Félicitations à',
+        'CONNECTION_FAILED': 'La connexion a échoué.',
+        'CONNECTION_SUCCESS': 'Vous êtes connecté !',
+        'CONTACT': 'Contact',
+        'CONTACT_USER': 'Contacter %s',
+        'CONTACT_US': 'Nous contacter',
+        'COOKIE_CONSENT_INFO': 'En savoir plus',
+        'COOKIE_CONSENT_MSG': 'En poursuivant votre navigation, vous acceptez l’utilisation de cookies.',
+        'COOKIE_CONSENT_OK': 'OK',
+        'COOKIE_CONSENT_HREF': 'https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi',
+        'COOKIES_DELETED': 'Tous les cookies du forum ont été supprimés.',
+        'CURRENT_TIME': 'Nous sommes le %s',
+
+        'DAY': 'Jour',
+        'DAYS': 'jours',
+        'DELETE': 'Supprimer',
+        'DELETE_ALL': 'Tout supprimer',
+        'DELETE_COOKIES': 'Supprimer les cookies du forum',
+        'DELETE_MARKED': 'Supprimer la sélection',
+        'DELETE_POST': 'Supprimer le message',
+        'DELIMITER': 'Séparateur',
+        'DESCENDING': 'Décroissant',
+        'DISABLED': 'Désactivé',
+        'DISPLAY': 'Afficher',
+        'DISPLAY_GUESTS': 'Afficher les invités',
+        'DISPLAY_MESSAGES': 'Afficher les messages postés depuis',
+        'DISPLAY_POSTS': 'Afficher les messages postés depuis',
+        'DISPLAY_TOPICS': 'Afficher les sujets postés depuis',
+        'DOWNLOADED': 'Téléchargé',
+        'DOWNLOADING_FILE': 'Téléchargement en cours',
+        'DOWNLOAD_COUNTS': {
+            0: 'Pas encore téléchargé',
+            1: 'Téléchargé %d fois',
+            2: 'Téléchargé %d fois' },
+
+
+        'EDIT_POST': 'Modifier le message',
+        'ELLIPSIS': '…',
+        'EMAIL': 'E-mail', // Short form for EMAIL_ADDRESS
+        'EMAIL_ADDRESS': 'Adresse e-mail',
+        'EMAIL_INVALID_EMAIL': 'L’adresse e-mail que vous avez saisie n’est pas valide.',
+        'EMAIL_SMTP_ERROR_RESPONSE': 'Un problème est survenu lors de l’envoi de l’e-mail à la <strong>ligne %1$s</strong>. Réponse : %2$s.',
+        'EMPTY_SUBJECT': 'Vous devez indiquer un titre pour poster un nouveau sujet.',
+        'EMPTY_MESSAGE_SUBJECT': 'Vous devez indiquer un sujet quand vous envoyez un nouveau message.',
+        'ENABLED': 'Activé',
+        'ENCLOSURE': 'Clôture',
+        'ENTER_USERNAME': 'Saisissez le nom d’utilisateur',
+        'ERR_CHANGING_DIRECTORY': 'Impossible de changer de répertoire.',
+        'ERR_CONNECTING_SERVER': 'Erreur de connexion au serveur.',
+        'ERR_JAB_AUTH': 'Impossible de s’authentifier sur le serveur Jabber.',
+        'ERR_JAB_CONNECT': 'Impossible de se connecter sur le serveur Jabber.',
+        'ERR_UNABLE_TO_LOGIN': 'Le nom d’utilisateur ou le mot de passe indiqué est incorrect.',
+        'ERR_UNWATCHING': 'Une erreur est survenue lors de l’arrêt de la surveillance.',
+        'ERR_WATCHING': 'Une erreur est survenue lors de l’activation de la surveillance.',
+        'ERR_WRONG_PATH_TO_PHPBB': 'Le chemin phpBB indiqué ne semble pas être valide.',
+        'ERROR': 'Erreur',
+        'EXPAND_VIEW': 'Étendre la vue',
+        'EXTENSION': 'Extension',
+        'EXTENSION_DISABLED': 'L’extension <strong>%s</strong> n’est pas activée.',
+        'EXTENSION_DISABLED_AFTER_POSTING': 'L’extension <strong>%s</strong> a été désactivée et ne peut plus être affichée.',
+        'EXTENSION_DOES_NOT_EXIST': 'L’extension <strong>%s</strong> n’existe pas.',
+
+        'FACEBOOK': 'Facebook',
+        'FAQ': 'FAQ',
+        'FAQ_EXPLAIN': 'Foire aux questions (Questions posées fréquemment)',
+        'FEATURE_NOT_AVAILABLE': 'La fonctionnalité demandée n’est pas disponible sur ce forum.',
+        'FILENAME': 'Nom',
+        'FILESIZE': 'Taille',
+        'FILEDATE': 'Date',
+        'FILE_COMMENT': 'Commentaire',
+        'FILE_CONTENT_ERR': 'Impossible de lire le contenu du fichier : %s',
+        'FILE_JSON_DECODE_ERR': 'Impossible de décoder le fichier JSON : %s',
+        'FILE_NOT_FOUND': 'Le fichier recherché est introuvable : %s',
+        'FIND_USERNAME': 'Rechercher un membre',
+        'FOLDER': 'Dossier',
+        'FORGOT_PASS': 'J’ai oublié mon mot de passe',
+        'FORM_INVALID': 'Le formulaire envoyé n’est pas valide. Essayez à nouveau.',
+        'FORUM': 'Forum',
+        'FORUMS': 'Forums',
+        'FORUMS_MARKED': 'Les forums ont été marqués comme lus.',
+        'FORUM_CAT': 'Catégorie du forum',
+        'FORUM_INDEX': 'Index du forum',
+        'FORUM_LINK': 'Forum-lien',
+        'FORUM_LOCATION': 'Localisation sur le forum',
+        'FORUM_LOCKED': 'Forum verrouillé',
+        'FORUM_RULES': 'Règles du forum',
+        'FORUM_RULES_LINK': 'Cliquez pour voir les règles du forum',
+        'FROM': 'de',
+        'FSOCK_DISABLED': 'Impossible de finir cette opération car la fonction <var>fsockopen</var> est désactivée ou le serveur requis n’a pas pu être trouvé.',
+        'FSOCK_TIMEOUT': 'Le temps d’attente a été dépassé lors de la lecture du flux réseau.',
+
+        'FTP_FSOCK_HOST': 'Serveur FTP',
+        'FTP_FSOCK_HOST_EXPLAIN': 'Serveur FTP utilisé pour se connecter à votre site.',
+        'FTP_FSOCK_PASSWORD': 'Mot de passe FTP',
+        'FTP_FSOCK_PASSWORD_EXPLAIN': 'Mot de passe pour votre compte FTP.',
+        'FTP_FSOCK_PORT': 'Port FTP',
+        'FTP_FSOCK_PORT_EXPLAIN': 'Port utilisé pour se connecter à votre serveur.',
+        'FTP_FSOCK_ROOT_PATH': 'Chemin vers phpBB',
+        'FTP_FSOCK_ROOT_PATH_EXPLAIN': 'Chemin depuis la racine vers votre forum phpBB.',
+        'FTP_FSOCK_TIMEOUT': 'Temps d’attente FTP',
+        'FTP_FSOCK_TIMEOUT_EXPLAIN': 'La durée en secondes pendant laquelle le système attendra une réponse de votre serveur.',
+        'FTP_FSOCK_USERNAME': 'Nom d’utilisateur FTP',
+        'FTP_FSOCK_USERNAME_EXPLAIN': 'Nom d’utilisateur utilisé pour se connecter à votre serveur.',
+
+        'FTP_HOST': 'Serveur FTP',
+        'FTP_HOST_EXPLAIN': 'Serveur FTP utilisé pour se connecter à votre site.',
+        'FTP_PASSWORD': 'Mot de passe FTP',
+        'FTP_PASSWORD_EXPLAIN': 'Mot de passe pour votre compte FTP.',
+        'FTP_PORT': 'Port FTP',
+        'FTP_PORT_EXPLAIN': 'Port utilisé pour se connecter à votre serveur.',
+        'FTP_ROOT_PATH': 'Chemin vers phpBB',
+        'FTP_ROOT_PATH_EXPLAIN': 'Chemin depuis la racine vers votre forum phpBB.',
+        'FTP_TIMEOUT': 'Temps d’attente FTP',
+        'FTP_TIMEOUT_EXPLAIN': 'La durée en secondes que le système attendra pour une réponse de votre serveur.',
+        'FTP_USERNAME': 'Nom d’utilisateur FTP',
+        'FTP_USERNAME_EXPLAIN': 'Nom d’utilisateur utilisé pour se connecter à votre serveur.',
+
+        'GENERAL_ERROR': 'Erreur générale',
+        'GB': 'Go',
+        'GIB': 'Gio',
+        'GO': 'Aller',
+        'GOOGLEPLUS': 'Google+',
+        'GOTO_FIRST_POST': 'Aller au premier message',
+        'GOTO_LAST_POST': 'Aller au dernier message',
+        'GOTO_PAGE': 'Aller à la page',
+        'GROUP': 'Groupe',
+        'GROUPS': 'Groupes',
+        'GROUP_ERR_TYPE': 'Le type de groupe indiqué est inapproprié.',
+        'GROUP_ERR_USERNAME': 'Aucun nom de groupe indiqué.',
+        'GROUP_ERR_USER_LONG': 'Les noms de groupe ne peuvent pas dépasser 60 caractères. Le nom du groupe indiqué est trop long.',
+        'GUEST': 'Invité',
+        'GUEST_USERS_ONLINE': {
+            1: 'Il y a %d invité en ligne',
+            2: 'Il y a %d invités en ligne' },
+
+        'GUEST_USERS_TOTAL': {
+            1: '%d invité',
+            2: '%d invités' },
+
+        'G_ADMINISTRATORS': 'Administrateurs',
+        'G_BOTS': 'Robots',
+        'G_GUESTS': 'Invités',
+        'G_REGISTERED': 'Utilisateurs enregistrés',
+        'G_REGISTERED_COPPA': 'Utilisateurs COPPA enregistrés',
+        'G_GLOBAL_MODERATORS': 'Modérateurs globaux',
+        'G_NEWLY_REGISTERED': 'Nouveaux utilisateurs enregistrés',
+
+        'HIDDEN_USERS_ONLINE': {
+            1: '%d membre invisible',
+            2: '%d membres invisibles' },
+
+        'HIDDEN_USERS_TOTAL': {
+            1: '%d invisible',
+            2: '%d invisibles' },
+
+        'HIDE_GUESTS': 'Masquer les invités',
+        'HIDE_ME': 'Cacher mon statut en ligne pour cette session',
+        'HOURS': 'Heures',
+        'HOME': 'Accueil',
+
+        'ICQ': 'ICQ',
+        'IF': 'Si',
+        'IMAGE': 'Image',
+        'IMAGE_FILETYPE_INVALID': 'Le type de fichier image %d pour le type mime %s n’est pas supporté.',
+        'IMAGE_FILETYPE_MISMATCH': 'Type de fichier image incorrect : l’extension %1$s était attendue mais l’extension %2$s a été trouvée.',
+        'IN': 'dans',
+        'INACTIVE': 'Inactif',
+        'INDEX': 'Page d’index',
+        'INFORMATION': 'Informations',
+        'INSECURE_REDIRECT': 'Vous avez tenté de rediriger vers une URL potentiellement dangereuse.',
+        'INTERESTS': 'Centres d’intérêt',
+        'INVALID_DIGEST_CHALLENGE': 'Défi invalide.',
+        'INVALID_EMAIL_LOG': '<strong>%s</strong> est peut-être une adresse invalide ?',
+        'INVALID_FEED_ATTACHMENTS': 'Le flux sélectionné a tenté de récupérer la liste des fichiers joints avec des paramètres non valides.',
+        'INVALID_PLURAL_RULE': 'La règle de pluriel choisie n’est pas valide. La valeur doit être un entier compris entre 0 et 15.',
+        'IP': 'IP',
+        'IP_BLACKLISTED': 'Votre IP %1$s a été bloquée car elle est dans la liste noire. Pour plus d’informations, consultez <a href="%2$s">%2$s</a>.',
+
+        'JABBER': 'Jabber',
+        'JOINED': 'Enregistré le',
+        'JUMP_PAGE': 'Saisissez le numéro de page où vous souhaitez aller.',
+        'JUMP_TO': 'Aller à',
+        'JUMP_TO_PAGE': 'Aller à la page',
+        'JUMP_TO_PAGE_CLICK': 'Cliquer pour aller à la page…',
+
+        'KB': 'Ko',
+        'KIB': 'Kio',
+
+        'LAST_POST': 'Dernier message',
+        'LAST_UPDATED': 'Dernière mise à jour',
+        'LAST_VISIT': 'Dernière visite',
+        'LDAP_NO_LDAP_EXTENSION': 'Extension LDAP indisponible.',
+        'LDAP_NO_SERVER_CONNECTION': 'Impossible de se connecter au serveur LDAP.',
+        'LDAP_SEARCH_FAILED': 'Une erreur est survenue pendant la recherche du répertoire LDAP.',
+        'LEGEND': 'Légende',
+        'LIVE_SEARCHES_NOT_ALLOWED': 'La recherche dynamique n’est pas autorisée.',
+        'LOADING': 'Chargement en cours…',
+        'LOCATION': 'Localisation',
+        'LOCK_POST': 'Verrouiller le message',
+        'LOCK_POST_EXPLAIN': 'Empêche la modification du message',
+        'LOCK_TOPIC': 'Verrouiller le sujet',
+        'LOGIN': 'Connexion',
+        'LOGIN_CHECK_PM': 'Se connecter pour vérifier ses messages privés.',
+        'LOGIN_CONFIRMATION': 'Confirmation de connexion',
+        'LOGIN_CONFIRM_EXPLAIN': 'Pour éviter une usurpation des comptes, l’administrateur du forum exige que vous saisissiez un code de confirmation visuel après un certain nombre d’échecs. Le code est indiqué dans l’image que vous devez voir ci-dessous. Si vous êtes déficient visuel ou que vous ne pouvez pas lire ce code, contactez %sl’administrateur%s du forum.', // unused
+        'LOGIN_ERROR_ATTEMPTS': 'Vous avez dépassé le nombre maximum autorisé de tentatives de connexion. En plus de votre nom d’utilisateur et de votre mot de passe, vous devez également résoudre le CAPTCHA ci-dessous.',
+        'LOGIN_ERROR_EXTERNAL_AUTH_APACHE': 'Vous n’avez pas été authentifié par Apache.',
+        'LOGIN_ERROR_OAUTH_SERVICE_DOES_NOT_EXIST': 'Le service OAuth demandé n’existe pas.',
+        'LOGIN_ERROR_PASSWORD': 'Vous avez indiqué un mot de passe incorrect. Vérifiez votre mot de passe et réessayez. Si vous continuez à rencontrer des problèmes, contactez l’%sadministrateur du forum%s.',
+        'LOGIN_ERROR_PASSWORD_CONVERT': 'Il n’a pas été possible de convertir votre mot de passe lors de la mise à jour du forum. %sRedemandez un mot de passe%s. Si le problème persiste, contactez l’%sadministrateur du forum%s.',
+        'LOGIN_ERROR_USERNAME': 'Vous avez indiqué un nom d’utilisateur incorrect. Vérifiez votre nom d’utilisateur et réessayez. Si vous continuez à rencontrer des problèmes, contactez l’%sadministrateur du forum%s.',
+        'LOGIN_FORUM': 'Pour lire ou poster dans ce forum, vous devez saisir son mot de passe.',
+        'LOGIN_INFO': 'Vous devez être enregistré pour vous connecter. L’enregistrement ne prend que quelques secondes et augmente vos possibilités. L’administrateur du forum peut également accorder des permissions additionnelles aux membres du forum. Avant de vous enregistrer, assurez-vous d’avoir pris connaissance de nos conditions d’utilisation et de notre politique de vie privée. Assurez-vous de bien lire tout le règlement du forum.',
+        'LOGIN_VIEWFORUM': 'L’administrateur du forum exige que vous soyez enregistré et connecté pour lire ce forum.',
+        'LOGIN_EXPLAIN_EDIT': 'Pour modifier des messages dans ce forum, vous devez être enregistré et connecté.',
+        'LOGIN_EXPLAIN_VIEWONLINE': 'Pour consulter la liste des utilisateurs en ligne, vous devez être enregistré et connecté.',
+        'LOGIN_REQUIRED': 'Vous devez vous connecter pour effectuer cette action.',
+        'LOGOUT': 'Déconnexion',
+        'LOGOUT_USER': 'Déconnexion [ %s ]',
+        'LOG_ME_IN': 'Se souvenir de moi',
+
+        'MAIN': 'Principal',
+        'MARK': 'Cocher',
+        'MARK_ALL': 'Tout cocher',
+        'MARK_ALL_READ': 'Marquer tout comme lu',
+        'MARK_FORUMS_READ': 'Marquer tous les forums comme lus',
+        'MARK_READ': 'Marquer comme lu',
+        'MARK_SUBFORUMS_READ': 'Marquer tous les sous-forums comme lus',
+        'MB': 'Mo',
+        'MIB': 'Mio',
+        'MCP': 'Panneau de modération',
+        'MCP_SHORT': 'PCM',
+        'MEMBERLIST': 'Membres',
+        'MEMBERLIST_EXPLAIN': 'Voir la liste complète des membres',
+        'MERGE': 'Fusionner',
+        'MERGE_POSTS': 'Déplacer les messages',
+        'MERGE_TOPIC': 'Fusionner le sujet',
+        'MESSAGE': 'Message',
+        'MESSAGES': 'Messages',
+        'MESSAGES_COUNT': {
+            1: '%d message',
+            2: '%d messages' },
+
+        'MESSAGE_BODY': 'Corps du message',
+        'MINUTES': 'Minutes',
+        'MODERATE': 'Modérer',
+        'MODERATOR': 'Modérateur',
+        'MODERATORS': 'Modérateurs',
+        'MODULE_NOT_ACCESS': 'Module non accessible',
+        'MODULE_NOT_FIND': 'Impossible de trouver le module « %s »',
+        'MODULE_FILE_INCORRECT_CLASS': 'Le fichier du module « %s » ne contient pas la classe [%s].',
+        'MONTH': 'Mois',
+        'MOVE': 'Déplacer',
+
+        'NA': 'N/A',
+        'NEWEST_USER': 'Le membre enregistré le plus récent est <strong>%s</strong>.',
+        'NEW_MESSAGE': 'Nouveau message',
+        'NEW_MESSAGES': 'Nouveaux messages',
+        'NEW_POST': 'Nouveau message', // Not used anymore
+        'NEW_POSTS': 'Nouveaux messages', // Not used anymore
+        'NEXT': 'Suivante', // Used in pagination
+        'NEXT_STEP': 'Suivant',
+        'NEVER': 'Jamais',
+        'NO': 'Non',
+        'NO_NOTIFICATIONS': 'Vous n’avez pas de notification.',
+        'NOT_ALLOWED_MANAGE_GROUP': 'Vous n’êtes pas autorisé à gérer ce groupe.',
+        'NOT_AUTHORISED': 'Vous n’êtes pas autorisé à accéder à cette partie du forum.',
+        'NOT_WATCHING_FORUM': 'Vous ne surveillez plus ce forum.',
+        'NOT_WATCHING_TOPIC': 'Vous ne surveillez plus ce sujet.',
+        'NOTIFICATIONS': 'Notifications',
+        // This applies for NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
+        // %1$s will return a list of users that's concatenated using "," and "and" - see STRING_LIST
+        // Once the user count reaches 5 users or more, the list is trimmed using NOTIFICATION_X_OTHERS
+        // Once the user count reaches 20 users or more, the list is trimmed using NOTIFICATION_MANY_OTHERS
+        // Examples:
+        // A replied...
+        // A and B replied...
+        // A, B and C replied...
+        // A, B, C and 2 others replied...
+        // A, B, C and others replied...
+        'NOTIFICATION_BOOKMARK': {
+            1: '<strong>Réponse</strong> de %1$s dans le sujet ajouté aux favoris :' },
+
+        'NOTIFICATION_FORUM': '<em>Forum :</em> %1$s',
+        'NOTIFICATION_GROUP_REQUEST': '<strong>Adhésion au groupe</strong> demandée par %1$s pour rejoindre le groupe %2$s.',
+        'NOTIFICATION_GROUP_REQUEST_APPROVED': '<strong>Adhésion au groupe approuvée</strong> pour rejoindre le groupe %1$s.',
+        'NOTIFICATION_METHOD_INVALID': 'La méthode « %s » ne fait pas référence à une méthode de notification valide.',
+        'NOTIFICATION_PM': '<strong>Message privé</strong> de %1$s :',
+        'NOTIFICATION_POST': {
+            1: '<strong>Réponse</strong> de %1$s dans le sujet :' },
+
+        'NOTIFICATION_POST_APPROVED': '<strong>Message approuvé</strong> :',
+        'NOTIFICATION_POST_DISAPPROVED': '<strong>Message désapprouvé</strong> :',
+        'NOTIFICATION_POST_IN_QUEUE': '<strong>Message en attente d’approbation</strong> créé par %1$s :',
+        'NOTIFICATION_QUOTE': {
+            1: '<strong>Citation</strong> de %1$s dans :' },
+
+        'NOTIFICATION_REFERENCE': '« %1$s »',
+        'NOTIFICATION_REASON': '<em>Raison :</em> %1$s.',
+        'NOTIFICATION_REPORT_PM': '<strong>Message privé rapporté</strong> par %1$s :',
+        'NOTIFICATION_REPORT_POST': '<strong>Message rapporté</strong> par %1$s :',
+        'NOTIFICATION_REPORT_CLOSED': '<strong>Rapport clôturé</strong> par %1$s pour :',
+        'NOTIFICATION_TOPIC': '<strong>Nouveau message</strong> créé par %1$s :',
+        'NOTIFICATION_TOPIC_APPROVED': '<strong>Sujet approuvé</strong> :',
+        'NOTIFICATION_TOPIC_DISAPPROVED': '<strong>Sujet désapprouvé</strong> :',
+        'NOTIFICATION_TOPIC_IN_QUEUE': '<strong>Sujet en attente d’approbation</strong> créé par %1$s :',
+        'NOTIFICATION_TYPE_NOT_EXIST': 'Le type de notification « %s » est absent du système de fichier.',
+        'NOTIFICATION_ADMIN_ACTIVATE_USER': '<strong>Activation de compte requise</strong> pour le membre désactivé ou nouvellement enregistré : « %1$s ».',
+        // Used in conjuction with NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
+        'NOTIFICATION_MANY_OTHERS': 'plusieurs autres membres',
+        'NOTIFICATION_X_OTHERS': {
+            2: '%d autres membres' },
+
+        'NOTIFY_ADMIN': 'Contactez l’administrateur du forum ou le webmaster.',
+        'NOTIFY_ADMIN_EMAIL': 'Contactez l’administrateur du forum ou le webmaster : <a href="mailto:%1$s">%1$s</a>',
+        'NO_ACCESS_ATTACHMENT': 'Vous n’êtes pas autorisé à accéder à ce fichier.',
+        'NO_ACTION': 'Aucune action indiquée.',
+        'NO_ADMINISTRATORS': 'Il n’existe aucun administrateur.',
+        'NO_AUTH_ADMIN': 'Vous n’avez pas les permissions d’administration et ne pouvez donc pas accéder au panneau d’administration.',
+        'NO_AUTH_ADMIN_USER_DIFFER': 'Vous ne pouvez pas vous ré-authentifier avec un compte différent.',
+        'NO_AUTH_OPERATION': 'Vous n’avez pas les permissions nécessaires pour accomplir cette opération.',
+        'NO_AVATARS': 'Pas d’avatar de disponible',
+        'NO_CONNECT_TO_SMTP_HOST': 'Impossible de se connecter au serveur smtp : %1$s : %2$s',
+        'NO_BIRTHDAYS': 'Pas d’anniversaire à fêter aujourd’hui',
+        'NO_EMAIL_MESSAGE': 'Le contenu de cet e-mail est vide.',
+        'NO_EMAIL_RESPONSE_CODE': 'Impossible de récupérer les codes de réponse du serveur.',
+        'NO_EMAIL_SUBJECT': 'Aucun sujet n’a été indiqué.',
+        'NO_FORUM': 'Le forum que vous avez tenté d’atteindre n’existe pas.',
+        'NO_FORUMS': 'Aucun forum.',
+        'NO_GROUP': 'Le groupe demandé n’existe pas.',
+        'NO_GROUP_MEMBERS': 'Aucun membre dans ce groupe.',
+        'NO_IPS_DEFINED': 'Aucune IP ou nom d’hôte',
+        'NO_MEMBERS': 'Aucun membre trouvé pour ce critère de recherche.',
+        'NO_MESSAGES': 'Pas de message',
+        'NO_MODE': 'Pas de mode indiqué.',
+        'NO_MODERATORS': 'Il n’existe aucun modérateur.',
+        'NO_NEW_MESSAGES': 'Pas de nouveau message',
+        'NO_NEW_POSTS': 'Pas de nouveau message', // Not used anymore
+        'NO_ONLINE_USERS': 'Aucun utilisateur enregistré',
+        'NO_POSTS': 'Pas de message',
+        'NO_POSTS_TIME_FRAME': 'Aucun message n’a été posté dans ce sujet pour la période indiquée.',
+        'NO_FEED_ENABLED': 'Les flux ne sont pas disponibles sur ce forum.',
+        'NO_FEED': 'Le flux demandé n’est pas disponible.',
+        'NO_STYLE_DATA': 'Impossible de récupérer les données de style',
+        'NO_SUBJECT': 'Aucun sujet indiqué', // Used for posts having no subject defined but displayed within management pages.
+        'NO_SUCH_SEARCH_MODULE': 'La recherche indiquée n’existe pas.',
+        'NO_SUPPORTED_AUTH_METHODS': 'Aucune méthode d’authentification supportée.',
+        'NO_TOPIC': 'Le sujet demandé n’existe pas.',
+        'NO_TOPIC_FORUM': 'Le sujet ou le forum n’existe plus.',
+        'NO_TOPICS': 'Il n’y a aucun sujet ou message dans ce forum.',
+        'NO_TOPICS_TIME_FRAME': 'Aucun sujet n’a été posté dans ce forum pour la période indiquée.',
+        'NO_UNREAD_POSTS': 'Aucun message non lu',
+        'NO_UPLOAD_FORM_FOUND': 'Le transfert a commencé mais aucun fichier valide n’a été trouvé.',
+        'NO_USER': 'Le membre demandé n’existe pas.',
+        'NO_USERS': 'Les membres demandés n’existent pas.',
+        'NO_USER_SPECIFIED': 'Aucun nom d’utilisateur indiqué.',
+
+        // Nullar/Singular/Plural language entry. The key numbers define the number range in which a certain grammatical expression is valid.
+        'NUM_ATTACHMENTS': {
+            1: '%d fichier joint',
+            2: '%d fichiers joints' },
+
+        'NUM_POSTS_IN_QUEUE': {
+            0: 'Aucun message en attente', // 0
+            1: '1 message en attente', // 1
+            2: '%d messages en attente' // 2+
+        },
+
+        'OCCUPATION': 'Emploi',
+        'OFFLINE': 'Hors ligne',
+        'ONLINE': 'En ligne',
+        'ONLINE_BUDDIES': 'Amis en ligne',
+        // "... : x registered and y hidden"
+        'ONLINE_USERS_TOTAL': {
+            1: 'Au total il y a <strong>%1$d</strong> utilisateur en ligne : %2$s et %3$s',
+            2: 'Au total il y a <strong>%1$d</strong> utilisateurs en ligne : %2$s et %3$s' },
+
+        // "... : x registered, y hidden and z guests"
+        'ONLINE_USERS_TOTAL_GUESTS': {
+            1: 'Au total il y a <strong>%1$d</strong> utilisateur en ligne : %2$s, %3$s et %4$s',
+            2: 'Au total il y a <strong>%1$d</strong> utilisateurs en ligne : %2$s, %3$s et %4$s' },
+
+        'OPTIONS': 'Options',
+
+        'PAGE_OF': 'Page <strong>%1$d</strong> sur <strong>%2$d</strong>',
+        'PAGE_TITLE_NUMBER': 'Page %s',
+        'PASSWORD': 'Mot de passe',
+        'PIXEL': 'px',
+        'PIXELS': {
+            1: '%d pixel',
+            2: '%d pixels' },
+
+        'PLEASE_WAIT': 'Patientez.',
+        'PM': 'MP',
+        'PM_REPORTED': 'Cliquer pour voir le rapport',
+        'POSTING_MESSAGE': 'Poste un message dans %s',
+        'POSTING_PRIVATE_MESSAGE': 'Rédige un message privé',
+        'POST': 'Message',
+        'POST_ANNOUNCEMENT': 'Annonce',
+        'POST_STICKY': 'Sujet épinglé',
+        'POSTED': 'Posté',
+        'POSTED_IN_FORUM': 'Dans',
+        'POSTED_ON_DATE': 'le',
+        'POSTS': 'Messages',
+        'POSTS_UNAPPROVED': 'Au moins un message de ce sujet n’a pas été approuvé.',
+        'POSTS_UNAPPROVED_FORUM': 'Au moins un message de ce forum n’a pas été approuvé.',
+        'POST_BY_AUTHOR': 'par',
+        'POST_BY_FOE': '<strong>%1$s</strong>, qui est actuellement sur votre liste de membres ignorés, a posté ce message.',
+        'POST_DISPLAY': '%1$sAfficher ce message%2$s.',
+        'POST_DAY': '%.2f messages par jour',
+        'POST_DELETED_ACTION': 'Message supprimé :',
+        'POST_DELETED': 'Ce message a été supprimé.',
+        'POST_DELETED_BY': '<strong>%2$s</strong> a supprimé le message de <strong>%1$s</strong> le %3$s.',
+        'POST_DELETED_BY_REASON': '<strong>%2$s</strong> a supprimé le message de <strong>%1$s</strong> le %3$s pour la raison suivante : %4$s',
+        'POST_DETAILS': 'Détails',
+        'POST_NEW_TOPIC': 'Poster un nouveau sujet',
+        'POST_PCT': '%.2f%% de tous les messages',
+        'POST_PCT_ACTIVE': '%.2f%% des messages du membre',
+        'POST_PCT_ACTIVE_OWN': '%.2f%% de vos messages',
+        'POST_REPLY': 'Répondre',
+        'POST_REPORTED': 'Cliquer pour voir le rapport',
+        'POST_SUBJECT': 'Sujet du message',
+        'POST_TIME': 'Date',
+        'POST_TOPIC': 'Écrire un nouveau sujet',
+        'POST_UNAPPROVED_ACTION': 'Message en attente d’approbation :',
+        'POST_UNAPPROVED': 'Ce message n’a pas été approuvé.',
+        'POWERED_BY': 'Développé par %s',
+        'PREVIEW': 'Aperçu',
+        'PREVIOUS': 'Précédente', // Used in pagination
+        'PREVIOUS_STEP': 'Précédente',
+        'PRIVACY': 'Politique de vie privée',
+        'PRIVATE_MESSAGE': 'Message privé',
+        'PRIVATE_MESSAGES': 'Messages privés',
+        'PRIVATE_MESSAGING': 'Messagerie privée',
+        'PROFILE': 'Panneau de l’utilisateur',
+
+        'QUICK_LINKS': 'Accès rapide',
+
+        'RANK': 'Rang',
+        'READING_FORUM': 'Consulte les sujets dans %s',
+        'READING_GLOBAL_ANNOUNCE': 'Consulte une annonce globale',
+        'READING_LINK': 'Consulte le lien du forum %s',
+        'READING_TOPIC': 'Consulte un sujet dans %s',
+        'READ_PROFILE': 'Profil',
+        'REASON': 'Raison',
+        'RECORD_ONLINE_USERS': 'Le record du nombre d’utilisateurs en ligne est de <strong>%1$s</strong>, le %2$s',
+        'REDIRECT': 'Rediriger',
+        'REDIRECTS': 'Nombre de redirections',
+        'REGISTER': 'S’enregistrer',
+        'REGISTERED_USERS': 'Membres :',
+        // "... and 2 hidden users online"
+        'REG_USERS_ONLINE': {
+            1: 'Il y a %1$d membre et %2$s en ligne',
+            2: 'Il y a %1$d membres et %2$s en ligne' },
+
+        'REG_USERS_TOTAL': {
+            1: '%d enregistré',
+            2: '%d enregistrés' },
+
+        'REMOVE': 'Supprimer',
+        'REMOVE_INSTALL': 'Pour finaliser l’installation du forum, supprimez, déplacez ou renommez le répertoire « install ». Si ce répertoire est détecté, seul le panneau d’administration (PCA) sera accessible.',
+        'REPLIES': 'Réponses',
+        'REPLY_WITH_QUOTE': 'Répondre en citant le message',
+        'REPLYING_GLOBAL_ANNOUNCE': 'Répond à une annonce globale',
+        'REPLYING_MESSAGE': 'Répond à un message dans %s',
+        'REPORT_BY': 'Rapporté par',
+        'REPORT_POST': 'Rapporter le message',
+        'REPORTING_POST': 'Rapporter un message',
+        'RESEND_ACTIVATION': 'Renvoyer l’e-mail de confirmation',
+        'RESET': 'Réinitialiser',
+        'RESTORE_PERMISSIONS': 'Rétablir les permissions',
+        'RETURN_INDEX': '%sRetourner à l’index du forum%s',
+        'RETURN_FORUM': '%sRetourner au dernier forum visité%s',
+        'RETURN_PAGE': '%sRetourner à la page précédente%s',
+        'RETURN_TOPIC': '%sRetourner au dernier sujet visité%s',
+        'RETURN_TO': 'Retourner vers « %s »',
+        'RETURN_TO_INDEX': 'Retourner à l’index du forum',
+        'FEED': 'Flux',
+        'FEED_NEWS': 'Nouvelles informations',
+        'FEED_TOPICS_ACTIVE': 'Sujets actifs',
+        'FEED_TOPICS_NEW': 'Nouveaux sujets',
+        'RULES_ATTACH_CAN': 'Vous <strong>pouvez</strong> joindre des fichiers',
+        'RULES_ATTACH_CANNOT': 'Vous <strong>ne pouvez pas</strong> joindre des fichiers',
+        'RULES_DELETE_CAN': 'Vous <strong>pouvez</strong> supprimer vos messages',
+        'RULES_DELETE_CANNOT': 'Vous <strong>ne pouvez pas</strong> supprimer vos messages',
+        'RULES_DOWNLOAD_CAN': 'Vous <strong>pouvez</strong> télécharger des fichiers joints',
+        'RULES_DOWNLOAD_CANNOT': 'Vous <strong>ne pouvez pas</strong> télécharger des fichiers joints',
+        'RULES_EDIT_CAN': 'Vous <strong>pouvez</strong> modifier vos messages',
+        'RULES_EDIT_CANNOT': 'Vous <strong>ne pouvez pas</strong> modifier vos messages',
+        'RULES_LOCK_CAN': 'Vous <strong>pouvez</strong> verrouiller vos sujets',
+        'RULES_LOCK_CANNOT': 'Vous <strong>ne pouvez pas</strong> verrouiller vos sujets',
+        'RULES_POST_CAN': 'Vous <strong>pouvez</strong> poster de nouveaux sujets',
+        'RULES_POST_CANNOT': 'Vous <strong>ne pouvez pas</strong> poster de nouveaux sujets',
+        'RULES_REPLY_CAN': 'Vous <strong>pouvez</strong> répondre aux sujets',
+        'RULES_REPLY_CANNOT': 'Vous <strong>ne pouvez pas</strong> répondre aux sujets',
+        'RULES_VOTE_CAN': 'Vous <strong>pouvez</strong> participer aux votes',
+        'RULES_VOTE_CANNOT': 'Vous <strong>ne pouvez pas</strong> participer aux votes',
+
+        'SEARCH': 'Rechercher',
+        'SEARCH_MINI': 'Recherche…',
+        'SEARCH_ADV': 'Recherche avancée',
+        'SEARCH_ADV_EXPLAIN': 'Voir les options de recherche avancée',
+        'SEARCH_KEYWORDS': 'Recherche par mots-clés',
+        'SEARCHING_FORUMS': 'Recherche dans les forums',
+        'SEARCH_ACTIVE_TOPICS': 'Sujets actifs',
+        'SEARCH_FOR': 'Rechercher',
+        'SEARCH_FORUM': 'Dans ce forum…',
+        'SEARCH_NEW': 'Nouveaux messages',
+        'SEARCH_POSTS_BY': 'Rechercher les messages de',
+        'SEARCH_SELF': 'Mes messages',
+        'SEARCH_TOPIC': 'Dans ce sujet…',
+        'SEARCH_UNANSWERED': 'Sujets sans réponse',
+        'SEARCH_UNREAD': 'Messages non lus',
+        'SEARCH_USER_POSTS': 'Rechercher les messages du membre',
+        'SECONDS': 'secondes',
+        'SEE_ALL': 'Tout voir',
+        'SELECT': 'Sélectionner',
+        'SELECT_ALL_CODE': 'Tout sélectionner',
+        'SELECT_DESTINATION_FORUM': 'Choisissez un forum de destination',
+        'SELECT_FORUM': 'Sélectionner un forum',
+        'SEND_EMAIL': 'Envoyer un e-mail', // Used for submit buttons
+        'SEND_EMAIL_USER': 'Envoyer un e-mail à %s',
+        'SEND_PRIVATE_MESSAGE': 'Envoyer un message privé',
+        'SETTINGS': 'Paramètres',
+        'SIGNATURE': 'Signature',
+        'SKIP': 'Vers le contenu',
+        'SKYPE': 'Skype',
+        'SMTP_NO_AUTH_SUPPORT': 'Le serveur SMTP ne peut pas vous identifier.',
+        'SORRY_AUTH_READ': 'Vous n’êtes pas autorisé à lire ce forum.',
+        'SORRY_AUTH_READ_TOPIC': 'Vous n’êtes pas autorisé à lire ce sujet.',
+        'SORRY_AUTH_VIEW_ATTACH': 'Vous n’êtes pas autorisé à télécharger ce fichier joint.',
+        'SORT_BY': 'Trier par',
+        'SORT_DIRECTION': 'Ordre',
+        'SORT_JOINED': 'Date d’enregistrement',
+        'SORT_LOCATION': 'Localisation',
+        'SORT_OPTIONS': 'Options d’affichage et de tri',
+        'SORT_RANK': 'Rang',
+        'SORT_POSTS': 'Messages',
+        'SORT_TOPIC_TITLE': 'Titre du sujet',
+        'SORT_USERNAME': 'Nom d’utilisateur',
+        'SPLIT_TOPIC': 'Diviser le sujet',
+        'SQL_ERROR_OCCURRED': 'Une erreur SQL est arrivée en chargeant cette page. Contactez l’%sadministrateur du forum%s si ce problème persiste.',
+        'STATISTICS': 'Statistiques',
+        'START_WATCHING_FORUM': 'Surveiller ce forum',
+        'START_WATCHING_TOPIC': 'Surveiller ce sujet',
+        'STOP_WATCHING_FORUM': 'Arrêter de surveiller ce forum',
+        'STOP_WATCHING_TOPIC': 'Arrêter de surveiller ce sujet',
+        'STRING_LIST_MULTI': '%1$s, et %2$s',
+        'STRING_LIST_SIMPLE': '%1$s et %2$s',
+        'SUBFORUM': 'Sous-forum',
+        'SUBFORUMS': 'Sous-forums',
+        'SUBJECT': 'Sujet',
+        'SUBMIT': 'Envoyer',
+
+        'TB': 'To', // téraoctet
+        'TERMS_USE': 'Conditions d’utilisation',
+        'TEST_CONNECTION': 'Test de connexion',
+        'THE_TEAM': 'L’équipe du forum',
+        'TIB': 'Tio', // tébioctect
+        'TIME': 'Date',
+        'TIMEOUT_PROCESSING_REQ': 'Délai d’attente de la demande dépassé.',
+
+        'TOO_LARGE': 'La valeur saisie est trop grande.',
+        'TOO_LARGE_MAX_RECIPIENTS': 'La valeur du réglage <strong>Nombre maximum autorisé de destinataires par message privé</strong> que vous avez saisie est trop grande.',
+
+        'TOO_LONG': 'La valeur saisie est trop longue.',
+
+        'TOO_LONG_CONFIRM_CODE': 'Le code de confirmation indiqué est trop long.',
+        'TOO_LONG_DATEFORMAT': 'Le format de la date indiquée est trop long.',
+        'TOO_LONG_JABBER': 'Le nom de compte Jabber indiqué est trop long.',
+        'TOO_LONG_NEW_PASSWORD': 'Le mot de passe indiqué est trop long.',
+        'TOO_LONG_PASSWORD_CONFIRM': 'Le mot de passe de confirmation indiqué est trop long.',
+        'TOO_LONG_USER_PASSWORD': 'Le mot de passe indiqué est trop long.',
+        'TOO_LONG_USERNAME': 'Le nom d’utilisateur indiqué est trop long.',
+        'TOO_LONG_EMAIL': 'L’adresse e-mail indiquée est trop longue.',
+
+        'TOO_MANY_VOTE_OPTIONS': 'Vous avez sélectionné trop d’options de vote.',
+
+        'TOO_SHORT': 'La valeur saisie est trop courte.',
+
+        'TOO_SHORT_CONFIRM_CODE': 'Le code de confirmation indiqué est trop court.',
+        'TOO_SHORT_DATEFORMAT': 'Le format de la date indiquée est trop courte.',
+        'TOO_SHORT_JABBER': 'Le nom de compte Jabber indiqué est trop court.',
+        'TOO_SHORT_NEW_PASSWORD': 'Le mot de passe indiqué est trop court.',
+        'TOO_SHORT_PASSWORD_CONFIRM': 'Le mot de passe de confirmation indiqué est trop court.',
+        'TOO_SHORT_USER_PASSWORD': 'Le mot de passe indiqué est trop court.',
+        'TOO_SHORT_USERNAME': 'Le nom d’utilisateur indiqué est trop court.',
+        'TOO_SHORT_EMAIL': 'L’adresse e-mail indiquée est trop courte.',
+        'TOO_SHORT_EMAIL_CONFIRM': 'L’adresse e-mail de confirmation indiquée est trop courte.',
+        'TOO_SMALL': 'La valeur saisie est trop petite.',
+        'TOO_SMALL_MAX_RECIPIENTS': 'La valeur du réglage <strong>Nombre maximum autorisé de destinataires par message privé</strong> que vous avez saisie est trop petite.',
+
+        'TOPIC': 'Sujet',
+        'TOPICS': 'Sujets',
+        'TOPICS_UNAPPROVED': 'Au moins un sujet dans ce forum n’est pas approuvé.',
+        'TOPIC_ICON': 'Icône de sujet',
+        'TOPIC_LOCKED': 'Ce sujet est verrouillé, vous ne pouvez pas modifier de messages ou poster de réponse.',
+        'TOPIC_LOCKED_SHORT': 'Sujet verrouillé',
+        'TOPIC_MOVED': 'Sujet déplacé',
+        'TOPIC_REVIEW': 'Revue du sujet',
+        'TOPIC_TITLE': 'Titre du sujet',
+        'TOPIC_UNAPPROVED': 'Ce sujet n’a pas été approuvé.',
+        'TOPIC_DELETED': 'Ce sujet a été supprimé.',
+        'TOTAL_ATTACHMENTS': 'Fichier(s) joint(s)',
+        'TOTAL_LOGS': {
+            1: '%d entrée',
+            2: '%d entrées' },
+
+        'TOTAL_PMS': {
+            1: '%d message privé',
+            2: '%d messages privés' },
+
+        'TOPIC_POLL': 'Ce sujet a un sondage.',
+        'TOTAL_POSTS': 'Messages',
+        'TOTAL_POSTS_COUNT': {
+            2: '<strong>%d</strong> messages' },
+
+        'TOPIC_REPORTED': 'Ce sujet a été rapporté',
+        'TOTAL_TOPICS': {
+            2: '<strong>%d</strong> sujets' },
+
+        'TOTAL_USERS': {
+            2: '<strong>%d</strong> membres' },
+
+        'TRACKED_PHP_ERROR': 'Suivi des erreurs PHP : %s',
+        'TWITTER': 'Twitter',
+
+        'UNABLE_GET_IMAGE_SIZE': 'Impossible de déterminer les dimensions de l’image. Vérifiez que l’URL a été correctement saisie.',
+        'UNABLE_TO_DELIVER_FILE': 'Impossible de transmettre le fichier.',
+        'UNKNOWN_BROWSER': 'Navigateur inconnu',
+        'UNMARK_ALL': 'Tout décocher',
+        'UNREAD_MESSAGES': 'Messages non lus',
+        'UNREAD_POST': 'Message non lu',
+        'UNREAD_POSTS': 'Messages non lus',
+        'UNWATCH_FORUM_CONFIRM': 'Êtes-vous sûr de ne plus vouloir surveiller ce forum ?',
+        'UNWATCH_FORUM_DETAILED': 'Êtes-vous sûr de ne plus vouloir surveiller le forum « %s » ?',
+        'UNWATCH_TOPIC_CONFIRM': 'Êtes-vous sûr de ne plus vouloir surveiller ce sujet ?',
+        'UNWATCH_TOPIC_DETAILED': 'Êtes-vous sûr de ne plus vouloir surveiller le sujet « %s » ?',
+        'UNWATCHED_FORUMS': 'Vous ne surveillez plus les forums sélectionnés.',
+        'UNWATCHED_TOPICS': 'Vous ne surveillez plus les sujets sélectionnés.',
+        'UNWATCHED_FORUMS_TOPICS': 'Vous ne surveillez plus les entrées sélectionnées.',
+        'UPDATE': 'Mise à jour',
+        'UPLOAD_IN_PROGRESS': 'Le transfert est en cours.',
+        'URL_REDIRECT': 'Si votre navigateur ne vous redirige pas automatiquement dans quelques instants, %scliquez ici pour être redirigé%s.',
+        'USERGROUPS': 'Groupes d’utilisateurs',
+        'USERNAME': 'Nom d’utilisateur',
+        'USERNAMES': 'Noms d’utilisateur',
+        'USER_AVATAR': 'Avatar du membre',
+        'USER_CANNOT_READ': 'Vous ne pouvez pas lire les messages de ce forum.',
+        'USER_POSTS': {
+            1: '%d Message',
+            2: '%d Messages' },
+
+        'USERS': 'Membres',
+        'USE_PERMISSIONS': 'Tester les permissions du membre',
+
+        'USER_NEW_PERMISSION_DISALLOWED': 'Nous sommes désolés, mais vous n’êtes pas autorisé à utiliser cette fonctionnalité. Vous venez juste de vous enregistrer, et il est nécessaire de participer davantage aux discussions pour utiliser cette fonctionnalité.',
+
+        'VARIANT_DATE_SEPARATOR': ' / ', // Used in date format dropdown, eg: "Today, 13:37 / 01 Jan 2007, 13:37" ... to join a relative date with calendar date
+        'VIEWED': 'Vu',
+        'VIEWED_COUNTS': {
+            0: 'Pas encore vu',
+            1: 'Vu %d fois',
+            2: 'Vu %d fois' },
+
+        'VIEWING_CONTACT_ADMIN': 'Consulte la page de contact',
+        'VIEWING_FAQ': 'Consulte la FAQ',
+        'VIEWING_MEMBERS': 'Consulte les informations d’un membre',
+        'VIEWING_ONLINE': 'Regarde qui est en ligne',
+        'VIEWING_MCP': 'Consulte le panneau de modération',
+        'VIEWING_MEMBER_PROFILE': 'Consulte le profil d’un membre',
+        'VIEWING_PRIVATE_MESSAGES': 'Lit ses messages privés',
+        'VIEWING_REGISTER': 'S’enregistre',
+        'VIEWING_UCP': 'Consulte son panneau de l’utilisateur',
+        'VIEWS': 'Vues',
+        'VIEW_BOOKMARKS': 'Afficher les favoris',
+        'VIEW_FORUM_LOGS': 'Afficher le journal',
+        'VIEW_LATEST_POST': 'Voir le dernier message',
+        'VIEW_NEWEST_POST': 'Voir le premier message non lu',
+        'VIEW_NOTES': 'Notes sur le membre',
+        'VIEW_ONLINE_TIMES': {
+            1: 'd’après le nombre d’utilisateurs actifs cette dernière minute',
+            2: 'd’après le nombre d’utilisateurs actifs ces %d dernières minutes' },
+
+        'VIEW_TOPIC': 'Afficher le sujet',
+        'VIEW_TOPIC_ANNOUNCEMENT': 'Annonce : ',
+        'VIEW_TOPIC_GLOBAL': 'Annonce globale : ',
+        'VIEW_TOPIC_LOCKED': 'Verrouillé : ',
+        'VIEW_TOPIC_LOGS': 'Voir les journaux',
+        'VIEW_TOPIC_MOVED': 'Déplacé : ',
+        'VIEW_TOPIC_POLL': 'Sondage : ',
+        'VIEW_TOPIC_STICKY': 'Sujet épinglé : ',
+        'VISIT_WEBSITE': 'Visiter le site Internet',
+
+        'WARNINGS': 'Avertissements',
+        'WARN_USER': 'Avertir le membre',
+        'WATCH_FORUM_CONFIRM': 'Êtes-vous sûr de vouloir surveiller ce forum ?',
+        'WATCH_FORUM_DETAILED': 'Êtes-vous sûr de vouloir surveiller le forum « %s » ?',
+        'WATCH_TOPIC_CONFIRM': 'Êtes-vous sûr de vouloir surveiller ce sujet ?',
+        'WATCH_TOPIC_DETAILED': 'Êtes-vous sûr de vouloir surveiller le sujet « %s » ?',
+        'WELCOME_SUBJECT': 'Bienvenue sur les forums %s',
+        'WEBSITE': 'Site Internet',
+        'WHOIS': 'Whois',
+        'WHO_IS_ONLINE': 'Qui est en ligne',
+        'WRONG_PASSWORD': 'Vous avez saisi un mot de passe incorrect.',
+
+        'WRONG_DATA_COLOUR': 'La valeur saisie pour la couleur n’est pas valide.',
+        'WRONG_DATA_JABBER': 'Le nom que vous avez saisi n’est pas un nom de compte Jabber valide.',
+        'WRONG_DATA_LANG': 'La langue que vous avez indiquée n’est pas valide.',
+        'WRONG_DATA_POST_SD': 'Le sens du tri de messages que vous avez sélectionné n’est pas valide.',
+        'WRONG_DATA_POST_SK': 'L’option de tri de messages que vous avez sélectionnée n’est pas valide.',
+        'WRONG_DATA_TOPIC_SD': 'Le sens du tri de sujets que vous avez sélectionné n’est pas valide.',
+        'WRONG_DATA_TOPIC_SK': 'L’option de tri de sujets que vous avez sélectionnée n’est pas valide.',
+        'WROTE': 'a écrit',
+
+        'YAHOO': 'Yahoo Messenger',
+        'YOUTUBE': 'YouTube',
+        'YEAR': 'Année',
+        'YEAR_MONTH_DAY': '(AAAA-MM-JJ)',
+        'YES': 'Oui',
+        'YOU_LAST_VISIT': 'Dernière visite : %s',
+
+        'datetime': {
+            'TODAY': 'Aujourd’hui',
+            'TOMORROW': 'Demain',
+            'YESTERDAY': 'Hier',
+            'AGO': {
+                0: 'il y a moins d’une minute',
+                1: 'il y a %d minute',
+                2: 'il y a %d minutes' },
+
+
+            'Sunday': 'dimanche',
+            'Monday': 'lundi',
+            'Tuesday': 'mardi',
+            'Wednesday': 'mercredi',
+            'Thursday': 'jeudi',
+            'Friday': 'vendredi',
+            'Saturday': 'samedi',
+
+            'Sun': 'dim.',
+            'Mon': 'lun.',
+            'Tue': 'mar.',
+            'Wed': 'mer.',
+            'Thu': 'jeu.',
+            'Fri': 'ven.',
+            'Sat': 'sam.',
+
+            'January': 'janvier',
+            'February': 'février',
+            'March': 'mars',
+            'April': 'avril',
+            'May': 'mai',
+            'June': 'juin',
+            'July': 'juillet',
+            'August': 'août',
+            'September': 'septembre',
+            'October': 'octobre',
+            'November': 'novembre',
+            'December': 'décembre',
+
+            'Jan': 'janv.',
+            'Feb': 'févr.',
+            'Mar': 'mars',
+            'Apr': 'avr.',
+            'May_short': 'mai', // Short representation of "May". May_short used because in English the short and long date are the same for May.
+            'Jun': 'juin',
+            'Jul': 'juil.',
+            'Aug': 'août',
+            'Sep': 'sept.',
+            'Oct': 'oct.',
+            'Nov': 'nov.',
+            'Dec': 'déc.' },
+
+
+        // Timezones can be translated. We use this for the Etc/GMT timezones here,
+        // because they are named invers to their offset.
+        'timezones': {
+            'UTC': 'UTC',
+            'UTC_OFFSET': 'UTC%1$s',
+            'UTC_OFFSET_CURRENT': 'UTC%1$s - %2$s',
+
+            'Etc/GMT-12': 'UTC+12',
+            'Etc/GMT-11': 'UTC+11',
+            'Etc/GMT-10': 'UTC+10',
+            'Etc/GMT-9': 'UTC+9',
+            'Etc/GMT-8': 'UTC+8',
+            'Etc/GMT-7': 'UTC+7',
+            'Etc/GMT-6': 'UTC+6',
+            'Etc/GMT-5': 'UTC+5',
+            'Etc/GMT-4': 'UTC+4',
+            'Etc/GMT-3': 'UTC+3',
+            'Etc/GMT-2': 'UTC+2',
+            'Etc/GMT-1': 'UTC+1',
+            'Etc/GMT+1': 'UTC-1',
+            'Etc/GMT+2': 'UTC-2',
+            'Etc/GMT+3': 'UTC-3',
+            'Etc/GMT+4': 'UTC-4',
+            'Etc/GMT+5': 'UTC-5',
+            'Etc/GMT+6': 'UTC-6',
+            'Etc/GMT+7': 'UTC-7',
+            'Etc/GMT+8': 'UTC-8',
+            'Etc/GMT+9': 'UTC-9',
+            'Etc/GMT+10': 'UTC-10',
+            'Etc/GMT+11': 'UTC-11',
+            'Etc/GMT+12': 'UTC-12',
+
+            'Africa/Abidjan': 'Afrique/Abidjan',
+            'Africa/Accra': 'Afrique/Accra',
+            'Africa/Addis_Ababa': 'Afrique/Addis Ababa',
+            'Africa/Algiers': 'Afrique/Alger',
+            'Africa/Asmara': 'Afrique/Asmara',
+            'Africa/Bamako': 'Afrique/Bamako',
+            'Africa/Bangui': 'Afrique/Bangui',
+            'Africa/Banjul': 'Afrique/Banjul',
+            'Africa/Bissau': 'Afrique/Bissau',
+            'Africa/Blantyre': 'Afrique/Blantyre',
+            'Africa/Brazzaville': 'Afrique/Brazzaville',
+            'Africa/Bujumbura': 'Afrique/Bujumbura',
+            'Africa/Cairo': 'Afrique/Le Caire',
+            'Africa/Casablanca': 'Afrique/Casablanca',
+            'Africa/Ceuta': 'Afrique/Ceuta',
+            'Africa/Conakry': 'Afrique/Conakry',
+            'Africa/Dakar': 'Afrique/Dakar',
+            'Africa/Dar_es_Salaam': 'Afrique/Dar es Salaam',
+            'Africa/Djibouti': 'Afrique/Djibouti',
+            'Africa/Douala': 'Afrique/Douala',
+            'Africa/El_Aaiun': 'Afrique/El Aaiun',
+            'Africa/Freetown': 'Afrique/Freetown',
+            'Africa/Gaborone': 'Afrique/Gaborone',
+            'Africa/Harare': 'Afrique/Harare',
+            'Africa/Johannesburg': 'Afrique/Johannesburg',
+            'Africa/Juba': 'Afrique/Juba',
+            'Africa/Kampala': 'Afrique/Kampala',
+            'Africa/Khartoum': 'Afrique/Khartoum',
+            'Africa/Kigali': 'Afrique/Kigali',
+            'Africa/Kinshasa': 'Afrique/Kinshasa',
+            'Africa/Lagos': 'Afrique/Lagos',
+            'Africa/Libreville': 'Afrique/Libreville',
+            'Africa/Lome': 'Afrique/Lome',
+            'Africa/Luanda': 'Afrique/Luanda',
+            'Africa/Lubumbashi': 'Afrique/Lubumbashi',
+            'Africa/Lusaka': 'Afrique/Lusaka',
+            'Africa/Malabo': 'Afrique/Malabo',
+            'Africa/Maputo': 'Afrique/Maputo',
+            'Africa/Maseru': 'Afrique/Maseru',
+            'Africa/Mbabane': 'Afrique/Mbabane',
+            'Africa/Mogadishu': 'Afrique/Mogadishu',
+            'Africa/Monrovia': 'Afrique/Monrovia',
+            'Africa/Nairobi': 'Afrique/Nairobi',
+            'Africa/Ndjamena': 'Afrique/Ndjamena',
+            'Africa/Niamey': 'Afrique/Niamey',
+            'Africa/Nouakchott': 'Afrique/Nouakchott',
+            'Africa/Ouagadougou': 'Afrique/Ouagadougou',
+            'Africa/Porto-Novo': 'Afrique/Porto-Novo',
+            'Africa/Sao_Tome': 'Afrique/Sao Tome',
+            'Africa/Tripoli': 'Afrique/Tripoli',
+            'Africa/Tunis': 'Afrique/Tunis',
+            'Africa/Windhoek': 'Afrique/Windhoek',
+
+            'America/Adak': 'Amérique/Adak',
+            'America/Anchorage': 'Amérique/Anchorage',
+            'America/Anguilla': 'Amérique/Anguilla',
+            'America/Antigua': 'Amérique/Antigua',
+            'America/Araguaina': 'Amérique/Araguaina',
+
+            'America/Argentina/Buenos_Aires': 'Amérique/Argentine/Buenos Aires',
+            'America/Argentina/Catamarca': 'Amérique/Argentine/Catamarca',
+            'America/Argentina/Cordoba': 'Amérique/Argentine/Cordoba',
+            'America/Argentina/Jujuy': 'Amérique/Argentine/Jujuy',
+            'America/Argentina/La_Rioja': 'Amérique/Argentine/La Rioja',
+            'America/Argentina/Mendoza': 'Amérique/Argentine/Mendoza',
+            'America/Argentina/Rio_Gallegos': 'Amérique/Argentine/Rio Gallegos',
+            'America/Argentina/Salta': 'Amérique/Argentine/Salta',
+            'America/Argentina/San_Juan': 'Amérique/Argentine/San Juan',
+            'America/Argentina/San_Luis': 'Amérique/Argentine/San Luis',
+            'America/Argentina/Tucuman': 'Amérique/Argentine/Tucuman',
+            'America/Argentina/Ushuaia': 'Amérique/Argentine/Ushuaia',
+
+            'America/Aruba': 'Amérique/Aruba',
+            'America/Asuncion': 'Amérique/Asunción',
+            'America/Atikokan': 'Amérique/Atikokan',
+            'America/Bahia': 'Amérique/Bahia',
+            'America/Bahia_Banderas': 'Amérique/Bahia Banderas',
+            'America/Barbados': 'Amérique/Barbados',
+            'America/Belem': 'Amérique/Belem',
+            'America/Belize': 'Amérique/Belize',
+            'America/Blanc-Sablon': 'Amérique/Blanc-Sablon',
+            'America/Boa_Vista': 'Amérique/Boa Vista',
+            'America/Bogota': 'Amérique/Bogota',
+            'America/Boise': 'Amérique/Boise',
+            'America/Cambridge_Bay': 'Amérique/Cambridge Bay',
+            'America/Campo_Grande': 'Amérique/Campo Grande',
+            'America/Cancun': 'Amérique/Cancun',
+            'America/Caracas': 'Amérique/Caracas',
+            'America/Cayenne': 'Amérique/Cayenne',
+            'America/Cayman': 'Amérique/Cayman',
+            'America/Chicago': 'Amérique/Chicago',
+            'America/Chihuahua': 'Amérique/Chihuahua',
+            'America/Costa_Rica': 'Amérique/Costa Rica',
+            'America/Creston': 'Amérique/Creston',
+            'America/Cuiaba': 'Amérique/Cuiaba',
+            'America/Curacao': 'Amérique/Curacao',
+            'America/Danmarkshavn': 'Amérique/Danmarkshavn',
+            'America/Dawson': 'Amérique/Dawson',
+            'America/Dawson_Creek': 'Amérique/Dawson Creek',
+            'America/Denver': 'Amérique/Denver',
+            'America/Detroit': 'Amérique/Detroit',
+            'America/Dominica': 'Amérique/Dominica',
+            'America/Edmonton': 'Amérique/Edmonton',
+            'America/Eirunepe': 'Amérique/Eirunepe',
+            'America/El_Salvador': 'Amérique/El Salvador',
+            'America/Fortaleza': 'Amérique/Fortaleza',
+            'America/Glace_Bay': 'Amérique/Glace Bay',
+            'America/Godthab': 'Amérique/Godthab',
+            'America/Goose_Bay': 'Amérique/Goose Bay',
+            'America/Grand_Turk': 'Amérique/Grand Turk',
+            'America/Grenada': 'Amérique/Grenada',
+            'America/Guadeloupe': 'Amérique/Guadeloupe',
+            'America/Guatemala': 'Amérique/Guatemala',
+            'America/Guayaquil': 'Amérique/Guayaquil',
+            'America/Guyana': 'Amérique/Guyana',
+            'America/Halifax': 'Amérique/Halifax',
+            'America/Havana': 'Amérique/Havana',
+            'America/Hermosillo': 'Amérique/Hermosillo',
+            'America/Indiana/Indianapolis': 'Amérique/Indiana/Indianapolis',
+            'America/Indiana/Knox': 'Amérique/Indiana/Knox',
+            'America/Indiana/Marengo': 'Amérique/Indiana/Marengo',
+            'America/Indiana/Petersburg': 'Amérique/Indiana/Petersburg',
+            'America/Indiana/Tell_City': 'Amérique/Indiana/Tell City',
+            'America/Indiana/Vevay': 'Amérique/Indiana/Vevay',
+            'America/Indiana/Vincennes': 'Amérique/Indiana/Vincennes',
+            'America/Indiana/Winamac': 'Amérique/Indiana/Winamac',
+            'America/Inuvik': 'Amérique/Inuvik',
+            'America/Iqaluit': 'Amérique/Iqaluit',
+            'America/Jamaica': 'Amérique/Jamaïque',
+            'America/Juneau': 'Amérique/Juneau',
+            'America/Kentucky/Louisville': 'Amérique/Kentucky/Louisville',
+            'America/Kentucky/Monticello': 'Amérique/Kentucky/Monticello',
+            'America/Kralendijk': 'Amérique/Kralendijk',
+            'America/La_Paz': 'Amérique/La Paz',
+            'America/Lima': 'Amérique/Lima',
+            'America/Los_Angeles': 'Amérique/Los Angeles',
+            'America/Lower_Princes': 'Amérique/Lower Princes',
+            'America/Maceio': 'Amérique/Maceio',
+            'America/Managua': 'Amérique/Managua',
+            'America/Manaus': 'Amérique/Manaus',
+            'America/Marigot': 'Amérique/Marigot',
+            'America/Martinique': 'Amérique/Martinique',
+            'America/Matamoros': 'Amérique/Matamoros',
+            'America/Mazatlan': 'Amérique/Mazatlan',
+            'America/Menominee': 'Amérique/Menominee',
+            'America/Merida': 'Amérique/Mérida',
+            'America/Metlakatla': 'Amérique/Metlakatla',
+            'America/Mexico_City': 'Amérique/Mexico City',
+            'America/Miquelon': 'Amérique/Miquelon',
+            'America/Moncton': 'Amérique/Moncton',
+            'America/Monterrey': 'Amérique/Monterrey',
+            'America/Montevideo': 'Amérique/Montévidéo',
+            'America/Montreal': 'Amérique/Montréal',
+            'America/Montserrat': 'Amérique/Montserrat',
+            'America/Nassau': 'Amérique/Nassau',
+            'America/New_York': 'Amérique/New York',
+            'America/Nipigon': 'Amérique/Nipigon',
+            'America/Nome': 'Amérique/Nome',
+            'America/Noronha': 'Amérique/Noronha',
+            'America/North_Dakota/Beulah': 'Amérique/Dakota du Nord/Beulah',
+            'America/North_Dakota/Center': 'Amérique/Dakota du Nord/Center',
+            'America/North_Dakota/New_Salem': 'Amérique/Dakota du Nord/New Salem',
+            'America/Ojinaga': 'Amérique/Ojinaga',
+            'America/Panama': 'Amérique/Panama',
+            'America/Pangnirtung': 'Amérique/Pangnirtung',
+            'America/Paramaribo': 'Amérique/Paramaribo',
+            'America/Phoenix': 'Amérique/Phoenix',
+            'America/Port-au-Prince': 'Amérique/Port-au-Prince',
+            'America/Port_of_Spain': 'Amérique/Port of Spain',
+            'America/Porto_Velho': 'Amérique/Porto Velho',
+            'America/Puerto_Rico': 'Amérique/Puerto Rico',
+            'America/Rainy_River': 'Amérique/Rainy River',
+            'America/Rankin_Inlet': 'Amérique/Rankin Inlet',
+            'America/Recife': 'Amérique/Recife',
+            'America/Regina': 'Amérique/Regina',
+            'America/Resolute': 'Amérique/Resolute',
+            'America/Rio_Branco': 'Amérique/Rio Branco',
+            'America/Santa_Isabel': 'Amérique/Santa Isabel',
+            'America/Santarem': 'Amérique/Santarem',
+            'America/Santiago': 'Amérique/Santiago',
+            'America/Santo_Domingo': 'Amérique/Santo Domingo',
+            'America/Sao_Paulo': 'Amérique/Sao Paulo',
+            'America/Scoresbysund': 'Amérique/Scoresbysund',
+            'America/Shiprock': 'Amérique/Shiprock',
+            'America/Sitka': 'Amérique/Sitka',
+            'America/St_Barthelemy': 'Amérique/St. Barthelemy',
+            'America/St_Johns': 'Amérique/St. Johns',
+            'America/St_Kitts': 'Amérique/St. Kitts',
+            'America/St_Lucia': 'Amérique/St. Lucia',
+            'America/St_Thomas': 'Amérique/St. Thomas',
+            'America/St_Vincent': 'Amérique/St. Vincent',
+            'America/Swift_Current': 'Amérique/Swift Current',
+            'America/Tegucigalpa': 'Amérique/Tegucigalpa',
+            'America/Thule': 'Amérique/Thule',
+            'America/Thunder_Bay': 'Amérique/Thunder Bay',
+            'America/Tijuana': 'Amérique/Tijuana',
+            'America/Toronto': 'Amérique/Toronto',
+            'America/Tortola': 'Amérique/Tortola',
+            'America/Vancouver': 'Amérique/Vancouver',
+            'America/Whitehorse': 'Amérique/Whitehorse',
+            'America/Winnipeg': 'Amérique/Winnipeg',
+            'America/Yakutat': 'Amérique/Yakutat',
+            'America/Yellowknife': 'Amérique/Yellowknife',
+
+            'Antarctica/Casey': 'Antarctique/Casey',
+            'Antarctica/Davis': 'Antarctique/Davis',
+            'Antarctica/DumontDUrville': 'Antarctique/DumontDUrville',
+            'Antarctica/Macquarie': 'Antarctique/Macquarie',
+            'Antarctica/Mawson': 'Antarctique/Mawson',
+            'Antarctica/McMurdo': 'Antarctique/McMurdo',
+            'Antarctica/Palmer': 'Antarctique/Palmer',
+            'Antarctica/Rothera': 'Antarctique/Rothera',
+            'Antarctica/South_Pole': 'Antarctique/South Pole',
+            'Antarctica/Syowa': 'Antarctique/Syowa',
+            'Antarctica/Vostok': 'Antarctique/Vostok',
+
+            'Arctic/Longyearbyen': 'Arctique/Longyearbyen',
+
+            'Asia/Aden': 'Asie/Aden',
+            'Asia/Almaty': 'Asie/Almaty',
+            'Asia/Amman': 'Asie/Amman',
+            'Asia/Anadyr': 'Asie/Anadyr',
+            'Asia/Aqtau': 'Asie/Aqtau',
+            'Asia/Aqtobe': 'Asie/Aqtobe',
+            'Asia/Ashgabat': 'Asie/Ashgabat',
+            'Asia/Baghdad': 'Asie/Baghdad',
+            'Asia/Bahrain': 'Asie/Bahrain',
+            'Asia/Baku': 'Asie/Baku',
+            'Asia/Bangkok': 'Asie/Bangkok',
+            'Asia/Beirut': 'Asie/Beirut',
+            'Asia/Bishkek': 'Asie/Bishkek',
+            'Asia/Brunei': 'Asie/Brunei',
+            'Asia/Choibalsan': 'Asie/Choibalsan',
+            'Asia/Chongqing': 'Asie/Chongqing',
+            'Asia/Colombo': 'Asie/Colombo',
+            'Asia/Damascus': 'Asie/Damascus',
+            'Asia/Dhaka': 'Asie/Dhaka',
+            'Asia/Dili': 'Asie/Dili',
+            'Asia/Dubai': 'Asie/Dubaï',
+            'Asia/Dushanbe': 'Asie/Dushanbe',
+            'Asia/Gaza': 'Asie/Gaza',
+            'Asia/Harbin': 'Asie/Harbin',
+            'Asia/Hebron': 'Asie/Hébron',
+            'Asia/Ho_Chi_Minh': 'Asie/Ho Chi Minh',
+            'Asia/Hong_Kong': 'Asie/Hong Kong',
+            'Asia/Hovd': 'Asie/Hovd',
+            'Asia/Irkutsk': 'Asie/Irkutsk',
+            'Asia/Jakarta': 'Asie/Jakarta',
+            'Asia/Jayapura': 'Asie/Jayapura',
+            'Asia/Jerusalem': 'Asie/Jérusalem',
+            'Asia/Kabul': 'Asie/Kabul',
+            'Asia/Kamchatka': 'Asie/Kamchatka',
+            'Asia/Karachi': 'Asie/Karachi',
+            'Asia/Kashgar': 'Asie/Kashgar',
+            'Asia/Kathmandu': 'Asie/Kathmandu',
+            'Asia/Khandyga': 'Asie/Khandyga',
+            'Asia/Kolkata': 'Asie/Kolkata',
+            'Asia/Krasnoyarsk': 'Asie/Krasnoyarsk',
+            'Asia/Kuala_Lumpur': 'Asie/Kuala Lumpur',
+            'Asia/Kuching': 'Asie/Kuching',
+            'Asia/Kuwait': 'Asie/Kuwait',
+            'Asia/Macau': 'Asie/Macau',
+            'Asia/Magadan': 'Asie/Magadan',
+            'Asia/Makassar': 'Asie/Makassar',
+            'Asia/Manila': 'Asie/Manille',
+            'Asia/Muscat': 'Asie/Muscat',
+            'Asia/Nicosia': 'Asie/Nicosia',
+            'Asia/Novokuznetsk': 'Asie/Novokuznetsk',
+            'Asia/Novosibirsk': 'Asie/Novosibirsk',
+            'Asia/Omsk': 'Asie/Omsk',
+            'Asia/Oral': 'Asie/Oral',
+            'Asia/Phnom_Penh': 'Asie/Phnom Penh',
+            'Asia/Pontianak': 'Asie/Pontianak',
+            'Asia/Pyongyang': 'Asie/Pyongyang',
+            'Asia/Qatar': 'Asie/Qatar',
+            'Asia/Qyzylorda': 'Asie/Qyzylorda',
+            'Asia/Rangoon': 'Asie/Rangoon',
+            'Asia/Riyadh': 'Asie/Riyadh',
+            'Asia/Sakhalin': 'Asie/Sakhalin',
+            'Asia/Samarkand': 'Asie/Samarkand',
+            'Asia/Seoul': 'Asie/Seoul',
+            'Asia/Shanghai': 'Asie/Shanghai',
+            'Asia/Singapore': 'Asie/Singapore',
+            'Asia/Taipei': 'Asie/Taipei',
+            'Asia/Tashkent': 'Asie/Tashkent',
+            'Asia/Tbilisi': 'Asie/Tbilisi',
+            'Asia/Tehran': 'Asie/Tehran',
+            'Asia/Thimphu': 'Asie/Thimphu',
+            'Asia/Tokyo': 'Asie/Tokyo',
+            'Asia/Ulaanbaatar': 'Asie/Ulaanbaatar',
+            'Asia/Urumqi': 'Asie/Urumqi',
+            'Asia/Ust-Nera': 'Asie/Ust-Nera',
+            'Asia/Vientiane': 'Asie/Vientiane',
+            'Asia/Vladivostok': 'Asie/Vladivostok',
+            'Asia/Yakutsk': 'Asie/Yakutsk',
+            'Asia/Yekaterinburg': 'Asie/Yekaterinburg',
+            'Asia/Yerevan': 'Asie/Yerevan',
+
+            'Atlantic/Azores': 'Atlantique/Açores',
+            'Atlantic/Bermuda': 'Atlantique/Bermudes',
+            'Atlantic/Canary': 'Atlantique/Canaries',
+            'Atlantic/Cape_Verde': 'Atlantique/Cap Vert',
+            'Atlantic/Faroe': 'Atlantique/Féroé',
+            'Atlantic/Madeira': 'Atlantique/Madère',
+            'Atlantic/Reykjavik': 'Atlantique/Reykjavik',
+            'Atlantic/South_Georgia': 'Atlantique/South Georgia',
+            'Atlantic/St_Helena': 'Atlantique/St. Hélène',
+            'Atlantic/Stanley': 'Atlantique/Stanley',
+
+            'Australia/Adelaide': 'Australie/Adélaïde',
+            'Australia/Brisbane': 'Australie/Brisbane',
+            'Australia/Broken_Hill': 'Australie/Broken Hill',
+            'Australia/Currie': 'Australie/Currie',
+            'Australia/Darwin': 'Australie/Darwin',
+            'Australia/Eucla': 'Australie/Eucla',
+            'Australia/Hobart': 'Australie/Hobart',
+            'Australia/Lindeman': 'Australie/Lindeman',
+            'Australia/Lord_Howe': 'Australie/Lord Howe',
+            'Australia/Melbourne': 'Australie/Melbourne',
+            'Australia/Perth': 'Australie/Perth',
+            'Australia/Sydney': 'Australie/Sydney',
+
+            'Europe/Amsterdam': 'Europe/Amsterdam',
+            'Europe/Andorra': 'Europe/Andorre',
+            'Europe/Athens': 'Europe/Athènes',
+            'Europe/Belgrade': 'Europe/Belgrade',
+            'Europe/Berlin': 'Europe/Berlin',
+            'Europe/Bratislava': 'Europe/Bratislava',
+            'Europe/Brussels': 'Europe/Bruxelles',
+            'Europe/Bucharest': 'Europe/Bucharest',
+            'Europe/Budapest': 'Europe/Budapest',
+            'Europe/Busingen': 'Europe/Busingen',
+            'Europe/Chisinau': 'Europe/Chisinau',
+            'Europe/Copenhagen': 'Europe/Copenhage',
+            'Europe/Dublin': 'Europe/Dublin',
+            'Europe/Gibraltar': 'Europe/Gibraltar',
+            'Europe/Guernsey': 'Europe/Guernesey',
+            'Europe/Helsinki': 'Europe/Helsinki',
+            'Europe/Isle_of_Man': 'Europe/Île de Man',
+            'Europe/Istanbul': 'Europe/Istanbul',
+            'Europe/Jersey': 'Europe/Jersey',
+            'Europe/Kaliningrad': 'Europe/Kaliningrad',
+            'Europe/Kiev': 'Europe/Kiev',
+            'Europe/Lisbon': 'Europe/Lisbonne',
+            'Europe/Ljubljana': 'Europe/Ljubljana',
+            'Europe/London': 'Europe/Londres',
+            'Europe/Luxembourg': 'Europe/Luxembourg',
+            'Europe/Madrid': 'Europe/Madrid',
+            'Europe/Malta': 'Europe/Malte',
+            'Europe/Mariehamn': 'Europe/Mariehamn',
+            'Europe/Minsk': 'Europe/Minsk',
+            'Europe/Monaco': 'Europe/Monaco',
+            'Europe/Moscow': 'Europe/Moscou',
+            'Europe/Oslo': 'Europe/Oslo',
+            'Europe/Paris': 'Europe/Paris',
+            'Europe/Podgorica': 'Europe/Podgorica',
+            'Europe/Prague': 'Europe/Prague',
+            'Europe/Riga': 'Europe/Riga',
+            'Europe/Rome': 'Europe/Rome',
+            'Europe/Samara': 'Europe/Samara',
+            'Europe/San_Marino': 'Europe/San Marino',
+            'Europe/Sarajevo': 'Europe/Sarajevo',
+            'Europe/Simferopol': 'Europe/Simferopol',
+            'Europe/Skopje': 'Europe/Skopje',
+            'Europe/Sofia': 'Europe/Sofia',
+            'Europe/Stockholm': 'Europe/Stockholm',
+            'Europe/Tallinn': 'Europe/Tallinn',
+            'Europe/Tirane': 'Europe/Tirane',
+            'Europe/Uzhgorod': 'Europe/Uzhgorod',
+            'Europe/Vaduz': 'Europe/Vaduz',
+            'Europe/Vatican': 'Europe/Vatican',
+            'Europe/Vienna': 'Europe/Vienne',
+            'Europe/Vilnius': 'Europe/Vilnius',
+            'Europe/Volgograd': 'Europe/Volgograd',
+            'Europe/Warsaw': 'Europe/Warsaw',
+            'Europe/Zagreb': 'Europe/Zagreb',
+            'Europe/Zaporozhye': 'Europe/Zaporozhye',
+            'Europe/Zurich': 'Europe/Zurich',
+
+            'Indian/Antananarivo': 'Océan Indien/Antananarivo',
+            'Indian/Chagos': 'Océan Indien/Chagos',
+            'Indian/Christmas': 'Océan Indien/Christmas',
+            'Indian/Cocos': 'Océan Indien/Cocos',
+            'Indian/Comoro': 'Océan Indien/Comoro',
+            'Indian/Kerguelen': 'Océan Indien/Kerguélen',
+            'Indian/Mahe': 'Océan Indien/Mahe',
+            'Indian/Maldives': 'Océan Indien/Maldives',
+            'Indian/Mauritius': 'Océan Indien/Maurice',
+            'Indian/Mayotte': 'Océan Indien/Mayotte',
+            'Indian/Reunion': 'Océan Indien/Réunion',
+
+            'Pacific/Apia': 'Pacifique/Apia',
+            'Pacific/Auckland': 'Pacifique/Auckland',
+            'Pacific/Chatham': 'Pacifique/Chatham',
+            'Pacific/Chuuk': 'Pacifique/Chuuk',
+            'Pacific/Easter': 'Pacifique/Easter',
+            'Pacific/Efate': 'Pacifique/Efate',
+            'Pacific/Enderbury': 'Pacifique/Enderbury',
+            'Pacific/Fakaofo': 'Pacifique/Fakaofo',
+            'Pacific/Fiji': 'Pacifique/Fiji',
+            'Pacific/Funafuti': 'Pacifique/Funafuti',
+            'Pacific/Galapagos': 'Pacifique/Galapagos',
+            'Pacific/Gambier': 'Pacifique/Gambier',
+            'Pacific/Guadalcanal': 'Pacifique/Guadalcanal',
+            'Pacific/Guam': 'Pacifique/Guam',
+            'Pacific/Honolulu': 'Pacifique/Honolulu',
+            'Pacific/Johnston': 'Pacifique/Johnston',
+            'Pacific/Kiritimati': 'Pacifique/Kiritimati',
+            'Pacific/Kosrae': 'Pacifique/Kosrae',
+            'Pacific/Kwajalein': 'Pacifique/Kwajalein',
+            'Pacific/Majuro': 'Pacifique/Majuro',
+            'Pacific/Marquesas': 'Pacifique/Îles Marquises',
+            'Pacific/Midway': 'Pacifique/Midway',
+            'Pacific/Nauru': 'Pacifique/Nauru',
+            'Pacific/Niue': 'Pacifique/Niue',
+            'Pacific/Norfolk': 'Pacifique/Norfolk',
+            'Pacific/Noumea': 'Pacifique/Nouméa',
+            'Pacific/Pago_Pago': 'Pacifique/Pago Pago',
+            'Pacific/Palau': 'Pacifique/Palau',
+            'Pacific/Pitcairn': 'Pacifique/Pitcairn',
+            'Pacific/Pohnpei': 'Pacifique/Pohnpei',
+            'Pacific/Port_Moresby': 'Pacifique/Port Moresby',
+            'Pacific/Rarotonga': 'Pacifique/Rarotonga',
+            'Pacific/Saipan': 'Pacifique/Saipan',
+            'Pacific/Tahiti': 'Pacifique/Tahiti',
+            'Pacific/Tarawa': 'Pacifique/Tarawa',
+            'Pacific/Tongatapu': 'Pacifique/Tongatapu',
+            'Pacific/Wake': 'Pacifique/Wake',
+            'Pacific/Wallis': 'Pacifique/Wallis' },
+
+
+        // The value is only an example and will get replaced by the current time on view
+        'dateformats': {
+            'd M Y, H:i': '01 janv. 2007, 13:37',
+            'd M Y H:i': '01 janv. 2007 13:37',
+            'M jS, \'y, H:i': 'janv. 1er, \'07, 13:37',
+            'D M d, Y g:i a': 'lun janv. 01, 2007 1:37 pm',
+            'F jS, Y, g:i a': 'janvier 1er, 2007, 1:37 pm',
+            '|d M Y|, H:i': '[Jours relatifs], 13:37 / 01 janv. 2007, 13:37',
+            '|F jS, Y|, g:i a': '[Jours relatifs], 1:37 pm / janvier 1er, 2007, 1:37 pm' },
+
+
+        // The default dateformat which will be used on new installs in this language
+        // Translators should change this if a the usual date format is different
+        'default_dateformat': 'D j M Y H:i' // lun 10 janv. 2007 13:37
+    } };
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default =
+
+{
+    COMMON: {
+        'TRANSLATION_INFO': 'Traduit par <a href="http://www.phpbb-fr.com">phpBB-fr.com</a>',
+        'DIRECTION': 'ltr',
+        'DATE_FORMAT': '|d M Y|', // 01 janv. 2007 (with Relative days enabled)
+        'DATETIME_FORMAT': '|d M Y, H:i|', // 01 janv. 2007, 13:37 (with Relative days enabled)
+        'USER_LANG': 'fr',
+
+        // You can define different rules for the determination of plural forms here.
+        // See http://wiki.phpbb.com/Plural_Rules for more information
+        // or ask the translation manager for help.
+        'PLURAL_RULE': 2,
+
+        '1_DAY': '1 jour',
+        '1_MONTH': '1 mois',
+        '1_YEAR': '1 an',
+        '2_WEEKS': '2 semaines',
+        '3_MONTHS': '3 mois',
+        '6_MONTHS': '6 mois',
+        '7_DAYS': '7 jours',
+
+        'ACCOUNT_ALREADY_ACTIVATED': 'Votre compte est déjà activé.',
+        'ACCOUNT_DEACTIVATED': 'Votre compte a été désactivé manuellement et n’est réactivable que par un administrateur.',
+        'ACCOUNT_NOT_ACTIVATED': 'Votre compte n’a pas encore été activé.',
+        'ACP': 'Panneau d’administration',
+        'ACP_SHORT': 'PCA',
+        'ACTIVE': 'Actif',
+        'ACTIVE_ERROR': 'Le nom d’utilisateur indiqué est actuellement inactif. Si vous avez des problèmes pour activer votre compte, contactez l’administrateur du forum.',
+        'ADMINISTRATOR': 'Administrateur',
+        'ADMINISTRATORS': 'Administrateurs',
+        'AGE': 'Âge',
+        'AIM': 'AIM',
+        'AJAX_ERROR_TITLE': 'Erreur AJAX',
+        'AJAX_ERROR_TEXT': 'Quelque chose s’est mal passé lors du traitement de votre demande.',
+        'AJAX_ERROR_TEXT_ABORT': 'Requête annulée par l’utilisateur.',
+        'AJAX_ERROR_TEXT_TIMEOUT': 'Votre demande a expiré. Essayez à nouveau.',
+        'AJAX_ERROR_TEXT_PARSERERROR': 'Quelque chose s’est mal passé lors du traitement de votre demande et le serveur a renvoyé une réponse invalide.',
+        'ALLOWED': 'Autorisé',
+        'ALL_FILES': 'Tous les fichiers',
+        'ALL_FORUMS': 'Tous les forums',
+        'ALL_MESSAGES': 'Tous les messages',
+        'ALL_POSTS': 'Tous',
+        'ALL_TIMES': 'Heures au format <span title="%2$s">%1$s</span>',
+        'ALL_TOPICS': 'Tous',
+        'ALT_TEXT': 'Texte alternatif',
+        'AND': 'et',
+        'ARE_WATCHING_FORUM': 'Vous surveillez maintenant les nouveaux messages de ce forum.',
+        'ARE_WATCHING_TOPIC': 'Vous surveillez maintenant les nouveaux messages de ce sujet.',
+        'ASCENDING': 'Croissant',
+        'ATTACHMENTS': 'Fichiers joints',
+        'ATTACHED_IMAGE_NOT_IMAGE': 'Le fichier image que vous essayez de joindre n’est pas valide.',
+        'AUTHOR': 'Auteur',
+        'AUTH_NO_PROFILE_CREATED': 'Impossible de créer le nouveau profil du membre.',
+        'AUTH_PROVIDER_OAUTH_ERROR_INVALID_ENTRY': 'Entrée de base de données non valide.',
+        'AUTH_PROVIDER_OAUTH_ERROR_INVALID_SERVICE_TYPE': 'Le type de service founit au gestionnaire de service OAuth n’est pas valide.',
+        'AUTH_PROVIDER_OAUTH_ERROR_SERVICE_NOT_CREATED': 'Le service OAuth n’a pas été créé.',
+        'AUTH_PROVIDER_OAUTH_SERVICE_BITLY': 'Bitly',
+        'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK': 'Facebook',
+        'AUTH_PROVIDER_OAUTH_SERVICE_GOOGLE': 'Google',
+        'AUTH_PROVIDER_OAUTH_SERVICE_TWITTER': 'Twitter',
+        'AUTH_PROVIDER_OAUTH_TOKEN_ERROR_NOT_STORED': 'Le jeton OAuth n’a pas été mémorisé.',
+        'AUTH_PROVIDER_OAUTH_TOKEN_ERROR_INCORRECTLY_STORED': 'Le jeton OAuth n’a pas été mémorisé correctement.',
+        'AVATAR_DISALLOWED_CONTENT': 'Le transfert a été interrompu car le contenu du fichier a été identifié comme étant un vecteur potentiel d’attaque.',
+        'AVATAR_DISALLOWED_EXTENSION': 'Ce fichier ne peut pas être affiché car l’extension <strong>%s</strong> n’est pas autorisée.',
+        'AVATAR_EMPTY_REMOTE_DATA': 'L’avatar indiqué n’a pas pu être transféré car les données distantes semblent être invalides ou corrompues.',
+        'AVATAR_EMPTY_FILEUPLOAD': 'Le fichier avatar transféré est vide.',
+        'AVATAR_INVALID_FILENAME': '%s n’est pas un nom de fichier valide.',
+        'AVATAR_NOT_UPLOADED': 'L’avatar n’a pas pu être transféré.',
+        'AVATAR_NO_TEMP_DIR': 'Le répertoire temporaire n’existe pas ou n’est pas accessible en écriture.',
+        'AVATAR_NO_SIZE': 'Impossible de déterminer la largeur ou la hauteur de l’avatar lié, saisissez-les manuellement.',
+        'AVATAR_PARTIAL_UPLOAD': 'Le fichier n’a pu être que partiellement transféré.',
+        'AVATAR_PHP_SIZE_NA': 'Le fichier image de l’avatar est trop volumineux.<br />Le maximum réglé dans php.ini n’a pas pu être déterminé.',
+        'AVATAR_PHP_SIZE_OVERRUN': 'Le fichier image de l’avatar est trop volumineux. Le maximum autorisée est %1$d %2$s.<br />Notez que ce paramètre est inscrit dans php.ini et ne peut pas être dépassé.',
+        'AVATAR_REMOTE_UPLOAD_TIMEOUT': 'Le fichier image de l’avatar n’a pas pu être transféré parce que le délai d’attente de la demande a expiré.',
+        'AVATAR_PHP_UPLOAD_STOPPED': 'Une extension PHP a arrêté le transfert du fichier.',
+        'AVATAR_URL_INVALID': 'L’adresse URL indiquée n’est pas valide.',
+        'AVATAR_URL_NOT_FOUND': 'Le fichier indiqué est introuvable.',
+        'AVATAR_WRONG_FILESIZE': 'Le fichier image de l’avatar doit être compris entre 0 et %1$d %2$s.',
+        'AVATAR_WRONG_SIZE': 'L’avatar envoyé a une largeur de %5$s et une hauteur de %6$s. Les avatars doivent faire au moins %1$s de large et %2$s de haut, mais au plus %3$s de large et %4$s de haut.',
+
+        'BACK_TO_TOP': 'Haut',
+        'BACK_TO_PREV': 'Retour à la page précédente',
+        'BAN_TRIGGERED_BY_EMAIL': 'Votre adresse e-mail a été bannie.',
+        'BAN_TRIGGERED_BY_IP': 'Votre adresse IP a été bannie.',
+        'BAN_TRIGGERED_BY_USER': 'Votre nom d’utilisateur a été banni.',
+        'BBCODE_GUIDE': 'Guide du BBCode',
+        'BCC': 'CCI',
+        'BIRTHDAYS': 'Anniversaires',
+        'BOARD_BAN_PERM': 'Vous avez été banni <strong>définitivement</strong> de ce forum.<br /><br />Contactez l’%2$sAdministrateur du forum%3$s pour plus d’informations.',
+        'BOARD_BAN_REASON': 'Raison du bannissement : <strong>%s</strong>',
+        'BOARD_BAN_TIME': 'Vous avez été banni de ce forum jusqu’au <strong>%1$s</strong>.<br /><br />Contactez l’%2$sAdministrateur du forum%3$s pour plus d’informations.',
+        'BOARD_DISABLE': 'Désolé, mais ce forum est actuellement indisponible.',
+        'BOARD_DISABLED': 'Ce forum est actuellement désactivé.',
+        'BOARD_UNAVAILABLE': 'Désolé, mais le forum est temporairement indisponible, réessayez dans quelques minutes.',
+        'BROWSING_FORUM': 'Utilisateurs parcourant ce forum : %1$s',
+        'BROWSING_FORUM_GUESTS': {
+            1: 'Utilisateurs parcourant ce forum : %2$s et %1$d invité',
+            2: 'Utilisateurs parcourant ce forum : %2$s et %1$d invités' },
+
+        'BUTTON_EDIT': 'Modifier',
+        'BUTTON_FORUM_LOCKED': 'Verrouillé',
+        'BUTTON_NEW_TOPIC': 'Nouveau sujet',
+        'BUTTON_PM': 'MP',
+        'BUTTON_PM_FORWARD': 'Transférer',
+        'BUTTON_PM_NEW': 'Nouveau MP',
+        'BUTTON_PM_REPLY': 'Répondre',
+        'BUTTON_PM_REPLY_ALL': 'Répondre à tous',
+        'BUTTON_POST_REPLY': 'Répondre',
+        'BUTTON_QUOTE': 'Citer',
+        'BUTTON_TOPIC_LOCKED': 'Verrouillé',
+        'BYTES': 'Octets',
+        'BYTES_SHORT': 'o',
+
+        'CANCEL': 'Annuler',
+        'CHANGE': 'Modifier',
+        'CHANGE_FONT_SIZE': 'Modifier la taille de la police',
+        'CHANGING_PREFERENCES': 'Modifie les préférences du forum',
+        'CHANGING_PROFILE': 'Modifie son profil',
+        'CHARACTERS': {
+            1: '%d caractère',
+            2: '%d caractères' },
+
+        'COLLAPSE_VIEW': 'Réduire la vue',
+        'CLOSE_WINDOW': 'Fermer la fenêtre',
+        'COLOUR_SWATCH': 'Palette de couleurs',
+        'COLON': ' :',
+        'COMMA_SEPARATOR': ', ', // Used in pagination of ACP & prosilver, use localised comma if appropriate, eg: Ideographic or Arabic
+        'CONFIRM': 'Confirmer',
+        'CONFIRM_CODE': 'Code de confirmation',
+        'CONFIRM_CODE_EXPLAIN': 'Saisissez le code exactement comme vous le voyez dans l’image. Notez que le code n’est pas sensible à la casse.',
+        'CONFIRM_CODE_WRONG': 'Le code de confirmation que vous avez saisi est incorrect.',
+        'CONFIRM_OPERATION': 'Êtes-vous sûr de vouloir effectuer cette opération ?',
+        'CONFIRM_AVATAR_DELETE': 'Êtes-vous sûr de vouloir supprimer cet avatar ?',
+        'CONGRATULATIONS': 'Félicitations à',
+        'CONNECTION_FAILED': 'La connexion a échoué.',
+        'CONNECTION_SUCCESS': 'Vous êtes connecté !',
+        'CONTACT': 'Contact',
+        'CONTACT_USER': 'Contacter %s',
+        'CONTACT_US': 'Nous contacter',
+        'COOKIE_CONSENT_INFO': 'En savoir plus',
+        'COOKIE_CONSENT_MSG': 'En poursuivant votre navigation, vous acceptez l’utilisation de cookies.',
+        'COOKIE_CONSENT_OK': 'OK',
+        'COOKIE_CONSENT_HREF': 'https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi',
+        'COOKIES_DELETED': 'Tous les cookies du forum ont été supprimés.',
+        'CURRENT_TIME': 'Nous sommes le %s',
+
+        'DAY': 'Jour',
+        'DAYS': 'jours',
+        'DELETE': 'Supprimer',
+        'DELETE_ALL': 'Tout supprimer',
+        'DELETE_COOKIES': 'Supprimer les cookies du forum',
+        'DELETE_MARKED': 'Supprimer la sélection',
+        'DELETE_POST': 'Supprimer le message',
+        'DELIMITER': 'Séparateur',
+        'DESCENDING': 'Décroissant',
+        'DISABLED': 'Désactivé',
+        'DISPLAY': 'Afficher',
+        'DISPLAY_GUESTS': 'Afficher les invités',
+        'DISPLAY_MESSAGES': 'Afficher les messages postés depuis',
+        'DISPLAY_POSTS': 'Afficher les messages postés depuis',
+        'DISPLAY_TOPICS': 'Afficher les sujets postés depuis',
+        'DOWNLOADED': 'Téléchargé',
+        'DOWNLOADING_FILE': 'Téléchargement en cours',
+        'DOWNLOAD_COUNTS': {
+            0: 'Pas encore téléchargé',
+            1: 'Téléchargé %d fois',
+            2: 'Téléchargé %d fois' },
+
+
+        'EDIT_POST': 'Modifier le message',
+        'ELLIPSIS': '…',
+        'EMAIL': 'E-mail', // Short form for EMAIL_ADDRESS
+        'EMAIL_ADDRESS': 'Adresse e-mail',
+        'EMAIL_INVALID_EMAIL': 'L’adresse e-mail que vous avez saisie n’est pas valide.',
+        'EMAIL_SMTP_ERROR_RESPONSE': 'Un problème est survenu lors de l’envoi de l’e-mail à la <strong>ligne %1$s</strong>. Réponse : %2$s.',
+        'EMPTY_SUBJECT': 'Vous devez indiquer un titre pour poster un nouveau sujet.',
+        'EMPTY_MESSAGE_SUBJECT': 'Vous devez indiquer un sujet quand vous envoyez un nouveau message.',
+        'ENABLED': 'Activé',
+        'ENCLOSURE': 'Clôture',
+        'ENTER_USERNAME': 'Saisissez le nom d’utilisateur',
+        'ERR_CHANGING_DIRECTORY': 'Impossible de changer de répertoire.',
+        'ERR_CONNECTING_SERVER': 'Erreur de connexion au serveur.',
+        'ERR_JAB_AUTH': 'Impossible de s’authentifier sur le serveur Jabber.',
+        'ERR_JAB_CONNECT': 'Impossible de se connecter sur le serveur Jabber.',
+        'ERR_UNABLE_TO_LOGIN': 'Le nom d’utilisateur ou le mot de passe indiqué est incorrect.',
+        'ERR_UNWATCHING': 'Une erreur est survenue lors de l’arrêt de la surveillance.',
+        'ERR_WATCHING': 'Une erreur est survenue lors de l’activation de la surveillance.',
+        'ERR_WRONG_PATH_TO_PHPBB': 'Le chemin phpBB indiqué ne semble pas être valide.',
+        'ERROR': 'Erreur',
+        'EXPAND_VIEW': 'Étendre la vue',
+        'EXTENSION': 'Extension',
+        'EXTENSION_DISABLED': 'L’extension <strong>%s</strong> n’est pas activée.',
+        'EXTENSION_DISABLED_AFTER_POSTING': 'L’extension <strong>%s</strong> a été désactivée et ne peut plus être affichée.',
+        'EXTENSION_DOES_NOT_EXIST': 'L’extension <strong>%s</strong> n’existe pas.',
+
+        'FACEBOOK': 'Facebook',
+        'FAQ': 'FAQ',
+        'FAQ_EXPLAIN': 'Foire aux questions (Questions posées fréquemment)',
+        'FEATURE_NOT_AVAILABLE': 'La fonctionnalité demandée n’est pas disponible sur ce forum.',
+        'FILENAME': 'Nom',
+        'FILESIZE': 'Taille',
+        'FILEDATE': 'Date',
+        'FILE_COMMENT': 'Commentaire',
+        'FILE_CONTENT_ERR': 'Impossible de lire le contenu du fichier : %s',
+        'FILE_JSON_DECODE_ERR': 'Impossible de décoder le fichier JSON : %s',
+        'FILE_NOT_FOUND': 'Le fichier recherché est introuvable : %s',
+        'FIND_USERNAME': 'Rechercher un membre',
+        'FOLDER': 'Dossier',
+        'FORGOT_PASS': 'J’ai oublié mon mot de passe',
+        'FORM_INVALID': 'Le formulaire envoyé n’est pas valide. Essayez à nouveau.',
+        'FORUM': 'Forum',
+        'FORUMS': 'Forums',
+        'FORUMS_MARKED': 'Les forums ont été marqués comme lus.',
+        'FORUM_CAT': 'Catégorie du forum',
+        'FORUM_INDEX': 'Index du forum',
+        'FORUM_LINK': 'Forum-lien',
+        'FORUM_LOCATION': 'Localisation sur le forum',
+        'FORUM_LOCKED': 'Forum verrouillé',
+        'FORUM_RULES': 'Règles du forum',
+        'FORUM_RULES_LINK': 'Cliquez pour voir les règles du forum',
+        'FROM': 'de',
+        'FSOCK_DISABLED': 'Impossible de finir cette opération car la fonction <var>fsockopen</var> est désactivée ou le serveur requis n’a pas pu être trouvé.',
+        'FSOCK_TIMEOUT': 'Le temps d’attente a été dépassé lors de la lecture du flux réseau.',
+
+        'FTP_FSOCK_HOST': 'Serveur FTP',
+        'FTP_FSOCK_HOST_EXPLAIN': 'Serveur FTP utilisé pour se connecter à votre site.',
+        'FTP_FSOCK_PASSWORD': 'Mot de passe FTP',
+        'FTP_FSOCK_PASSWORD_EXPLAIN': 'Mot de passe pour votre compte FTP.',
+        'FTP_FSOCK_PORT': 'Port FTP',
+        'FTP_FSOCK_PORT_EXPLAIN': 'Port utilisé pour se connecter à votre serveur.',
+        'FTP_FSOCK_ROOT_PATH': 'Chemin vers phpBB',
+        'FTP_FSOCK_ROOT_PATH_EXPLAIN': 'Chemin depuis la racine vers votre forum phpBB.',
+        'FTP_FSOCK_TIMEOUT': 'Temps d’attente FTP',
+        'FTP_FSOCK_TIMEOUT_EXPLAIN': 'La durée en secondes pendant laquelle le système attendra une réponse de votre serveur.',
+        'FTP_FSOCK_USERNAME': 'Nom d’utilisateur FTP',
+        'FTP_FSOCK_USERNAME_EXPLAIN': 'Nom d’utilisateur utilisé pour se connecter à votre serveur.',
+
+        'FTP_HOST': 'Serveur FTP',
+        'FTP_HOST_EXPLAIN': 'Serveur FTP utilisé pour se connecter à votre site.',
+        'FTP_PASSWORD': 'Mot de passe FTP',
+        'FTP_PASSWORD_EXPLAIN': 'Mot de passe pour votre compte FTP.',
+        'FTP_PORT': 'Port FTP',
+        'FTP_PORT_EXPLAIN': 'Port utilisé pour se connecter à votre serveur.',
+        'FTP_ROOT_PATH': 'Chemin vers phpBB',
+        'FTP_ROOT_PATH_EXPLAIN': 'Chemin depuis la racine vers votre forum phpBB.',
+        'FTP_TIMEOUT': 'Temps d’attente FTP',
+        'FTP_TIMEOUT_EXPLAIN': 'La durée en secondes que le système attendra pour une réponse de votre serveur.',
+        'FTP_USERNAME': 'Nom d’utilisateur FTP',
+        'FTP_USERNAME_EXPLAIN': 'Nom d’utilisateur utilisé pour se connecter à votre serveur.',
+
+        'GENERAL_ERROR': 'Erreur générale',
+        'GB': 'Go',
+        'GIB': 'Gio',
+        'GO': 'Aller',
+        'GOOGLEPLUS': 'Google+',
+        'GOTO_FIRST_POST': 'Aller au premier message',
+        'GOTO_LAST_POST': 'Aller au dernier message',
+        'GOTO_PAGE': 'Aller à la page',
+        'GROUP': 'Groupe',
+        'GROUPS': 'Groupes',
+        'GROUP_ERR_TYPE': 'Le type de groupe indiqué est inapproprié.',
+        'GROUP_ERR_USERNAME': 'Aucun nom de groupe indiqué.',
+        'GROUP_ERR_USER_LONG': 'Les noms de groupe ne peuvent pas dépasser 60 caractères. Le nom du groupe indiqué est trop long.',
+        'GUEST': 'Invité',
+        'GUEST_USERS_ONLINE': {
+            1: 'Il y a %d invité en ligne',
+            2: 'Il y a %d invités en ligne' },
+
+        'GUEST_USERS_TOTAL': {
+            1: '%d invité',
+            2: '%d invités' },
+
+        'G_ADMINISTRATORS': 'Administrateurs',
+        'G_BOTS': 'Robots',
+        'G_GUESTS': 'Invités',
+        'G_REGISTERED': 'Utilisateurs enregistrés',
+        'G_REGISTERED_COPPA': 'Utilisateurs COPPA enregistrés',
+        'G_GLOBAL_MODERATORS': 'Modérateurs globaux',
+        'G_NEWLY_REGISTERED': 'Nouveaux utilisateurs enregistrés',
+
+        'HIDDEN_USERS_ONLINE': {
+            1: '%d membre invisible',
+            2: '%d membres invisibles' },
+
+        'HIDDEN_USERS_TOTAL': {
+            1: '%d invisible',
+            2: '%d invisibles' },
+
+        'HIDE_GUESTS': 'Masquer les invités',
+        'HIDE_ME': 'Cacher mon statut en ligne pour cette session',
+        'HOURS': 'Heures',
+        'HOME': 'Accueil',
+
+        'ICQ': 'ICQ',
+        'IF': 'Si',
+        'IMAGE': 'Image',
+        'IMAGE_FILETYPE_INVALID': 'Le type de fichier image %d pour le type mime %s n’est pas supporté.',
+        'IMAGE_FILETYPE_MISMATCH': 'Type de fichier image incorrect : l’extension %1$s était attendue mais l’extension %2$s a été trouvée.',
+        'IN': 'dans',
+        'INACTIVE': 'Inactif',
+        'INDEX': 'Page d’index',
+        'INFORMATION': 'Informations',
+        'INSECURE_REDIRECT': 'Vous avez tenté de rediriger vers une URL potentiellement dangereuse.',
+        'INTERESTS': 'Centres d’intérêt',
+        'INVALID_DIGEST_CHALLENGE': 'Défi invalide.',
+        'INVALID_EMAIL_LOG': '<strong>%s</strong> est peut-être une adresse invalide ?',
+        'INVALID_FEED_ATTACHMENTS': 'Le flux sélectionné a tenté de récupérer la liste des fichiers joints avec des paramètres non valides.',
+        'INVALID_PLURAL_RULE': 'La règle de pluriel choisie n’est pas valide. La valeur doit être un entier compris entre 0 et 15.',
+        'IP': 'IP',
+        'IP_BLACKLISTED': 'Votre IP %1$s a été bloquée car elle est dans la liste noire. Pour plus d’informations, consultez <a href="%2$s">%2$s</a>.',
+
+        'JABBER': 'Jabber',
+        'JOINED': 'Enregistré le',
+        'JUMP_PAGE': 'Saisissez le numéro de page où vous souhaitez aller.',
+        'JUMP_TO': 'Aller à',
+        'JUMP_TO_PAGE': 'Aller à la page',
+        'JUMP_TO_PAGE_CLICK': 'Cliquer pour aller à la page…',
+
+        'KB': 'Ko',
+        'KIB': 'Kio',
+
+        'LAST_POST': 'Dernier message',
+        'LAST_UPDATED': 'Dernière mise à jour',
+        'LAST_VISIT': 'Dernière visite',
+        'LDAP_NO_LDAP_EXTENSION': 'Extension LDAP indisponible.',
+        'LDAP_NO_SERVER_CONNECTION': 'Impossible de se connecter au serveur LDAP.',
+        'LDAP_SEARCH_FAILED': 'Une erreur est survenue pendant la recherche du répertoire LDAP.',
+        'LEGEND': 'Légende',
+        'LIVE_SEARCHES_NOT_ALLOWED': 'La recherche dynamique n’est pas autorisée.',
+        'LOADING': 'Chargement en cours…',
+        'LOCATION': 'Localisation',
+        'LOCK_POST': 'Verrouiller le message',
+        'LOCK_POST_EXPLAIN': 'Empêche la modification du message',
+        'LOCK_TOPIC': 'Verrouiller le sujet',
+        'LOGIN': 'Connexion',
+        'LOGIN_CHECK_PM': 'Se connecter pour vérifier ses messages privés.',
+        'LOGIN_CONFIRMATION': 'Confirmation de connexion',
+        'LOGIN_CONFIRM_EXPLAIN': 'Pour éviter une usurpation des comptes, l’administrateur du forum exige que vous saisissiez un code de confirmation visuel après un certain nombre d’échecs. Le code est indiqué dans l’image que vous devez voir ci-dessous. Si vous êtes déficient visuel ou que vous ne pouvez pas lire ce code, contactez %sl’administrateur%s du forum.', // unused
+        'LOGIN_ERROR_ATTEMPTS': 'Vous avez dépassé le nombre maximum autorisé de tentatives de connexion. En plus de votre nom d’utilisateur et de votre mot de passe, vous devez également résoudre le CAPTCHA ci-dessous.',
+        'LOGIN_ERROR_EXTERNAL_AUTH_APACHE': 'Vous n’avez pas été authentifié par Apache.',
+        'LOGIN_ERROR_OAUTH_SERVICE_DOES_NOT_EXIST': 'Le service OAuth demandé n’existe pas.',
+        'LOGIN_ERROR_PASSWORD': 'Vous avez indiqué un mot de passe incorrect. Vérifiez votre mot de passe et réessayez. Si vous continuez à rencontrer des problèmes, contactez l’%sadministrateur du forum%s.',
+        'LOGIN_ERROR_PASSWORD_CONVERT': 'Il n’a pas été possible de convertir votre mot de passe lors de la mise à jour du forum. %sRedemandez un mot de passe%s. Si le problème persiste, contactez l’%sadministrateur du forum%s.',
+        'LOGIN_ERROR_USERNAME': 'Vous avez indiqué un nom d’utilisateur incorrect. Vérifiez votre nom d’utilisateur et réessayez. Si vous continuez à rencontrer des problèmes, contactez l’%sadministrateur du forum%s.',
+        'LOGIN_FORUM': 'Pour lire ou poster dans ce forum, vous devez saisir son mot de passe.',
+        'LOGIN_INFO': 'Vous devez être enregistré pour vous connecter. L’enregistrement ne prend que quelques secondes et augmente vos possibilités. L’administrateur du forum peut également accorder des permissions additionnelles aux membres du forum. Avant de vous enregistrer, assurez-vous d’avoir pris connaissance de nos conditions d’utilisation et de notre politique de vie privée. Assurez-vous de bien lire tout le règlement du forum.',
+        'LOGIN_VIEWFORUM': 'L’administrateur du forum exige que vous soyez enregistré et connecté pour lire ce forum.',
+        'LOGIN_EXPLAIN_EDIT': 'Pour modifier des messages dans ce forum, vous devez être enregistré et connecté.',
+        'LOGIN_EXPLAIN_VIEWONLINE': 'Pour consulter la liste des utilisateurs en ligne, vous devez être enregistré et connecté.',
+        'LOGIN_REQUIRED': 'Vous devez vous connecter pour effectuer cette action.',
+        'LOGOUT': 'Déconnexion',
+        'LOGOUT_USER': 'Déconnexion [ %s ]',
+        'LOG_ME_IN': 'Se souvenir de moi',
+
+        'MAIN': 'Principal',
+        'MARK': 'Cocher',
+        'MARK_ALL': 'Tout cocher',
+        'MARK_ALL_READ': 'Marquer tout comme lu',
+        'MARK_FORUMS_READ': 'Marquer tous les forums comme lus',
+        'MARK_READ': 'Marquer comme lu',
+        'MARK_SUBFORUMS_READ': 'Marquer tous les sous-forums comme lus',
+        'MB': 'Mo',
+        'MIB': 'Mio',
+        'MCP': 'Panneau de modération',
+        'MCP_SHORT': 'PCM',
+        'MEMBERLIST': 'Membres',
+        'MEMBERLIST_EXPLAIN': 'Voir la liste complète des membres',
+        'MERGE': 'Fusionner',
+        'MERGE_POSTS': 'Déplacer les messages',
+        'MERGE_TOPIC': 'Fusionner le sujet',
+        'MESSAGE': 'Message',
+        'MESSAGES': 'Messages',
+        'MESSAGES_COUNT': {
+            1: '%d message',
+            2: '%d messages' },
+
+        'MESSAGE_BODY': 'Corps du message',
+        'MINUTES': 'Minutes',
+        'MODERATE': 'Modérer',
+        'MODERATOR': 'Modérateur',
+        'MODERATORS': 'Modérateurs',
+        'MODULE_NOT_ACCESS': 'Module non accessible',
+        'MODULE_NOT_FIND': 'Impossible de trouver le module « %s »',
+        'MODULE_FILE_INCORRECT_CLASS': 'Le fichier du module « %s » ne contient pas la classe [%s].',
+        'MONTH': 'Mois',
+        'MOVE': 'Déplacer',
+
+        'NA': 'N/A',
+        'NEWEST_USER': 'Le membre enregistré le plus récent est <strong>%s</strong>.',
+        'NEW_MESSAGE': 'Nouveau message',
+        'NEW_MESSAGES': 'Nouveaux messages',
+        'NEW_POST': 'Nouveau message', // Not used anymore
+        'NEW_POSTS': 'Nouveaux messages', // Not used anymore
+        'NEXT': 'Suivante', // Used in pagination
+        'NEXT_STEP': 'Suivant',
+        'NEVER': 'Jamais',
+        'NO': 'Non',
+        'NO_NOTIFICATIONS': 'Vous n’avez pas de notification.',
+        'NOT_ALLOWED_MANAGE_GROUP': 'Vous n’êtes pas autorisé à gérer ce groupe.',
+        'NOT_AUTHORISED': 'Vous n’êtes pas autorisé à accéder à cette partie du forum.',
+        'NOT_WATCHING_FORUM': 'Vous ne surveillez plus ce forum.',
+        'NOT_WATCHING_TOPIC': 'Vous ne surveillez plus ce sujet.',
+        'NOTIFICATIONS': 'Notifications',
+        // This applies for NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
+        // %1$s will return a list of users that's concatenated using "," and "and" - see STRING_LIST
+        // Once the user count reaches 5 users or more, the list is trimmed using NOTIFICATION_X_OTHERS
+        // Once the user count reaches 20 users or more, the list is trimmed using NOTIFICATION_MANY_OTHERS
+        // Examples:
+        // A replied...
+        // A and B replied...
+        // A, B and C replied...
+        // A, B, C and 2 others replied...
+        // A, B, C and others replied...
+        'NOTIFICATION_BOOKMARK': {
+            1: '<strong>Réponse</strong> de %1$s dans le sujet ajouté aux favoris :' },
+
+        'NOTIFICATION_FORUM': '<em>Forum :</em> %1$s',
+        'NOTIFICATION_GROUP_REQUEST': '<strong>Adhésion au groupe</strong> demandée par %1$s pour rejoindre le groupe %2$s.',
+        'NOTIFICATION_GROUP_REQUEST_APPROVED': '<strong>Adhésion au groupe approuvée</strong> pour rejoindre le groupe %1$s.',
+        'NOTIFICATION_METHOD_INVALID': 'La méthode « %s » ne fait pas référence à une méthode de notification valide.',
+        'NOTIFICATION_PM': '<strong>Message privé</strong> de %1$s :',
+        'NOTIFICATION_POST': {
+            1: '<strong>Réponse</strong> de %1$s dans le sujet :' },
+
+        'NOTIFICATION_POST_APPROVED': '<strong>Message approuvé</strong> :',
+        'NOTIFICATION_POST_DISAPPROVED': '<strong>Message désapprouvé</strong> :',
+        'NOTIFICATION_POST_IN_QUEUE': '<strong>Message en attente d’approbation</strong> créé par %1$s :',
+        'NOTIFICATION_QUOTE': {
+            1: '<strong>Citation</strong> de %1$s dans :' },
+
+        'NOTIFICATION_REFERENCE': '« %1$s »',
+        'NOTIFICATION_REASON': '<em>Raison :</em> %1$s.',
+        'NOTIFICATION_REPORT_PM': '<strong>Message privé rapporté</strong> par %1$s :',
+        'NOTIFICATION_REPORT_POST': '<strong>Message rapporté</strong> par %1$s :',
+        'NOTIFICATION_REPORT_CLOSED': '<strong>Rapport clôturé</strong> par %1$s pour :',
+        'NOTIFICATION_TOPIC': '<strong>Nouveau message</strong> créé par %1$s :',
+        'NOTIFICATION_TOPIC_APPROVED': '<strong>Sujet approuvé</strong> :',
+        'NOTIFICATION_TOPIC_DISAPPROVED': '<strong>Sujet désapprouvé</strong> :',
+        'NOTIFICATION_TOPIC_IN_QUEUE': '<strong>Sujet en attente d’approbation</strong> créé par %1$s :',
+        'NOTIFICATION_TYPE_NOT_EXIST': 'Le type de notification « %s » est absent du système de fichier.',
+        'NOTIFICATION_ADMIN_ACTIVATE_USER': '<strong>Activation de compte requise</strong> pour le membre désactivé ou nouvellement enregistré : « %1$s ».',
+        // Used in conjuction with NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
+        'NOTIFICATION_MANY_OTHERS': 'plusieurs autres membres',
+        'NOTIFICATION_X_OTHERS': {
+            2: '%d autres membres' },
+
+        'NOTIFY_ADMIN': 'Contactez l’administrateur du forum ou le webmaster.',
+        'NOTIFY_ADMIN_EMAIL': 'Contactez l’administrateur du forum ou le webmaster : <a href="mailto:%1$s">%1$s</a>',
+        'NO_ACCESS_ATTACHMENT': 'Vous n’êtes pas autorisé à accéder à ce fichier.',
+        'NO_ACTION': 'Aucune action indiquée.',
+        'NO_ADMINISTRATORS': 'Il n’existe aucun administrateur.',
+        'NO_AUTH_ADMIN': 'Vous n’avez pas les permissions d’administration et ne pouvez donc pas accéder au panneau d’administration.',
+        'NO_AUTH_ADMIN_USER_DIFFER': 'Vous ne pouvez pas vous ré-authentifier avec un compte différent.',
+        'NO_AUTH_OPERATION': 'Vous n’avez pas les permissions nécessaires pour accomplir cette opération.',
+        'NO_AVATARS': 'Pas d’avatar de disponible',
+        'NO_CONNECT_TO_SMTP_HOST': 'Impossible de se connecter au serveur smtp : %1$s : %2$s',
+        'NO_BIRTHDAYS': 'Pas d’anniversaire à fêter aujourd’hui',
+        'NO_EMAIL_MESSAGE': 'Le contenu de cet e-mail est vide.',
+        'NO_EMAIL_RESPONSE_CODE': 'Impossible de récupérer les codes de réponse du serveur.',
+        'NO_EMAIL_SUBJECT': 'Aucun sujet n’a été indiqué.',
+        'NO_FORUM': 'Le forum que vous avez tenté d’atteindre n’existe pas.',
+        'NO_FORUMS': 'Aucun forum.',
+        'NO_GROUP': 'Le groupe demandé n’existe pas.',
+        'NO_GROUP_MEMBERS': 'Aucun membre dans ce groupe.',
+        'NO_IPS_DEFINED': 'Aucune IP ou nom d’hôte',
+        'NO_MEMBERS': 'Aucun membre trouvé pour ce critère de recherche.',
+        'NO_MESSAGES': 'Pas de message',
+        'NO_MODE': 'Pas de mode indiqué.',
+        'NO_MODERATORS': 'Il n’existe aucun modérateur.',
+        'NO_NEW_MESSAGES': 'Pas de nouveau message',
+        'NO_NEW_POSTS': 'Pas de nouveau message', // Not used anymore
+        'NO_ONLINE_USERS': 'Aucun utilisateur enregistré',
+        'NO_POSTS': 'Pas de message',
+        'NO_POSTS_TIME_FRAME': 'Aucun message n’a été posté dans ce sujet pour la période indiquée.',
+        'NO_FEED_ENABLED': 'Les flux ne sont pas disponibles sur ce forum.',
+        'NO_FEED': 'Le flux demandé n’est pas disponible.',
+        'NO_STYLE_DATA': 'Impossible de récupérer les données de style',
+        'NO_SUBJECT': 'Aucun sujet indiqué', // Used for posts having no subject defined but displayed within management pages.
+        'NO_SUCH_SEARCH_MODULE': 'La recherche indiquée n’existe pas.',
+        'NO_SUPPORTED_AUTH_METHODS': 'Aucune méthode d’authentification supportée.',
+        'NO_TOPIC': 'Le sujet demandé n’existe pas.',
+        'NO_TOPIC_FORUM': 'Le sujet ou le forum n’existe plus.',
+        'NO_TOPICS': 'Il n’y a aucun sujet ou message dans ce forum.',
+        'NO_TOPICS_TIME_FRAME': 'Aucun sujet n’a été posté dans ce forum pour la période indiquée.',
+        'NO_UNREAD_POSTS': 'Aucun message non lu',
+        'NO_UPLOAD_FORM_FOUND': 'Le transfert a commencé mais aucun fichier valide n’a été trouvé.',
+        'NO_USER': 'Le membre demandé n’existe pas.',
+        'NO_USERS': 'Les membres demandés n’existent pas.',
+        'NO_USER_SPECIFIED': 'Aucun nom d’utilisateur indiqué.',
+
+        // Nullar/Singular/Plural language entry. The key numbers define the number range in which a certain grammatical expression is valid.
+        'NUM_ATTACHMENTS': {
+            1: '%d fichier joint',
+            2: '%d fichiers joints' },
+
+        'NUM_POSTS_IN_QUEUE': {
+            0: 'Aucun message en attente', // 0
+            1: '1 message en attente', // 1
+            2: '%d messages en attente' // 2+
+        },
+
+        'OCCUPATION': 'Emploi',
+        'OFFLINE': 'Hors ligne',
+        'ONLINE': 'En ligne',
+        'ONLINE_BUDDIES': 'Amis en ligne',
+        // "... : x registered and y hidden"
+        'ONLINE_USERS_TOTAL': {
+            1: 'Au total il y a <strong>%1$d</strong> utilisateur en ligne : %2$s et %3$s',
+            2: 'Au total il y a <strong>%1$d</strong> utilisateurs en ligne : %2$s et %3$s' },
+
+        // "... : x registered, y hidden and z guests"
+        'ONLINE_USERS_TOTAL_GUESTS': {
+            1: 'Au total il y a <strong>%1$d</strong> utilisateur en ligne : %2$s, %3$s et %4$s',
+            2: 'Au total il y a <strong>%1$d</strong> utilisateurs en ligne : %2$s, %3$s et %4$s' },
+
+        'OPTIONS': 'Options',
+
+        'PAGE_OF': 'Page <strong>%1$d</strong> sur <strong>%2$d</strong>',
+        'PAGE_TITLE_NUMBER': 'Page %s',
+        'PASSWORD': 'Mot de passe',
+        'PIXEL': 'px',
+        'PIXELS': {
+            1: '%d pixel',
+            2: '%d pixels' },
+
+        'PLEASE_WAIT': 'Patientez.',
+        'PM': 'MP',
+        'PM_REPORTED': 'Cliquer pour voir le rapport',
+        'POSTING_MESSAGE': 'Poste un message dans %s',
+        'POSTING_PRIVATE_MESSAGE': 'Rédige un message privé',
+        'POST': 'Message',
+        'POST_ANNOUNCEMENT': 'Annonce',
+        'POST_STICKY': 'Sujet épinglé',
+        'POSTED': 'Posté',
+        'POSTED_IN_FORUM': 'Dans',
+        'POSTED_ON_DATE': 'le',
+        'POSTS': 'Messages',
+        'POSTS_UNAPPROVED': 'Au moins un message de ce sujet n’a pas été approuvé.',
+        'POSTS_UNAPPROVED_FORUM': 'Au moins un message de ce forum n’a pas été approuvé.',
+        'POST_BY_AUTHOR': 'par',
+        'POST_BY_FOE': '<strong>%1$s</strong>, qui est actuellement sur votre liste de membres ignorés, a posté ce message.',
+        'POST_DISPLAY': '%1$sAfficher ce message%2$s.',
+        'POST_DAY': '%.2f messages par jour',
+        'POST_DELETED_ACTION': 'Message supprimé :',
+        'POST_DELETED': 'Ce message a été supprimé.',
+        'POST_DELETED_BY': '<strong>%2$s</strong> a supprimé le message de <strong>%1$s</strong> le %3$s.',
+        'POST_DELETED_BY_REASON': '<strong>%2$s</strong> a supprimé le message de <strong>%1$s</strong> le %3$s pour la raison suivante : %4$s',
+        'POST_DETAILS': 'Détails',
+        'POST_NEW_TOPIC': 'Poster un nouveau sujet',
+        'POST_PCT': '%.2f%% de tous les messages',
+        'POST_PCT_ACTIVE': '%.2f%% des messages du membre',
+        'POST_PCT_ACTIVE_OWN': '%.2f%% de vos messages',
+        'POST_REPLY': 'Répondre',
+        'POST_REPORTED': 'Cliquer pour voir le rapport',
+        'POST_SUBJECT': 'Sujet du message',
+        'POST_TIME': 'Date',
+        'POST_TOPIC': 'Écrire un nouveau sujet',
+        'POST_UNAPPROVED_ACTION': 'Message en attente d’approbation :',
+        'POST_UNAPPROVED': 'Ce message n’a pas été approuvé.',
+        'POWERED_BY': 'Développé par %s',
+        'PREVIEW': 'Aperçu',
+        'PREVIOUS': 'Précédente', // Used in pagination
+        'PREVIOUS_STEP': 'Précédente',
+        'PRIVACY': 'Politique de vie privée',
+        'PRIVATE_MESSAGE': 'Message privé',
+        'PRIVATE_MESSAGES': 'Messages privés',
+        'PRIVATE_MESSAGING': 'Messagerie privée',
+        'PROFILE': 'Panneau de l’utilisateur',
+
+        'QUICK_LINKS': 'Accès rapide',
+
+        'RANK': 'Rang',
+        'READING_FORUM': 'Consulte les sujets dans %s',
+        'READING_GLOBAL_ANNOUNCE': 'Consulte une annonce globale',
+        'READING_LINK': 'Consulte le lien du forum %s',
+        'READING_TOPIC': 'Consulte un sujet dans %s',
+        'READ_PROFILE': 'Profil',
+        'REASON': 'Raison',
+        'RECORD_ONLINE_USERS': 'Le record du nombre d’utilisateurs en ligne est de <strong>%1$s</strong>, le %2$s',
+        'REDIRECT': 'Rediriger',
+        'REDIRECTS': 'Nombre de redirections',
+        'REGISTER': 'S’enregistrer',
+        'REGISTERED_USERS': 'Membres :',
+        // "... and 2 hidden users online"
+        'REG_USERS_ONLINE': {
+            1: 'Il y a %1$d membre et %2$s en ligne',
+            2: 'Il y a %1$d membres et %2$s en ligne' },
+
+        'REG_USERS_TOTAL': {
+            1: '%d enregistré',
+            2: '%d enregistrés' },
+
+        'REMOVE': 'Supprimer',
+        'REMOVE_INSTALL': 'Pour finaliser l’installation du forum, supprimez, déplacez ou renommez le répertoire « install ». Si ce répertoire est détecté, seul le panneau d’administration (PCA) sera accessible.',
+        'REPLIES': 'Réponses',
+        'REPLY_WITH_QUOTE': 'Répondre en citant le message',
+        'REPLYING_GLOBAL_ANNOUNCE': 'Répond à une annonce globale',
+        'REPLYING_MESSAGE': 'Répond à un message dans %s',
+        'REPORT_BY': 'Rapporté par',
+        'REPORT_POST': 'Rapporter le message',
+        'REPORTING_POST': 'Rapporter un message',
+        'RESEND_ACTIVATION': 'Renvoyer l’e-mail de confirmation',
+        'RESET': 'Réinitialiser',
+        'RESTORE_PERMISSIONS': 'Rétablir les permissions',
+        'RETURN_INDEX': '%sRetourner à l’index du forum%s',
+        'RETURN_FORUM': '%sRetourner au dernier forum visité%s',
+        'RETURN_PAGE': '%sRetourner à la page précédente%s',
+        'RETURN_TOPIC': '%sRetourner au dernier sujet visité%s',
+        'RETURN_TO': 'Retourner vers « %s »',
+        'RETURN_TO_INDEX': 'Retourner à l’index du forum',
+        'FEED': 'Flux',
+        'FEED_NEWS': 'Nouvelles informations',
+        'FEED_TOPICS_ACTIVE': 'Sujets actifs',
+        'FEED_TOPICS_NEW': 'Nouveaux sujets',
+        'RULES_ATTACH_CAN': 'Vous <strong>pouvez</strong> joindre des fichiers',
+        'RULES_ATTACH_CANNOT': 'Vous <strong>ne pouvez pas</strong> joindre des fichiers',
+        'RULES_DELETE_CAN': 'Vous <strong>pouvez</strong> supprimer vos messages',
+        'RULES_DELETE_CANNOT': 'Vous <strong>ne pouvez pas</strong> supprimer vos messages',
+        'RULES_DOWNLOAD_CAN': 'Vous <strong>pouvez</strong> télécharger des fichiers joints',
+        'RULES_DOWNLOAD_CANNOT': 'Vous <strong>ne pouvez pas</strong> télécharger des fichiers joints',
+        'RULES_EDIT_CAN': 'Vous <strong>pouvez</strong> modifier vos messages',
+        'RULES_EDIT_CANNOT': 'Vous <strong>ne pouvez pas</strong> modifier vos messages',
+        'RULES_LOCK_CAN': 'Vous <strong>pouvez</strong> verrouiller vos sujets',
+        'RULES_LOCK_CANNOT': 'Vous <strong>ne pouvez pas</strong> verrouiller vos sujets',
+        'RULES_POST_CAN': 'Vous <strong>pouvez</strong> poster de nouveaux sujets',
+        'RULES_POST_CANNOT': 'Vous <strong>ne pouvez pas</strong> poster de nouveaux sujets',
+        'RULES_REPLY_CAN': 'Vous <strong>pouvez</strong> répondre aux sujets',
+        'RULES_REPLY_CANNOT': 'Vous <strong>ne pouvez pas</strong> répondre aux sujets',
+        'RULES_VOTE_CAN': 'Vous <strong>pouvez</strong> participer aux votes',
+        'RULES_VOTE_CANNOT': 'Vous <strong>ne pouvez pas</strong> participer aux votes',
+
+        'SEARCH': 'Rechercher',
+        'SEARCH_MINI': 'Recherche…',
+        'SEARCH_ADV': 'Recherche avancée',
+        'SEARCH_ADV_EXPLAIN': 'Voir les options de recherche avancée',
+        'SEARCH_KEYWORDS': 'Recherche par mots-clés',
+        'SEARCHING_FORUMS': 'Recherche dans les forums',
+        'SEARCH_ACTIVE_TOPICS': 'Sujets actifs',
+        'SEARCH_FOR': 'Rechercher',
+        'SEARCH_FORUM': 'Dans ce forum…',
+        'SEARCH_NEW': 'Nouveaux messages',
+        'SEARCH_POSTS_BY': 'Rechercher les messages de',
+        'SEARCH_SELF': 'Mes messages',
+        'SEARCH_TOPIC': 'Dans ce sujet…',
+        'SEARCH_UNANSWERED': 'Sujets sans réponse',
+        'SEARCH_UNREAD': 'Messages non lus',
+        'SEARCH_USER_POSTS': 'Rechercher les messages du membre',
+        'SECONDS': 'secondes',
+        'SEE_ALL': 'Tout voir',
+        'SELECT': 'Sélectionner',
+        'SELECT_ALL_CODE': 'Tout sélectionner',
+        'SELECT_DESTINATION_FORUM': 'Choisissez un forum de destination',
+        'SELECT_FORUM': 'Sélectionner un forum',
+        'SEND_EMAIL': 'Envoyer un e-mail', // Used for submit buttons
+        'SEND_EMAIL_USER': 'Envoyer un e-mail à %s',
+        'SEND_PRIVATE_MESSAGE': 'Envoyer un message privé',
+        'SETTINGS': 'Paramètres',
+        'SIGNATURE': 'Signature',
+        'SKIP': 'Vers le contenu',
+        'SKYPE': 'Skype',
+        'SMTP_NO_AUTH_SUPPORT': 'Le serveur SMTP ne peut pas vous identifier.',
+        'SORRY_AUTH_READ': 'Vous n’êtes pas autorisé à lire ce forum.',
+        'SORRY_AUTH_READ_TOPIC': 'Vous n’êtes pas autorisé à lire ce sujet.',
+        'SORRY_AUTH_VIEW_ATTACH': 'Vous n’êtes pas autorisé à télécharger ce fichier joint.',
+        'SORT_BY': 'Trier par',
+        'SORT_DIRECTION': 'Ordre',
+        'SORT_JOINED': 'Date d’enregistrement',
+        'SORT_LOCATION': 'Localisation',
+        'SORT_OPTIONS': 'Options d’affichage et de tri',
+        'SORT_RANK': 'Rang',
+        'SORT_POSTS': 'Messages',
+        'SORT_TOPIC_TITLE': 'Titre du sujet',
+        'SORT_USERNAME': 'Nom d’utilisateur',
+        'SPLIT_TOPIC': 'Diviser le sujet',
+        'SQL_ERROR_OCCURRED': 'Une erreur SQL est arrivée en chargeant cette page. Contactez l’%sadministrateur du forum%s si ce problème persiste.',
+        'STATISTICS': 'Statistiques',
+        'START_WATCHING_FORUM': 'Surveiller ce forum',
+        'START_WATCHING_TOPIC': 'Surveiller ce sujet',
+        'STOP_WATCHING_FORUM': 'Arrêter de surveiller ce forum',
+        'STOP_WATCHING_TOPIC': 'Arrêter de surveiller ce sujet',
+        'STRING_LIST_MULTI': '%1$s, et %2$s',
+        'STRING_LIST_SIMPLE': '%1$s et %2$s',
+        'SUBFORUM': 'Sous-forum',
+        'SUBFORUMS': 'Sous-forums',
+        'SUBJECT': 'Sujet',
+        'SUBMIT': 'Envoyer',
+
+        'TB': 'To', // téraoctet
+        'TERMS_USE': 'Conditions d’utilisation',
+        'TEST_CONNECTION': 'Test de connexion',
+        'THE_TEAM': 'L’équipe du forum',
+        'TIB': 'Tio', // tébioctect
+        'TIME': 'Date',
+        'TIMEOUT_PROCESSING_REQ': 'Délai d’attente de la demande dépassé.',
+
+        'TOO_LARGE': 'La valeur saisie est trop grande.',
+        'TOO_LARGE_MAX_RECIPIENTS': 'La valeur du réglage <strong>Nombre maximum autorisé de destinataires par message privé</strong> que vous avez saisie est trop grande.',
+
+        'TOO_LONG': 'La valeur saisie est trop longue.',
+
+        'TOO_LONG_CONFIRM_CODE': 'Le code de confirmation indiqué est trop long.',
+        'TOO_LONG_DATEFORMAT': 'Le format de la date indiquée est trop long.',
+        'TOO_LONG_JABBER': 'Le nom de compte Jabber indiqué est trop long.',
+        'TOO_LONG_NEW_PASSWORD': 'Le mot de passe indiqué est trop long.',
+        'TOO_LONG_PASSWORD_CONFIRM': 'Le mot de passe de confirmation indiqué est trop long.',
+        'TOO_LONG_USER_PASSWORD': 'Le mot de passe indiqué est trop long.',
+        'TOO_LONG_USERNAME': 'Le nom d’utilisateur indiqué est trop long.',
+        'TOO_LONG_EMAIL': 'L’adresse e-mail indiquée est trop longue.',
+
+        'TOO_MANY_VOTE_OPTIONS': 'Vous avez sélectionné trop d’options de vote.',
+
+        'TOO_SHORT': 'La valeur saisie est trop courte.',
+
+        'TOO_SHORT_CONFIRM_CODE': 'Le code de confirmation indiqué est trop court.',
+        'TOO_SHORT_DATEFORMAT': 'Le format de la date indiquée est trop courte.',
+        'TOO_SHORT_JABBER': 'Le nom de compte Jabber indiqué est trop court.',
+        'TOO_SHORT_NEW_PASSWORD': 'Le mot de passe indiqué est trop court.',
+        'TOO_SHORT_PASSWORD_CONFIRM': 'Le mot de passe de confirmation indiqué est trop court.',
+        'TOO_SHORT_USER_PASSWORD': 'Le mot de passe indiqué est trop court.',
+        'TOO_SHORT_USERNAME': 'Le nom d’utilisateur indiqué est trop court.',
+        'TOO_SHORT_EMAIL': 'L’adresse e-mail indiquée est trop courte.',
+        'TOO_SHORT_EMAIL_CONFIRM': 'L’adresse e-mail de confirmation indiquée est trop courte.',
+        'TOO_SMALL': 'La valeur saisie est trop petite.',
+        'TOO_SMALL_MAX_RECIPIENTS': 'La valeur du réglage <strong>Nombre maximum autorisé de destinataires par message privé</strong> que vous avez saisie est trop petite.',
+
+        'TOPIC': 'Sujet',
+        'TOPICS': 'Sujets',
+        'TOPICS_UNAPPROVED': 'Au moins un sujet dans ce forum n’est pas approuvé.',
+        'TOPIC_ICON': 'Icône de sujet',
+        'TOPIC_LOCKED': 'Ce sujet est verrouillé, vous ne pouvez pas modifier de messages ou poster de réponse.',
+        'TOPIC_LOCKED_SHORT': 'Sujet verrouillé',
+        'TOPIC_MOVED': 'Sujet déplacé',
+        'TOPIC_REVIEW': 'Revue du sujet',
+        'TOPIC_TITLE': 'Titre du sujet',
+        'TOPIC_UNAPPROVED': 'Ce sujet n’a pas été approuvé.',
+        'TOPIC_DELETED': 'Ce sujet a été supprimé.',
+        'TOTAL_ATTACHMENTS': 'Fichier(s) joint(s)',
+        'TOTAL_LOGS': {
+            1: '%d entrée',
+            2: '%d entrées' },
+
+        'TOTAL_PMS': {
+            1: '%d message privé',
+            2: '%d messages privés' },
+
+        'TOPIC_POLL': 'Ce sujet a un sondage.',
+        'TOTAL_POSTS': 'Messages',
+        'TOTAL_POSTS_COUNT': {
+            2: '<strong>%d</strong> messages' },
+
+        'TOPIC_REPORTED': 'Ce sujet a été rapporté',
+        'TOTAL_TOPICS': {
+            2: '<strong>%d</strong> sujets' },
+
+        'TOTAL_USERS': {
+            2: '<strong>%d</strong> membres' },
+
+        'TRACKED_PHP_ERROR': 'Suivi des erreurs PHP : %s',
+        'TWITTER': 'Twitter',
+
+        'UNABLE_GET_IMAGE_SIZE': 'Impossible de déterminer les dimensions de l’image. Vérifiez que l’URL a été correctement saisie.',
+        'UNABLE_TO_DELIVER_FILE': 'Impossible de transmettre le fichier.',
+        'UNKNOWN_BROWSER': 'Navigateur inconnu',
+        'UNMARK_ALL': 'Tout décocher',
+        'UNREAD_MESSAGES': 'Messages non lus',
+        'UNREAD_POST': 'Message non lu',
+        'UNREAD_POSTS': 'Messages non lus',
+        'UNWATCH_FORUM_CONFIRM': 'Êtes-vous sûr de ne plus vouloir surveiller ce forum ?',
+        'UNWATCH_FORUM_DETAILED': 'Êtes-vous sûr de ne plus vouloir surveiller le forum « %s » ?',
+        'UNWATCH_TOPIC_CONFIRM': 'Êtes-vous sûr de ne plus vouloir surveiller ce sujet ?',
+        'UNWATCH_TOPIC_DETAILED': 'Êtes-vous sûr de ne plus vouloir surveiller le sujet « %s » ?',
+        'UNWATCHED_FORUMS': 'Vous ne surveillez plus les forums sélectionnés.',
+        'UNWATCHED_TOPICS': 'Vous ne surveillez plus les sujets sélectionnés.',
+        'UNWATCHED_FORUMS_TOPICS': 'Vous ne surveillez plus les entrées sélectionnées.',
+        'UPDATE': 'Mise à jour',
+        'UPLOAD_IN_PROGRESS': 'Le transfert est en cours.',
+        'URL_REDIRECT': 'Si votre navigateur ne vous redirige pas automatiquement dans quelques instants, %scliquez ici pour être redirigé%s.',
+        'USERGROUPS': 'Groupes d’utilisateurs',
+        'USERNAME': 'Nom d’utilisateur',
+        'USERNAMES': 'Noms d’utilisateur',
+        'USER_AVATAR': 'Avatar du membre',
+        'USER_CANNOT_READ': 'Vous ne pouvez pas lire les messages de ce forum.',
+        'USER_POSTS': {
+            1: '%d Message',
+            2: '%d Messages' },
+
+        'USERS': 'Membres',
+        'USE_PERMISSIONS': 'Tester les permissions du membre',
+
+        'USER_NEW_PERMISSION_DISALLOWED': 'Nous sommes désolés, mais vous n’êtes pas autorisé à utiliser cette fonctionnalité. Vous venez juste de vous enregistrer, et il est nécessaire de participer davantage aux discussions pour utiliser cette fonctionnalité.',
+
+        'VARIANT_DATE_SEPARATOR': ' / ', // Used in date format dropdown, eg: "Today, 13:37 / 01 Jan 2007, 13:37" ... to join a relative date with calendar date
+        'VIEWED': 'Vu',
+        'VIEWED_COUNTS': {
+            0: 'Pas encore vu',
+            1: 'Vu %d fois',
+            2: 'Vu %d fois' },
+
+        'VIEWING_CONTACT_ADMIN': 'Consulte la page de contact',
+        'VIEWING_FAQ': 'Consulte la FAQ',
+        'VIEWING_MEMBERS': 'Consulte les informations d’un membre',
+        'VIEWING_ONLINE': 'Regarde qui est en ligne',
+        'VIEWING_MCP': 'Consulte le panneau de modération',
+        'VIEWING_MEMBER_PROFILE': 'Consulte le profil d’un membre',
+        'VIEWING_PRIVATE_MESSAGES': 'Lit ses messages privés',
+        'VIEWING_REGISTER': 'S’enregistre',
+        'VIEWING_UCP': 'Consulte son panneau de l’utilisateur',
+        'VIEWS': 'Vues',
+        'VIEW_BOOKMARKS': 'Afficher les favoris',
+        'VIEW_FORUM_LOGS': 'Afficher le journal',
+        'VIEW_LATEST_POST': 'Voir le dernier message',
+        'VIEW_NEWEST_POST': 'Voir le premier message non lu',
+        'VIEW_NOTES': 'Notes sur le membre',
+        'VIEW_ONLINE_TIMES': {
+            1: 'd’après le nombre d’utilisateurs actifs cette dernière minute',
+            2: 'd’après le nombre d’utilisateurs actifs ces %d dernières minutes' },
+
+        'VIEW_TOPIC': 'Afficher le sujet',
+        'VIEW_TOPIC_ANNOUNCEMENT': 'Annonce : ',
+        'VIEW_TOPIC_GLOBAL': 'Annonce globale : ',
+        'VIEW_TOPIC_LOCKED': 'Verrouillé : ',
+        'VIEW_TOPIC_LOGS': 'Voir les journaux',
+        'VIEW_TOPIC_MOVED': 'Déplacé : ',
+        'VIEW_TOPIC_POLL': 'Sondage : ',
+        'VIEW_TOPIC_STICKY': 'Sujet épinglé : ',
+        'VISIT_WEBSITE': 'Visiter le site Internet',
+
+        'WARNINGS': 'Avertissements',
+        'WARN_USER': 'Avertir le membre',
+        'WATCH_FORUM_CONFIRM': 'Êtes-vous sûr de vouloir surveiller ce forum ?',
+        'WATCH_FORUM_DETAILED': 'Êtes-vous sûr de vouloir surveiller le forum « %s » ?',
+        'WATCH_TOPIC_CONFIRM': 'Êtes-vous sûr de vouloir surveiller ce sujet ?',
+        'WATCH_TOPIC_DETAILED': 'Êtes-vous sûr de vouloir surveiller le sujet « %s » ?',
+        'WELCOME_SUBJECT': 'Bienvenue sur les forums %s',
+        'WEBSITE': 'Site Internet',
+        'WHOIS': 'Whois',
+        'WHO_IS_ONLINE': 'Qui est en ligne',
+        'WRONG_PASSWORD': 'Vous avez saisi un mot de passe incorrect.',
+
+        'WRONG_DATA_COLOUR': 'La valeur saisie pour la couleur n’est pas valide.',
+        'WRONG_DATA_JABBER': 'Le nom que vous avez saisi n’est pas un nom de compte Jabber valide.',
+        'WRONG_DATA_LANG': 'La langue que vous avez indiquée n’est pas valide.',
+        'WRONG_DATA_POST_SD': 'Le sens du tri de messages que vous avez sélectionné n’est pas valide.',
+        'WRONG_DATA_POST_SK': 'L’option de tri de messages que vous avez sélectionnée n’est pas valide.',
+        'WRONG_DATA_TOPIC_SD': 'Le sens du tri de sujets que vous avez sélectionné n’est pas valide.',
+        'WRONG_DATA_TOPIC_SK': 'L’option de tri de sujets que vous avez sélectionnée n’est pas valide.',
+        'WROTE': 'a écrit',
+
+        'YAHOO': 'Yahoo Messenger',
+        'YOUTUBE': 'YouTube',
+        'YEAR': 'Année',
+        'YEAR_MONTH_DAY': '(AAAA-MM-JJ)',
+        'YES': 'Oui',
+        'YOU_LAST_VISIT': 'Dernière visite : %s',
+
+        'datetime': {
+            'TODAY': 'Aujourd’hui',
+            'TOMORROW': 'Demain',
+            'YESTERDAY': 'Hier',
+            'AGO': {
+                0: 'il y a moins d’une minute',
+                1: 'il y a %d minute',
+                2: 'il y a %d minutes' },
+
+
+            'Sunday': 'dimanche',
+            'Monday': 'lundi',
+            'Tuesday': 'mardi',
+            'Wednesday': 'mercredi',
+            'Thursday': 'jeudi',
+            'Friday': 'vendredi',
+            'Saturday': 'samedi',
+
+            'Sun': 'dim.',
+            'Mon': 'lun.',
+            'Tue': 'mar.',
+            'Wed': 'mer.',
+            'Thu': 'jeu.',
+            'Fri': 'ven.',
+            'Sat': 'sam.',
+
+            'January': 'janvier',
+            'February': 'février',
+            'March': 'mars',
+            'April': 'avril',
+            'May': 'mai',
+            'June': 'juin',
+            'July': 'juillet',
+            'August': 'août',
+            'September': 'septembre',
+            'October': 'octobre',
+            'November': 'novembre',
+            'December': 'décembre',
+
+            'Jan': 'janv.',
+            'Feb': 'févr.',
+            'Mar': 'mars',
+            'Apr': 'avr.',
+            'May_short': 'mai', // Short representation of "May". May_short used because in English the short and long date are the same for May.
+            'Jun': 'juin',
+            'Jul': 'juil.',
+            'Aug': 'août',
+            'Sep': 'sept.',
+            'Oct': 'oct.',
+            'Nov': 'nov.',
+            'Dec': 'déc.' },
+
+
+        // Timezones can be translated. We use this for the Etc/GMT timezones here,
+        // because they are named invers to their offset.
+        'timezones': {
+            'UTC': 'UTC',
+            'UTC_OFFSET': 'UTC%1$s',
+            'UTC_OFFSET_CURRENT': 'UTC%1$s - %2$s',
+
+            'Etc/GMT-12': 'UTC+12',
+            'Etc/GMT-11': 'UTC+11',
+            'Etc/GMT-10': 'UTC+10',
+            'Etc/GMT-9': 'UTC+9',
+            'Etc/GMT-8': 'UTC+8',
+            'Etc/GMT-7': 'UTC+7',
+            'Etc/GMT-6': 'UTC+6',
+            'Etc/GMT-5': 'UTC+5',
+            'Etc/GMT-4': 'UTC+4',
+            'Etc/GMT-3': 'UTC+3',
+            'Etc/GMT-2': 'UTC+2',
+            'Etc/GMT-1': 'UTC+1',
+            'Etc/GMT+1': 'UTC-1',
+            'Etc/GMT+2': 'UTC-2',
+            'Etc/GMT+3': 'UTC-3',
+            'Etc/GMT+4': 'UTC-4',
+            'Etc/GMT+5': 'UTC-5',
+            'Etc/GMT+6': 'UTC-6',
+            'Etc/GMT+7': 'UTC-7',
+            'Etc/GMT+8': 'UTC-8',
+            'Etc/GMT+9': 'UTC-9',
+            'Etc/GMT+10': 'UTC-10',
+            'Etc/GMT+11': 'UTC-11',
+            'Etc/GMT+12': 'UTC-12',
+
+            'Africa/Abidjan': 'Afrique/Abidjan',
+            'Africa/Accra': 'Afrique/Accra',
+            'Africa/Addis_Ababa': 'Afrique/Addis Ababa',
+            'Africa/Algiers': 'Afrique/Alger',
+            'Africa/Asmara': 'Afrique/Asmara',
+            'Africa/Bamako': 'Afrique/Bamako',
+            'Africa/Bangui': 'Afrique/Bangui',
+            'Africa/Banjul': 'Afrique/Banjul',
+            'Africa/Bissau': 'Afrique/Bissau',
+            'Africa/Blantyre': 'Afrique/Blantyre',
+            'Africa/Brazzaville': 'Afrique/Brazzaville',
+            'Africa/Bujumbura': 'Afrique/Bujumbura',
+            'Africa/Cairo': 'Afrique/Le Caire',
+            'Africa/Casablanca': 'Afrique/Casablanca',
+            'Africa/Ceuta': 'Afrique/Ceuta',
+            'Africa/Conakry': 'Afrique/Conakry',
+            'Africa/Dakar': 'Afrique/Dakar',
+            'Africa/Dar_es_Salaam': 'Afrique/Dar es Salaam',
+            'Africa/Djibouti': 'Afrique/Djibouti',
+            'Africa/Douala': 'Afrique/Douala',
+            'Africa/El_Aaiun': 'Afrique/El Aaiun',
+            'Africa/Freetown': 'Afrique/Freetown',
+            'Africa/Gaborone': 'Afrique/Gaborone',
+            'Africa/Harare': 'Afrique/Harare',
+            'Africa/Johannesburg': 'Afrique/Johannesburg',
+            'Africa/Juba': 'Afrique/Juba',
+            'Africa/Kampala': 'Afrique/Kampala',
+            'Africa/Khartoum': 'Afrique/Khartoum',
+            'Africa/Kigali': 'Afrique/Kigali',
+            'Africa/Kinshasa': 'Afrique/Kinshasa',
+            'Africa/Lagos': 'Afrique/Lagos',
+            'Africa/Libreville': 'Afrique/Libreville',
+            'Africa/Lome': 'Afrique/Lome',
+            'Africa/Luanda': 'Afrique/Luanda',
+            'Africa/Lubumbashi': 'Afrique/Lubumbashi',
+            'Africa/Lusaka': 'Afrique/Lusaka',
+            'Africa/Malabo': 'Afrique/Malabo',
+            'Africa/Maputo': 'Afrique/Maputo',
+            'Africa/Maseru': 'Afrique/Maseru',
+            'Africa/Mbabane': 'Afrique/Mbabane',
+            'Africa/Mogadishu': 'Afrique/Mogadishu',
+            'Africa/Monrovia': 'Afrique/Monrovia',
+            'Africa/Nairobi': 'Afrique/Nairobi',
+            'Africa/Ndjamena': 'Afrique/Ndjamena',
+            'Africa/Niamey': 'Afrique/Niamey',
+            'Africa/Nouakchott': 'Afrique/Nouakchott',
+            'Africa/Ouagadougou': 'Afrique/Ouagadougou',
+            'Africa/Porto-Novo': 'Afrique/Porto-Novo',
+            'Africa/Sao_Tome': 'Afrique/Sao Tome',
+            'Africa/Tripoli': 'Afrique/Tripoli',
+            'Africa/Tunis': 'Afrique/Tunis',
+            'Africa/Windhoek': 'Afrique/Windhoek',
+
+            'America/Adak': 'Amérique/Adak',
+            'America/Anchorage': 'Amérique/Anchorage',
+            'America/Anguilla': 'Amérique/Anguilla',
+            'America/Antigua': 'Amérique/Antigua',
+            'America/Araguaina': 'Amérique/Araguaina',
+
+            'America/Argentina/Buenos_Aires': 'Amérique/Argentine/Buenos Aires',
+            'America/Argentina/Catamarca': 'Amérique/Argentine/Catamarca',
+            'America/Argentina/Cordoba': 'Amérique/Argentine/Cordoba',
+            'America/Argentina/Jujuy': 'Amérique/Argentine/Jujuy',
+            'America/Argentina/La_Rioja': 'Amérique/Argentine/La Rioja',
+            'America/Argentina/Mendoza': 'Amérique/Argentine/Mendoza',
+            'America/Argentina/Rio_Gallegos': 'Amérique/Argentine/Rio Gallegos',
+            'America/Argentina/Salta': 'Amérique/Argentine/Salta',
+            'America/Argentina/San_Juan': 'Amérique/Argentine/San Juan',
+            'America/Argentina/San_Luis': 'Amérique/Argentine/San Luis',
+            'America/Argentina/Tucuman': 'Amérique/Argentine/Tucuman',
+            'America/Argentina/Ushuaia': 'Amérique/Argentine/Ushuaia',
+
+            'America/Aruba': 'Amérique/Aruba',
+            'America/Asuncion': 'Amérique/Asunción',
+            'America/Atikokan': 'Amérique/Atikokan',
+            'America/Bahia': 'Amérique/Bahia',
+            'America/Bahia_Banderas': 'Amérique/Bahia Banderas',
+            'America/Barbados': 'Amérique/Barbados',
+            'America/Belem': 'Amérique/Belem',
+            'America/Belize': 'Amérique/Belize',
+            'America/Blanc-Sablon': 'Amérique/Blanc-Sablon',
+            'America/Boa_Vista': 'Amérique/Boa Vista',
+            'America/Bogota': 'Amérique/Bogota',
+            'America/Boise': 'Amérique/Boise',
+            'America/Cambridge_Bay': 'Amérique/Cambridge Bay',
+            'America/Campo_Grande': 'Amérique/Campo Grande',
+            'America/Cancun': 'Amérique/Cancun',
+            'America/Caracas': 'Amérique/Caracas',
+            'America/Cayenne': 'Amérique/Cayenne',
+            'America/Cayman': 'Amérique/Cayman',
+            'America/Chicago': 'Amérique/Chicago',
+            'America/Chihuahua': 'Amérique/Chihuahua',
+            'America/Costa_Rica': 'Amérique/Costa Rica',
+            'America/Creston': 'Amérique/Creston',
+            'America/Cuiaba': 'Amérique/Cuiaba',
+            'America/Curacao': 'Amérique/Curacao',
+            'America/Danmarkshavn': 'Amérique/Danmarkshavn',
+            'America/Dawson': 'Amérique/Dawson',
+            'America/Dawson_Creek': 'Amérique/Dawson Creek',
+            'America/Denver': 'Amérique/Denver',
+            'America/Detroit': 'Amérique/Detroit',
+            'America/Dominica': 'Amérique/Dominica',
+            'America/Edmonton': 'Amérique/Edmonton',
+            'America/Eirunepe': 'Amérique/Eirunepe',
+            'America/El_Salvador': 'Amérique/El Salvador',
+            'America/Fortaleza': 'Amérique/Fortaleza',
+            'America/Glace_Bay': 'Amérique/Glace Bay',
+            'America/Godthab': 'Amérique/Godthab',
+            'America/Goose_Bay': 'Amérique/Goose Bay',
+            'America/Grand_Turk': 'Amérique/Grand Turk',
+            'America/Grenada': 'Amérique/Grenada',
+            'America/Guadeloupe': 'Amérique/Guadeloupe',
+            'America/Guatemala': 'Amérique/Guatemala',
+            'America/Guayaquil': 'Amérique/Guayaquil',
+            'America/Guyana': 'Amérique/Guyana',
+            'America/Halifax': 'Amérique/Halifax',
+            'America/Havana': 'Amérique/Havana',
+            'America/Hermosillo': 'Amérique/Hermosillo',
+            'America/Indiana/Indianapolis': 'Amérique/Indiana/Indianapolis',
+            'America/Indiana/Knox': 'Amérique/Indiana/Knox',
+            'America/Indiana/Marengo': 'Amérique/Indiana/Marengo',
+            'America/Indiana/Petersburg': 'Amérique/Indiana/Petersburg',
+            'America/Indiana/Tell_City': 'Amérique/Indiana/Tell City',
+            'America/Indiana/Vevay': 'Amérique/Indiana/Vevay',
+            'America/Indiana/Vincennes': 'Amérique/Indiana/Vincennes',
+            'America/Indiana/Winamac': 'Amérique/Indiana/Winamac',
+            'America/Inuvik': 'Amérique/Inuvik',
+            'America/Iqaluit': 'Amérique/Iqaluit',
+            'America/Jamaica': 'Amérique/Jamaïque',
+            'America/Juneau': 'Amérique/Juneau',
+            'America/Kentucky/Louisville': 'Amérique/Kentucky/Louisville',
+            'America/Kentucky/Monticello': 'Amérique/Kentucky/Monticello',
+            'America/Kralendijk': 'Amérique/Kralendijk',
+            'America/La_Paz': 'Amérique/La Paz',
+            'America/Lima': 'Amérique/Lima',
+            'America/Los_Angeles': 'Amérique/Los Angeles',
+            'America/Lower_Princes': 'Amérique/Lower Princes',
+            'America/Maceio': 'Amérique/Maceio',
+            'America/Managua': 'Amérique/Managua',
+            'America/Manaus': 'Amérique/Manaus',
+            'America/Marigot': 'Amérique/Marigot',
+            'America/Martinique': 'Amérique/Martinique',
+            'America/Matamoros': 'Amérique/Matamoros',
+            'America/Mazatlan': 'Amérique/Mazatlan',
+            'America/Menominee': 'Amérique/Menominee',
+            'America/Merida': 'Amérique/Mérida',
+            'America/Metlakatla': 'Amérique/Metlakatla',
+            'America/Mexico_City': 'Amérique/Mexico City',
+            'America/Miquelon': 'Amérique/Miquelon',
+            'America/Moncton': 'Amérique/Moncton',
+            'America/Monterrey': 'Amérique/Monterrey',
+            'America/Montevideo': 'Amérique/Montévidéo',
+            'America/Montreal': 'Amérique/Montréal',
+            'America/Montserrat': 'Amérique/Montserrat',
+            'America/Nassau': 'Amérique/Nassau',
+            'America/New_York': 'Amérique/New York',
+            'America/Nipigon': 'Amérique/Nipigon',
+            'America/Nome': 'Amérique/Nome',
+            'America/Noronha': 'Amérique/Noronha',
+            'America/North_Dakota/Beulah': 'Amérique/Dakota du Nord/Beulah',
+            'America/North_Dakota/Center': 'Amérique/Dakota du Nord/Center',
+            'America/North_Dakota/New_Salem': 'Amérique/Dakota du Nord/New Salem',
+            'America/Ojinaga': 'Amérique/Ojinaga',
+            'America/Panama': 'Amérique/Panama',
+            'America/Pangnirtung': 'Amérique/Pangnirtung',
+            'America/Paramaribo': 'Amérique/Paramaribo',
+            'America/Phoenix': 'Amérique/Phoenix',
+            'America/Port-au-Prince': 'Amérique/Port-au-Prince',
+            'America/Port_of_Spain': 'Amérique/Port of Spain',
+            'America/Porto_Velho': 'Amérique/Porto Velho',
+            'America/Puerto_Rico': 'Amérique/Puerto Rico',
+            'America/Rainy_River': 'Amérique/Rainy River',
+            'America/Rankin_Inlet': 'Amérique/Rankin Inlet',
+            'America/Recife': 'Amérique/Recife',
+            'America/Regina': 'Amérique/Regina',
+            'America/Resolute': 'Amérique/Resolute',
+            'America/Rio_Branco': 'Amérique/Rio Branco',
+            'America/Santa_Isabel': 'Amérique/Santa Isabel',
+            'America/Santarem': 'Amérique/Santarem',
+            'America/Santiago': 'Amérique/Santiago',
+            'America/Santo_Domingo': 'Amérique/Santo Domingo',
+            'America/Sao_Paulo': 'Amérique/Sao Paulo',
+            'America/Scoresbysund': 'Amérique/Scoresbysund',
+            'America/Shiprock': 'Amérique/Shiprock',
+            'America/Sitka': 'Amérique/Sitka',
+            'America/St_Barthelemy': 'Amérique/St. Barthelemy',
+            'America/St_Johns': 'Amérique/St. Johns',
+            'America/St_Kitts': 'Amérique/St. Kitts',
+            'America/St_Lucia': 'Amérique/St. Lucia',
+            'America/St_Thomas': 'Amérique/St. Thomas',
+            'America/St_Vincent': 'Amérique/St. Vincent',
+            'America/Swift_Current': 'Amérique/Swift Current',
+            'America/Tegucigalpa': 'Amérique/Tegucigalpa',
+            'America/Thule': 'Amérique/Thule',
+            'America/Thunder_Bay': 'Amérique/Thunder Bay',
+            'America/Tijuana': 'Amérique/Tijuana',
+            'America/Toronto': 'Amérique/Toronto',
+            'America/Tortola': 'Amérique/Tortola',
+            'America/Vancouver': 'Amérique/Vancouver',
+            'America/Whitehorse': 'Amérique/Whitehorse',
+            'America/Winnipeg': 'Amérique/Winnipeg',
+            'America/Yakutat': 'Amérique/Yakutat',
+            'America/Yellowknife': 'Amérique/Yellowknife',
+
+            'Antarctica/Casey': 'Antarctique/Casey',
+            'Antarctica/Davis': 'Antarctique/Davis',
+            'Antarctica/DumontDUrville': 'Antarctique/DumontDUrville',
+            'Antarctica/Macquarie': 'Antarctique/Macquarie',
+            'Antarctica/Mawson': 'Antarctique/Mawson',
+            'Antarctica/McMurdo': 'Antarctique/McMurdo',
+            'Antarctica/Palmer': 'Antarctique/Palmer',
+            'Antarctica/Rothera': 'Antarctique/Rothera',
+            'Antarctica/South_Pole': 'Antarctique/South Pole',
+            'Antarctica/Syowa': 'Antarctique/Syowa',
+            'Antarctica/Vostok': 'Antarctique/Vostok',
+
+            'Arctic/Longyearbyen': 'Arctique/Longyearbyen',
+
+            'Asia/Aden': 'Asie/Aden',
+            'Asia/Almaty': 'Asie/Almaty',
+            'Asia/Amman': 'Asie/Amman',
+            'Asia/Anadyr': 'Asie/Anadyr',
+            'Asia/Aqtau': 'Asie/Aqtau',
+            'Asia/Aqtobe': 'Asie/Aqtobe',
+            'Asia/Ashgabat': 'Asie/Ashgabat',
+            'Asia/Baghdad': 'Asie/Baghdad',
+            'Asia/Bahrain': 'Asie/Bahrain',
+            'Asia/Baku': 'Asie/Baku',
+            'Asia/Bangkok': 'Asie/Bangkok',
+            'Asia/Beirut': 'Asie/Beirut',
+            'Asia/Bishkek': 'Asie/Bishkek',
+            'Asia/Brunei': 'Asie/Brunei',
+            'Asia/Choibalsan': 'Asie/Choibalsan',
+            'Asia/Chongqing': 'Asie/Chongqing',
+            'Asia/Colombo': 'Asie/Colombo',
+            'Asia/Damascus': 'Asie/Damascus',
+            'Asia/Dhaka': 'Asie/Dhaka',
+            'Asia/Dili': 'Asie/Dili',
+            'Asia/Dubai': 'Asie/Dubaï',
+            'Asia/Dushanbe': 'Asie/Dushanbe',
+            'Asia/Gaza': 'Asie/Gaza',
+            'Asia/Harbin': 'Asie/Harbin',
+            'Asia/Hebron': 'Asie/Hébron',
+            'Asia/Ho_Chi_Minh': 'Asie/Ho Chi Minh',
+            'Asia/Hong_Kong': 'Asie/Hong Kong',
+            'Asia/Hovd': 'Asie/Hovd',
+            'Asia/Irkutsk': 'Asie/Irkutsk',
+            'Asia/Jakarta': 'Asie/Jakarta',
+            'Asia/Jayapura': 'Asie/Jayapura',
+            'Asia/Jerusalem': 'Asie/Jérusalem',
+            'Asia/Kabul': 'Asie/Kabul',
+            'Asia/Kamchatka': 'Asie/Kamchatka',
+            'Asia/Karachi': 'Asie/Karachi',
+            'Asia/Kashgar': 'Asie/Kashgar',
+            'Asia/Kathmandu': 'Asie/Kathmandu',
+            'Asia/Khandyga': 'Asie/Khandyga',
+            'Asia/Kolkata': 'Asie/Kolkata',
+            'Asia/Krasnoyarsk': 'Asie/Krasnoyarsk',
+            'Asia/Kuala_Lumpur': 'Asie/Kuala Lumpur',
+            'Asia/Kuching': 'Asie/Kuching',
+            'Asia/Kuwait': 'Asie/Kuwait',
+            'Asia/Macau': 'Asie/Macau',
+            'Asia/Magadan': 'Asie/Magadan',
+            'Asia/Makassar': 'Asie/Makassar',
+            'Asia/Manila': 'Asie/Manille',
+            'Asia/Muscat': 'Asie/Muscat',
+            'Asia/Nicosia': 'Asie/Nicosia',
+            'Asia/Novokuznetsk': 'Asie/Novokuznetsk',
+            'Asia/Novosibirsk': 'Asie/Novosibirsk',
+            'Asia/Omsk': 'Asie/Omsk',
+            'Asia/Oral': 'Asie/Oral',
+            'Asia/Phnom_Penh': 'Asie/Phnom Penh',
+            'Asia/Pontianak': 'Asie/Pontianak',
+            'Asia/Pyongyang': 'Asie/Pyongyang',
+            'Asia/Qatar': 'Asie/Qatar',
+            'Asia/Qyzylorda': 'Asie/Qyzylorda',
+            'Asia/Rangoon': 'Asie/Rangoon',
+            'Asia/Riyadh': 'Asie/Riyadh',
+            'Asia/Sakhalin': 'Asie/Sakhalin',
+            'Asia/Samarkand': 'Asie/Samarkand',
+            'Asia/Seoul': 'Asie/Seoul',
+            'Asia/Shanghai': 'Asie/Shanghai',
+            'Asia/Singapore': 'Asie/Singapore',
+            'Asia/Taipei': 'Asie/Taipei',
+            'Asia/Tashkent': 'Asie/Tashkent',
+            'Asia/Tbilisi': 'Asie/Tbilisi',
+            'Asia/Tehran': 'Asie/Tehran',
+            'Asia/Thimphu': 'Asie/Thimphu',
+            'Asia/Tokyo': 'Asie/Tokyo',
+            'Asia/Ulaanbaatar': 'Asie/Ulaanbaatar',
+            'Asia/Urumqi': 'Asie/Urumqi',
+            'Asia/Ust-Nera': 'Asie/Ust-Nera',
+            'Asia/Vientiane': 'Asie/Vientiane',
+            'Asia/Vladivostok': 'Asie/Vladivostok',
+            'Asia/Yakutsk': 'Asie/Yakutsk',
+            'Asia/Yekaterinburg': 'Asie/Yekaterinburg',
+            'Asia/Yerevan': 'Asie/Yerevan',
+
+            'Atlantic/Azores': 'Atlantique/Açores',
+            'Atlantic/Bermuda': 'Atlantique/Bermudes',
+            'Atlantic/Canary': 'Atlantique/Canaries',
+            'Atlantic/Cape_Verde': 'Atlantique/Cap Vert',
+            'Atlantic/Faroe': 'Atlantique/Féroé',
+            'Atlantic/Madeira': 'Atlantique/Madère',
+            'Atlantic/Reykjavik': 'Atlantique/Reykjavik',
+            'Atlantic/South_Georgia': 'Atlantique/South Georgia',
+            'Atlantic/St_Helena': 'Atlantique/St. Hélène',
+            'Atlantic/Stanley': 'Atlantique/Stanley',
+
+            'Australia/Adelaide': 'Australie/Adélaïde',
+            'Australia/Brisbane': 'Australie/Brisbane',
+            'Australia/Broken_Hill': 'Australie/Broken Hill',
+            'Australia/Currie': 'Australie/Currie',
+            'Australia/Darwin': 'Australie/Darwin',
+            'Australia/Eucla': 'Australie/Eucla',
+            'Australia/Hobart': 'Australie/Hobart',
+            'Australia/Lindeman': 'Australie/Lindeman',
+            'Australia/Lord_Howe': 'Australie/Lord Howe',
+            'Australia/Melbourne': 'Australie/Melbourne',
+            'Australia/Perth': 'Australie/Perth',
+            'Australia/Sydney': 'Australie/Sydney',
+
+            'Europe/Amsterdam': 'Europe/Amsterdam',
+            'Europe/Andorra': 'Europe/Andorre',
+            'Europe/Athens': 'Europe/Athènes',
+            'Europe/Belgrade': 'Europe/Belgrade',
+            'Europe/Berlin': 'Europe/Berlin',
+            'Europe/Bratislava': 'Europe/Bratislava',
+            'Europe/Brussels': 'Europe/Bruxelles',
+            'Europe/Bucharest': 'Europe/Bucharest',
+            'Europe/Budapest': 'Europe/Budapest',
+            'Europe/Busingen': 'Europe/Busingen',
+            'Europe/Chisinau': 'Europe/Chisinau',
+            'Europe/Copenhagen': 'Europe/Copenhage',
+            'Europe/Dublin': 'Europe/Dublin',
+            'Europe/Gibraltar': 'Europe/Gibraltar',
+            'Europe/Guernsey': 'Europe/Guernesey',
+            'Europe/Helsinki': 'Europe/Helsinki',
+            'Europe/Isle_of_Man': 'Europe/Île de Man',
+            'Europe/Istanbul': 'Europe/Istanbul',
+            'Europe/Jersey': 'Europe/Jersey',
+            'Europe/Kaliningrad': 'Europe/Kaliningrad',
+            'Europe/Kiev': 'Europe/Kiev',
+            'Europe/Lisbon': 'Europe/Lisbonne',
+            'Europe/Ljubljana': 'Europe/Ljubljana',
+            'Europe/London': 'Europe/Londres',
+            'Europe/Luxembourg': 'Europe/Luxembourg',
+            'Europe/Madrid': 'Europe/Madrid',
+            'Europe/Malta': 'Europe/Malte',
+            'Europe/Mariehamn': 'Europe/Mariehamn',
+            'Europe/Minsk': 'Europe/Minsk',
+            'Europe/Monaco': 'Europe/Monaco',
+            'Europe/Moscow': 'Europe/Moscou',
+            'Europe/Oslo': 'Europe/Oslo',
+            'Europe/Paris': 'Europe/Paris',
+            'Europe/Podgorica': 'Europe/Podgorica',
+            'Europe/Prague': 'Europe/Prague',
+            'Europe/Riga': 'Europe/Riga',
+            'Europe/Rome': 'Europe/Rome',
+            'Europe/Samara': 'Europe/Samara',
+            'Europe/San_Marino': 'Europe/San Marino',
+            'Europe/Sarajevo': 'Europe/Sarajevo',
+            'Europe/Simferopol': 'Europe/Simferopol',
+            'Europe/Skopje': 'Europe/Skopje',
+            'Europe/Sofia': 'Europe/Sofia',
+            'Europe/Stockholm': 'Europe/Stockholm',
+            'Europe/Tallinn': 'Europe/Tallinn',
+            'Europe/Tirane': 'Europe/Tirane',
+            'Europe/Uzhgorod': 'Europe/Uzhgorod',
+            'Europe/Vaduz': 'Europe/Vaduz',
+            'Europe/Vatican': 'Europe/Vatican',
+            'Europe/Vienna': 'Europe/Vienne',
+            'Europe/Vilnius': 'Europe/Vilnius',
+            'Europe/Volgograd': 'Europe/Volgograd',
+            'Europe/Warsaw': 'Europe/Warsaw',
+            'Europe/Zagreb': 'Europe/Zagreb',
+            'Europe/Zaporozhye': 'Europe/Zaporozhye',
+            'Europe/Zurich': 'Europe/Zurich',
+
+            'Indian/Antananarivo': 'Océan Indien/Antananarivo',
+            'Indian/Chagos': 'Océan Indien/Chagos',
+            'Indian/Christmas': 'Océan Indien/Christmas',
+            'Indian/Cocos': 'Océan Indien/Cocos',
+            'Indian/Comoro': 'Océan Indien/Comoro',
+            'Indian/Kerguelen': 'Océan Indien/Kerguélen',
+            'Indian/Mahe': 'Océan Indien/Mahe',
+            'Indian/Maldives': 'Océan Indien/Maldives',
+            'Indian/Mauritius': 'Océan Indien/Maurice',
+            'Indian/Mayotte': 'Océan Indien/Mayotte',
+            'Indian/Reunion': 'Océan Indien/Réunion',
+
+            'Pacific/Apia': 'Pacifique/Apia',
+            'Pacific/Auckland': 'Pacifique/Auckland',
+            'Pacific/Chatham': 'Pacifique/Chatham',
+            'Pacific/Chuuk': 'Pacifique/Chuuk',
+            'Pacific/Easter': 'Pacifique/Easter',
+            'Pacific/Efate': 'Pacifique/Efate',
+            'Pacific/Enderbury': 'Pacifique/Enderbury',
+            'Pacific/Fakaofo': 'Pacifique/Fakaofo',
+            'Pacific/Fiji': 'Pacifique/Fiji',
+            'Pacific/Funafuti': 'Pacifique/Funafuti',
+            'Pacific/Galapagos': 'Pacifique/Galapagos',
+            'Pacific/Gambier': 'Pacifique/Gambier',
+            'Pacific/Guadalcanal': 'Pacifique/Guadalcanal',
+            'Pacific/Guam': 'Pacifique/Guam',
+            'Pacific/Honolulu': 'Pacifique/Honolulu',
+            'Pacific/Johnston': 'Pacifique/Johnston',
+            'Pacific/Kiritimati': 'Pacifique/Kiritimati',
+            'Pacific/Kosrae': 'Pacifique/Kosrae',
+            'Pacific/Kwajalein': 'Pacifique/Kwajalein',
+            'Pacific/Majuro': 'Pacifique/Majuro',
+            'Pacific/Marquesas': 'Pacifique/Îles Marquises',
+            'Pacific/Midway': 'Pacifique/Midway',
+            'Pacific/Nauru': 'Pacifique/Nauru',
+            'Pacific/Niue': 'Pacifique/Niue',
+            'Pacific/Norfolk': 'Pacifique/Norfolk',
+            'Pacific/Noumea': 'Pacifique/Nouméa',
+            'Pacific/Pago_Pago': 'Pacifique/Pago Pago',
+            'Pacific/Palau': 'Pacifique/Palau',
+            'Pacific/Pitcairn': 'Pacifique/Pitcairn',
+            'Pacific/Pohnpei': 'Pacifique/Pohnpei',
+            'Pacific/Port_Moresby': 'Pacifique/Port Moresby',
+            'Pacific/Rarotonga': 'Pacifique/Rarotonga',
+            'Pacific/Saipan': 'Pacifique/Saipan',
+            'Pacific/Tahiti': 'Pacifique/Tahiti',
+            'Pacific/Tarawa': 'Pacifique/Tarawa',
+            'Pacific/Tongatapu': 'Pacifique/Tongatapu',
+            'Pacific/Wake': 'Pacifique/Wake',
+            'Pacific/Wallis': 'Pacifique/Wallis' },
+
+
+        // The value is only an example and will get replaced by the current time on view
+        'dateformats': {
+            'd M Y, H:i': '01 janv. 2007, 13:37',
+            'd M Y H:i': '01 janv. 2007 13:37',
+            'M jS, \'y, H:i': 'janv. 1er, \'07, 13:37',
+            'D M d, Y g:i a': 'lun janv. 01, 2007 1:37 pm',
+            'F jS, Y, g:i a': 'janvier 1er, 2007, 1:37 pm',
+            '|d M Y|, H:i': '[Jours relatifs], 13:37 / 01 janv. 2007, 13:37',
+            '|F jS, Y|, g:i a': '[Jours relatifs], 1:37 pm / janvier 1er, 2007, 1:37 pm' },
+
+
+        // The default dateformat which will be used on new installs in this language
+        // Translators should change this if a the usual date format is different
+        'default_dateformat': 'D j M Y H:i' // lun 10 janv. 2007 13:37
+    } };
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Handlebars = __webpack_require__(32);
+function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
+module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+
+  return ((stack1 = container.invokePartial(__webpack_require__(136),depth0,{"name":"overall_header","data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
+    + "\r\n\r\n<p class=\"{S_CONTENT_FLOW_END} responsive-center time<!-- IF S_USER_LOGGED_IN --> rightside<!-- ENDIF -->\"><!-- IF S_USER_LOGGED_IN -->{LAST_VISIT_DATE}<!-- ELSE -->{CURRENT_TIME}<!-- ENDIF --></p>\r\n<!-- IF S_USER_LOGGED_IN --><p class=\"responsive-center time\">{CURRENT_TIME}</p><!-- ENDIF -->\r\n<!-- EVENT index_body_markforums_before -->\r\n<!-- IF U_MARK_FORUMS -->\r\n<div class=\"action-bar compact\">\r\n    <a href=\"{U_MARK_FORUMS}\" class=\"mark-read rightside\" accesskey=\"m\" data-ajax=\"mark_forums_read\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.MARK_FORUMS_READ : stack1), depth0))
+    + "</a>\r\n</div>\r\n<!-- ENDIF -->\r\n<!-- EVENT index_body_markforums_after -->\r\n<!-- INCLUDE forumlist_body.html -->\r\n<!-- EVENT index_body_forumlist_body_after -->\r\n<!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->\r\n<form method=\"post\" action=\"{S_LOGIN_ACTION}\" class=\"headerspace\">\r\n    <h3><a href=\"{U_LOGIN_LOGOUT}\">{L_LOGIN_LOGOUT}</a><!-- IF S_REGISTER_ENABLED -->&nbsp; &bull; &nbsp;<a href=\"{U_REGISTER}\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.REGISTER : stack1), depth0))
+    + "</a><!-- ENDIF --></h3>\r\n    <fieldset class=\"quick-login\">\r\n        <label for=\"username\"><span>"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.USERNAME : stack1), depth0))
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.COLON : stack1), depth0))
+    + "</span> <input type=\"text\" tabindex=\"1\" name=\"username\" id=\"username\" size=\"10\" class=\"inputbox\" title=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.USERNAME : stack1), depth0))
+    + "\" /></label>\r\n        <label for=\"password\"><span>"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.PASSWORD : stack1), depth0))
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.COLON : stack1), depth0))
+    + "</span> <input type=\"password\" tabindex=\"2\" name=\"password\" id=\"password\" size=\"10\" class=\"inputbox\" title=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.PASSWORD : stack1), depth0))
+    + "\" autocomplete=\"off\" /></label>\r\n        <!-- IF U_SEND_PASSWORD -->\r\n        <a href=\"{U_SEND_PASSWORD}\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.FORGOT_PASS : stack1), depth0))
+    + "</a>\r\n        <!-- ENDIF -->\r\n        <!-- IF S_AUTOLOGIN_ENABLED -->\r\n        <span class=\"responsive-hide\">|</span> <label for=\"autologin\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.LOG_ME_IN : stack1), depth0))
+    + " <input type=\"checkbox\" tabindex=\"4\" name=\"autologin\" id=\"autologin\" /></label>\r\n        <!-- ENDIF -->\r\n        <input type=\"submit\" tabindex=\"5\" name=\"login\" value=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.LOGIN : stack1), depth0))
+    + "\" class=\"button2\" />\r\n        {S_LOGIN_REDIRECT}\r\n    </fieldset>\r\n</form>\r\n<!-- ENDIF -->\r\n<!-- EVENT index_body_stat_blocks_before -->\r\n<!-- IF S_DISPLAY_ONLINE_LIST -->\r\n<div class=\"stat-block online-list\">\r\n    <!-- IF U_VIEWONLINE --><h3><a href=\"{U_VIEWONLINE}\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.WHO_IS_ONLINE : stack1), depth0))
+    + "</a></h3><!-- ELSE --><h3>"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.WHO_IS_ONLINE : stack1), depth0))
+    + "</h3><!-- ENDIF -->\r\n    <p>\r\n        <!-- EVENT index_body_block_online_prepend -->\r\n        {TOTAL_USERS_ONLINE} ("
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.ONLINE_EXPLAIN : stack1), depth0))
+    + ")<br />{RECORD_USERS}<br />\r\n        <!-- IF U_VIEWONLINE -->\r\n        <br />{LOGGED_IN_USER_LIST}\r\n        <!-- IF LEGEND --><br /><em>"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.L_LEGEND : stack1), depth0))
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.COLON : stack1), depth0))
+    + " {LEGEND}</em><!-- ENDIF -->\r\n        <!-- ENDIF -->\r\n        <!-- EVENT index_body_block_online_append -->\r\n    </p>\r\n</div>\r\n<!-- ENDIF -->\r\n<!-- EVENT index_body_birthday_block_before -->\r\n<!-- IF S_DISPLAY_BIRTHDAY_LIST -->\r\n<div class=\"stat-block birthday-list\">\r\n    <h3>"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.BIRTHDAYS : stack1), depth0))
+    + "</h3>\r\n    <p>\r\n        <!-- EVENT index_body_block_birthday_prepend -->\r\n        <!-- IF .birthdays -->"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.CONGRATULATIONS : stack1), depth0))
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.COLON : stack1), depth0))
+    + " <strong><!-- BEGIN birthdays -->{birthdays.USERNAME}<!-- IF birthdays.AGE !== '' --> ({birthdays.AGE})<!-- ENDIF --><!-- IF not birthdays.S_LAST_ROW -->, <!-- ENDIF --><!-- END birthdays --></strong><!-- ELSE -->"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.NO_BIRTHDAYS : stack1), depth0))
+    + "<!-- ENDIF -->\r\n        <!-- EVENT index_body_block_birthday_append -->\r\n    </p>\r\n</div>\r\n<!-- ENDIF -->\r\n<!-- IF NEWEST_USER -->\r\n<div class=\"stat-block statistics\">\r\n    <h3>"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.STATISTICS : stack1), depth0))
+    + "</h3>\r\n    <p>\r\n        <!-- EVENT index_body_block_stats_prepend -->\r\n        {TOTAL_POSTS} &bull; {TOTAL_TOPICS} &bull; {TOTAL_USERS} &bull; {NEWEST_USER}\r\n        <!-- EVENT index_body_block_stats_append -->\r\n    </p>\r\n</div>\r\n<!-- ENDIF -->\r\n<!-- EVENT index_body_stat_blocks_after -->\r\n<!-- INCLUDE overall_footer.html -->\r\n"
+    + ((stack1 = container.invokePartial(__webpack_require__(137),depth0,{"name":"overall_footer","data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
+},"usePartial":true,"useData":true});
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+// istanbul ignore next
+
+function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;} else {var newObj = {};if (obj != null) {for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];}}newObj['default'] = obj;return newObj;}}
+
+var _handlebarsBase = __webpack_require__(54);
+
+var base = _interopRequireWildcard(_handlebarsBase);
+
+// Each of these augment the Handlebars object. No need to setup here.
+// (This is done to easily share code between commonjs and browse envs)
+
+var _handlebarsSafeString = __webpack_require__(132);
+
+var _handlebarsSafeString2 = _interopRequireDefault(_handlebarsSafeString);
+
+var _handlebarsException = __webpack_require__(11);
+
+var _handlebarsException2 = _interopRequireDefault(_handlebarsException);
+
+var _handlebarsUtils = __webpack_require__(3);
+
+var Utils = _interopRequireWildcard(_handlebarsUtils);
+
+var _handlebarsRuntime = __webpack_require__(133);
+
+var runtime = _interopRequireWildcard(_handlebarsRuntime);
+
+var _handlebarsNoConflict = __webpack_require__(134);
+
+var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
+
+// For compatibility and usage outside of module systems, make the Handlebars object a namespace
+function create() {
+  var hb = new base.HandlebarsEnvironment();
+
+  Utils.extend(hb, base);
+  hb.SafeString = _handlebarsSafeString2['default'];
+  hb.Exception = _handlebarsException2['default'];
+  hb.Utils = Utils;
+  hb.escapeExpression = Utils.escapeExpression;
+
+  hb.VM = runtime;
+  hb.template = function (spec) {
+    return runtime.template(spec, hb);
+  };
+
+  return hb;
+}
+
+var inst = create();
+inst.create = create;
+
+_handlebarsNoConflict2['default'](inst);
+
+inst['default'] = inst;
+
+exports['default'] = inst;
+module.exports = exports['default'];
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.registerDefaultHelpers = registerDefaultHelpers;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+var _helpersBlockHelperMissing = __webpack_require__(122);
+
+var _helpersBlockHelperMissing2 = _interopRequireDefault(_helpersBlockHelperMissing);
+
+var _helpersEach = __webpack_require__(123);
+
+var _helpersEach2 = _interopRequireDefault(_helpersEach);
+
+var _helpersHelperMissing = __webpack_require__(124);
+
+var _helpersHelperMissing2 = _interopRequireDefault(_helpersHelperMissing);
+
+var _helpersIf = __webpack_require__(125);
+
+var _helpersIf2 = _interopRequireDefault(_helpersIf);
+
+var _helpersLog = __webpack_require__(126);
+
+var _helpersLog2 = _interopRequireDefault(_helpersLog);
+
+var _helpersLookup = __webpack_require__(127);
+
+var _helpersLookup2 = _interopRequireDefault(_helpersLookup);
+
+var _helpersWith = __webpack_require__(128);
+
+var _helpersWith2 = _interopRequireDefault(_helpersWith);
+
+function registerDefaultHelpers(instance) {
+  _helpersBlockHelperMissing2['default'](instance);
+  _helpersEach2['default'](instance);
+  _helpersHelperMissing2['default'](instance);
+  _helpersIf2['default'](instance);
+  _helpersLog2['default'](instance);
+  _helpersLookup2['default'](instance);
+  _helpersWith2['default'](instance);
+}
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _utils = __webpack_require__(3);
+
+exports['default'] = function (instance) {
+  instance.registerHelper('blockHelperMissing', function (context, options) {
+    var inverse = options.inverse,
+    fn = options.fn;
+
+    if (context === true) {
+      return fn(this);
+    } else if (context === false || context == null) {
+      return inverse(this);
+    } else if (_utils.isArray(context)) {
+      if (context.length > 0) {
+        if (options.ids) {
+          options.ids = [options.name];
+        }
+
+        return instance.helpers.each(context, options);
+      } else {
+        return inverse(this);
+      }
+    } else {
+      if (options.data && options.ids) {
+        var data = _utils.createFrame(options.data);
+        data.contextPath = _utils.appendContextPath(options.data.contextPath, options.name);
+        options = { data: data };
+      }
+
+      return fn(context, options);
+    }
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+exports.__esModule = true;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+var _utils = __webpack_require__(3);
+
+var _exception = __webpack_require__(11);
+
+var _exception2 = _interopRequireDefault(_exception);
+
+exports['default'] = function (instance) {
+  instance.registerHelper('each', function (context, options) {
+    if (!options) {
+      throw new _exception2['default']('Must pass iterator to #each');
+    }
+
+    var fn = options.fn,
+    inverse = options.inverse,
+    i = 0,
+    ret = '',
+    data = undefined,
+    contextPath = undefined;
+
+    if (options.data && options.ids) {
+      contextPath = _utils.appendContextPath(options.data.contextPath, options.ids[0]) + '.';
+    }
+
+    if (_utils.isFunction(context)) {
+      context = context.call(this);
+    }
+
+    if (options.data) {
+      data = _utils.createFrame(options.data);
+    }
+
+    function execIteration(field, index, last) {
+      if (data) {
+        data.key = field;
+        data.index = index;
+        data.first = index === 0;
+        data.last = !!last;
+
+        if (contextPath) {
+          data.contextPath = contextPath + field;
+        }
+      }
+
+      ret = ret + fn(context[field], {
+        data: data,
+        blockParams: _utils.blockParams([context[field], field], [contextPath + field, null]) });
+
+    }
+
+    if (context && (typeof context === 'undefined' ? 'undefined' : _typeof(context)) === 'object') {
+      if (_utils.isArray(context)) {
+        for (var j = context.length; i < j; i++) {
+          if (i in context) {
+            execIteration(i, i, i === context.length - 1);
+          }
+        }
+      } else {
+        var priorKey = undefined;
+
+        for (var key in context) {
+          if (context.hasOwnProperty(key)) {
+            // We're running the iterations one step out of sync so we can detect
+            // the last iteration without have to scan the object twice and create
+            // an itermediate keys array.
+            if (priorKey !== undefined) {
+              execIteration(priorKey, i - 1);
+            }
+            priorKey = key;
+            i++;
+          }
+        }
+        if (priorKey !== undefined) {
+          execIteration(priorKey, i - 1, true);
+        }
+      }
+    }
+
+    if (i === 0) {
+      ret = inverse(this);
+    }
+
+    return ret;
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+var _exception = __webpack_require__(11);
+
+var _exception2 = _interopRequireDefault(_exception);
+
+exports['default'] = function (instance) {
+  instance.registerHelper('helperMissing', function () /* [args, ]options */{
+    if (arguments.length === 1) {
+      // A missing field in a {{foo}} construct.
+      return undefined;
+    } else {
+      // Someone is actually trying to call something, blow up.
+      throw new _exception2['default']('Missing helper: "' + arguments[arguments.length - 1].name + '"');
+    }
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _utils = __webpack_require__(3);
+
+exports['default'] = function (instance) {
+  instance.registerHelper('if', function (conditional, options) {
+    if (_utils.isFunction(conditional)) {
+      conditional = conditional.call(this);
+    }
+
+    // Default behavior is to render the positive path if the value is truthy and not empty.
+    // The `includeZero` option may be set to treat the condtional as purely not empty based on the
+    // behavior of isEmpty. Effectively this determines if 0 is handled by the positive path or negative.
+    if (!options.hash.includeZero && !conditional || _utils.isEmpty(conditional)) {
+      return options.inverse(this);
+    } else {
+      return options.fn(this);
+    }
+  });
+
+  instance.registerHelper('unless', function (conditional, options) {
+    return instance.helpers['if'].call(this, conditional, { fn: options.inverse, inverse: options.fn, hash: options.hash });
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+exports['default'] = function (instance) {
+  instance.registerHelper('log', function () /* message, options */{
+    var args = [undefined],
+    options = arguments[arguments.length - 1];
+    for (var i = 0; i < arguments.length - 1; i++) {
+      args.push(arguments[i]);
+    }
+
+    var level = 1;
+    if (options.hash.level != null) {
+      level = options.hash.level;
+    } else if (options.data && options.data.level != null) {
+      level = options.data.level;
+    }
+    args[0] = level;
+
+    instance.log.apply(instance, args);
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+exports['default'] = function (instance) {
+  instance.registerHelper('lookup', function (obj, field) {
+    return obj && obj[field];
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _utils = __webpack_require__(3);
+
+exports['default'] = function (instance) {
+  instance.registerHelper('with', function (context, options) {
+    if (_utils.isFunction(context)) {
+      context = context.call(this);
+    }
+
+    var fn = options.fn;
+
+    if (!_utils.isEmpty(context)) {
+      var data = options.data;
+      if (options.data && options.ids) {
+        data = _utils.createFrame(options.data);
+        data.contextPath = _utils.appendContextPath(options.data.contextPath, options.ids[0]);
+      }
+
+      return fn(context, {
+        data: data,
+        blockParams: _utils.blockParams([context], [data && data.contextPath]) });
+
+    } else {
+      return options.inverse(this);
+    }
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.registerDefaultDecorators = registerDefaultDecorators;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+var _decoratorsInline = __webpack_require__(130);
+
+var _decoratorsInline2 = _interopRequireDefault(_decoratorsInline);
+
+function registerDefaultDecorators(instance) {
+  _decoratorsInline2['default'](instance);
+}
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _utils = __webpack_require__(3);
+
+exports['default'] = function (instance) {
+  instance.registerDecorator('inline', function (fn, props, container, options) {
+    var ret = fn;
+    if (!props.partials) {
+      props.partials = {};
+      ret = function ret(context, options) {
+        // Create a new partials stack frame prior to exec.
+        var original = container.partials;
+        container.partials = _utils.extend({}, original, props.partials);
+        var ret = fn(context, options);
+        container.partials = original;
+        return ret;
+      };
+    }
+
+    props.partials[options.args[0]] = options.fn;
+
+    return ret;
+  });
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _utils = __webpack_require__(3);
+
+var logger = {
+  methodMap: ['debug', 'info', 'warn', 'error'],
+  level: 'info',
+
+  // Maps a given level value to the `methodMap` indexes above.
+  lookupLevel: function lookupLevel(level) {
+    if (typeof level === 'string') {
+      var levelMap = _utils.indexOf(logger.methodMap, level.toLowerCase());
+      if (levelMap >= 0) {
+        level = levelMap;
+      } else {
+        level = parseInt(level, 10);
+      }
+    }
+
+    return level;
+  },
+
+  // Can be overridden in the host environment
+  log: function log(level) {
+    level = logger.lookupLevel(level);
+
+    if (typeof console !== 'undefined' && logger.lookupLevel(logger.level) <= level) {
+      var method = logger.methodMap[level];
+      if (!console[method]) {
+        // eslint-disable-line no-console
+        method = 'log';
+      }
+
+      for (var _len = arguments.length, message = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        message[_key - 1] = arguments[_key];
+      }
+
+      console[method].apply(console, message); // eslint-disable-line no-console
+    }
+  } };
+
+
+exports['default'] = logger;
+module.exports = exports['default'];
+
+/***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Build out our basic SafeString type
+
+
+exports.__esModule = true;
+function SafeString(string) {
+  this.string = string;
+}
+
+SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
+  return '' + this.string;
+};
+
+exports['default'] = SafeString;
+module.exports = exports['default'];
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};
+
+exports.__esModule = true;
+exports.checkRevision = checkRevision;
+exports.template = template;
+exports.wrapProgram = wrapProgram;
+exports.resolvePartial = resolvePartial;
+exports.invokePartial = invokePartial;
+exports.noop = noop;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
+
+// istanbul ignore next
+
+function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;} else {var newObj = {};if (obj != null) {for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];}}newObj['default'] = obj;return newObj;}}
+
+var _utils = __webpack_require__(3);
+
+var Utils = _interopRequireWildcard(_utils);
+
+var _exception = __webpack_require__(11);
+
+var _exception2 = _interopRequireDefault(_exception);
+
+var _base = __webpack_require__(54);
+
+function checkRevision(compilerInfo) {
+  var compilerRevision = compilerInfo && compilerInfo[0] || 1,
+  currentRevision = _base.COMPILER_REVISION;
+
+  if (compilerRevision !== currentRevision) {
+    if (compilerRevision < currentRevision) {
+      var runtimeVersions = _base.REVISION_CHANGES[currentRevision],
+      compilerVersions = _base.REVISION_CHANGES[compilerRevision];
+      throw new _exception2['default']('Template was precompiled with an older version of Handlebars than the current runtime. ' + 'Please update your precompiler to a newer version (' + runtimeVersions + ') or downgrade your runtime to an older version (' + compilerVersions + ').');
+    } else {
+      // Use the embedded version info since the runtime doesn't know about this revision yet
+      throw new _exception2['default']('Template was precompiled with a newer version of Handlebars than the current runtime. ' + 'Please update your runtime to a newer version (' + compilerInfo[1] + ').');
+    }
+  }
+}
+
+function template(templateSpec, env) {
+  /* istanbul ignore next */
+  if (!env) {
+    throw new _exception2['default']('No environment passed to template');
+  }
+  if (!templateSpec || !templateSpec.main) {
+    throw new _exception2['default']('Unknown template object: ' + (typeof templateSpec === 'undefined' ? 'undefined' : _typeof(templateSpec)));
+  }
+
+  templateSpec.main.decorator = templateSpec.main_d;
+
+  // Note: Using env.VM references rather than local var references throughout this section to allow
+  // for external users to override these as psuedo-supported APIs.
+  env.VM.checkRevision(templateSpec.compiler);
+
+  function invokePartialWrapper(partial, context, options) {
+    if (options.hash) {
+      context = Utils.extend({}, context, options.hash);
+      if (options.ids) {
+        options.ids[0] = true;
+      }
+    }
+
+    partial = env.VM.resolvePartial.call(this, partial, context, options);
+    var result = env.VM.invokePartial.call(this, partial, context, options);
+
+    if (result == null && env.compile) {
+      options.partials[options.name] = env.compile(partial, templateSpec.compilerOptions, env);
+      result = options.partials[options.name](context, options);
+    }
+    if (result != null) {
+      if (options.indent) {
+        var lines = result.split('\n');
+        for (var i = 0, l = lines.length; i < l; i++) {
+          if (!lines[i] && i + 1 === l) {
+            break;
+          }
+
+          lines[i] = options.indent + lines[i];
+        }
+        result = lines.join('\n');
+      }
+      return result;
+    } else {
+      throw new _exception2['default']('The partial ' + options.name + ' could not be compiled when running in runtime-only mode');
+    }
+  }
+
+  // Just add water
+  var container = {
+    strict: function strict(obj, name) {
+      if (!(name in obj)) {
+        throw new _exception2['default']('"' + name + '" not defined in ' + obj);
+      }
+      return obj[name];
+    },
+    lookup: function lookup(depths, name) {
+      var len = depths.length;
+      for (var i = 0; i < len; i++) {
+        if (depths[i] && depths[i][name] != null) {
+          return depths[i][name];
+        }
+      }
+    },
+    lambda: function lambda(current, context) {
+      return typeof current === 'function' ? current.call(context) : current;
+    },
+
+    escapeExpression: Utils.escapeExpression,
+    invokePartial: invokePartialWrapper,
+
+    fn: function fn(i) {
+      var ret = templateSpec[i];
+      ret.decorator = templateSpec[i + '_d'];
+      return ret;
+    },
+
+    programs: [],
+    program: function program(i, data, declaredBlockParams, blockParams, depths) {
+      var programWrapper = this.programs[i],
+      fn = this.fn(i);
+      if (data || depths || blockParams || declaredBlockParams) {
+        programWrapper = wrapProgram(this, i, fn, data, declaredBlockParams, blockParams, depths);
+      } else if (!programWrapper) {
+        programWrapper = this.programs[i] = wrapProgram(this, i, fn);
+      }
+      return programWrapper;
+    },
+
+    data: function data(value, depth) {
+      while (value && depth--) {
+        value = value._parent;
+      }
+      return value;
+    },
+    merge: function merge(param, common) {
+      var obj = param || common;
+
+      if (param && common && param !== common) {
+        obj = Utils.extend({}, common, param);
+      }
+
+      return obj;
+    },
+    // An empty object to use as replacement for null-contexts
+    nullContext: Object.seal({}),
+
+    noop: env.VM.noop,
+    compilerInfo: templateSpec.compiler };
+
+
+  function ret(context) {
+    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+    var data = options.data;
+
+    ret._setup(options);
+    if (!options.partial && templateSpec.useData) {
+      data = initData(context, data);
+    }
+    var depths = undefined,
+    blockParams = templateSpec.useBlockParams ? [] : undefined;
+    if (templateSpec.useDepths) {
+      if (options.depths) {
+        depths = context != options.depths[0] ? [context].concat(options.depths) : options.depths;
+      } else {
+        depths = [context];
+      }
+    }
+
+    function main(context /*, options*/) {
+      return '' + templateSpec.main(container, context, container.helpers, container.partials, data, blockParams, depths);
+    }
+    main = executeDecorators(templateSpec.main, main, container, options.depths || [], data, blockParams);
+    return main(context, options);
+  }
+  ret.isTop = true;
+
+  ret._setup = function (options) {
+    if (!options.partial) {
+      container.helpers = container.merge(options.helpers, env.helpers);
+
+      if (templateSpec.usePartial) {
+        container.partials = container.merge(options.partials, env.partials);
+      }
+      if (templateSpec.usePartial || templateSpec.useDecorators) {
+        container.decorators = container.merge(options.decorators, env.decorators);
+      }
+    } else {
+      container.helpers = options.helpers;
+      container.partials = options.partials;
+      container.decorators = options.decorators;
+    }
+  };
+
+  ret._child = function (i, data, blockParams, depths) {
+    if (templateSpec.useBlockParams && !blockParams) {
+      throw new _exception2['default']('must pass block params');
+    }
+    if (templateSpec.useDepths && !depths) {
+      throw new _exception2['default']('must pass parent depths');
+    }
+
+    return wrapProgram(container, i, templateSpec[i], data, 0, blockParams, depths);
+  };
+  return ret;
+}
+
+function wrapProgram(container, i, fn, data, declaredBlockParams, blockParams, depths) {
+  function prog(context) {
+    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+    var currentDepths = depths;
+    if (depths && context != depths[0] && !(context === container.nullContext && depths[0] === null)) {
+      currentDepths = [context].concat(depths);
+    }
+
+    return fn(container, context, container.helpers, container.partials, options.data || data, blockParams && [options.blockParams].concat(blockParams), currentDepths);
+  }
+
+  prog = executeDecorators(fn, prog, container, depths, data, blockParams);
+
+  prog.program = i;
+  prog.depth = depths ? depths.length : 0;
+  prog.blockParams = declaredBlockParams || 0;
+  return prog;
+}
+
+function resolvePartial(partial, context, options) {
+  if (!partial) {
+    if (options.name === '@partial-block') {
+      partial = options.data['partial-block'];
+    } else {
+      partial = options.partials[options.name];
+    }
+  } else if (!partial.call && !options.name) {
+    // This is a dynamic partial that returned a string
+    options.name = partial;
+    partial = options.partials[partial];
+  }
+  return partial;
+}
+
+function invokePartial(partial, context, options) {
+  // Use the current closure context to save the partial-block if this partial
+  var currentPartialBlock = options.data && options.data['partial-block'];
+  options.partial = true;
+  if (options.ids) {
+    options.data.contextPath = options.ids[0] || options.data.contextPath;
+  }
+
+  var partialBlock = undefined;
+  if (options.fn && options.fn !== noop) {
+    (function () {
+      options.data = _base.createFrame(options.data);
+      // Wrapper function to get access to currentPartialBlock from the closure
+      var fn = options.fn;
+      partialBlock = options.data['partial-block'] = function partialBlockWrapper(context) {
+        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+        // Restore the partial-block from the closure for the execution of the block
+        // i.e. the part inside the block of the partial call.
+        options.data = _base.createFrame(options.data);
+        options.data['partial-block'] = currentPartialBlock;
+        return fn(context, options);
+      };
+      if (fn.partials) {
+        options.partials = Utils.extend({}, options.partials, fn.partials);
+      }
+    })();
+  }
+
+  if (partial === undefined && partialBlock) {
+    partial = partialBlock;
+  }
+
+  if (partial === undefined) {
+    throw new _exception2['default']('The partial ' + options.name + ' could not be found');
+  } else if (partial instanceof Function) {
+    return partial(context, options);
+  }
+}
+
+function noop() {
+  return '';
+}
+
+function initData(context, data) {
+  if (!data || !('root' in data)) {
+    data = data ? _base.createFrame(data) : {};
+    data.root = context;
+  }
+  return data;
+}
+
+function executeDecorators(fn, prog, container, depths, data, blockParams) {
+  if (fn.decorator) {
+    var props = {};
+    prog = fn.decorator(prog, props, container, depths && depths[0], data, blockParams, depths);
+    Utils.extend(prog, props);
+  }
+  return prog;
+}
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* global window */
+
+
+exports.__esModule = true;
+
+exports['default'] = function (Handlebars) {
+  /* istanbul ignore next */
+  var root = typeof global !== 'undefined' ? global : window,
+  $Handlebars = root.Handlebars;
+  /* istanbul ignore next */
+  Handlebars.noConflict = function () {
+    if (root.Handlebars === Handlebars) {
+      root.Handlebars = $Handlebars;
+    }
+    return Handlebars;
+  };
+};
+
+module.exports = exports['default'];
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(135)))
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;};var g;
+
+// This works in non-strict mode
+g = function () {
+	return this;
+}();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object")
+	g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Handlebars = __webpack_require__(32);
+function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
+module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=container.lambda;
+
+  return "\r\n\r\n<div id=\"wrap\" class=\"wrap\">\r\n    <a id=\"top\" class=\"top-anchor\" accesskey=\"t\"></a>\r\n\r\n    <div id=\"page-header\">\r\n        <div class=\"headerbar\" role=\"banner\">\r\n            <!-- EVENT overall_header_headerbar_before -->\r\n            <div class=\"inner\">\r\n                <div id=\"site-description\" class=\"site-description\">\r\n                    <a id=\"logo\" class=\"logo\" href=\"<!-- IF U_SITE_HOME -->{U_SITE_HOME}<!-- ELSE -->{U_INDEX}<!-- ENDIF -->\" title=\"<!-- IF U_SITE_HOME -->{L_SITE_HOME}<!-- ELSE -->{L_INDEX}<!-- ENDIF -->\"><span class=\"site_logo\"></span></a>\r\n                    <h1>"
+    + alias4(((helper = (helper = helpers.SITENAME || (depth0 != null ? depth0.SITENAME : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"SITENAME","hash":{},"data":data}) : helper)))
+    + "</h1>\r\n                    <p>"
+    + alias4(((helper = (helper = helpers.SITE_DESCRIPTION || (depth0 != null ? depth0.SITE_DESCRIPTION : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"SITE_DESCRIPTION","hash":{},"data":data}) : helper)))
+    + "</p>\r\n                    <p class=\"skiplink\"><a href=\"#start_here\">"
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SKIP : stack1), depth0))
+    + "</a></p>\r\n                </div>\r\n                <!-- EVENT overall_header_searchbox_before -->\r\n                <!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->\r\n                <div id=\"search-box\" class=\"search-box search-header\" role=\"search\">\r\n                    <form action=\"{U_SEARCH}\" method=\"get\" id=\"search\">\r\n                        <fieldset>\r\n                            <input name=\"keywords\" id=\"keywords\" type=\"search\" maxlength=\"128\" title=\""
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SEARCH_KEYWORDS : stack1), depth0))
+    + "\" class=\"inputbox search tiny\" size=\"20\" value=\"{SEARCH_WORDS}\" placeholder=\""
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SEARCH_MINI : stack1), depth0))
+    + "\" />\r\n                            <button class=\"button button-search\" type=\"submit\" title=\""
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SEARCH : stack1), depth0))
+    + "\">\r\n                                <i class=\"icon fa-search fa-fw\" aria-hidden=\"true\"></i><span class=\"sr-only\">"
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SEARCH : stack1), depth0))
+    + "</span>\r\n                            </button>\r\n                            <a href=\"{U_SEARCH}\" class=\"button button-search-end\" title=\""
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SEARCH_ADV : stack1), depth0))
+    + "\">\r\n                                <i class=\"icon fa-cog fa-fw\" aria-hidden=\"true\"></i><span class=\"sr-only\">"
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.SEARCH_ADV : stack1), depth0))
+    + "</span>\r\n                            </a>\r\n                            {S_SEARCH_HIDDEN_FIELDS}\r\n                        </fieldset>\r\n                    </form>\r\n                </div>\r\n                <!-- ENDIF -->\r\n                <!-- EVENT overall_header_searchbox_after -->\r\n            </div>\r\n            <!-- EVENT overall_header_headerbar_after -->\r\n        </div>\r\n        <!-- EVENT overall_header_navbar_before -->\r\n        <!-- INCLUDE navbar_header.html -->\r\n    </div>\r\n\r\n    <!-- EVENT overall_header_page_body_before -->\r\n\r\n    <a id=\"start_here\" class=\"anchor\"></a>\r\n    <div id=\"page-body\" class=\"page-body\" role=\"main\">\r\n        <!-- IF S_BOARD_DISABLED and S_USER_LOGGED_IN and (U_MCP or U_ACP) -->\r\n        <div id=\"information\" class=\"rules\">\r\n            <div class=\"inner\">\r\n                <strong>"
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.INFORMATION : stack1), depth0))
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.COLON : stack1), depth0))
+    + "</strong> "
+    + alias4(alias5(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.BOARD_DISABLED : stack1), depth0))
+    + "\r\n            </div>\r\n        </div>\r\n        <!-- ENDIF -->\r\n        <!-- EVENT overall_header_content_before -->\r\n";
+},"useData":true});
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Handlebars = __webpack_require__(32);
+function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
+module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "		<!-- EVENT overall_footer_content_after -->\r\n	</div>\r\n\r\n<!-- EVENT overall_footer_page_body_after -->\r\n<div id=\"page-footer\" class=\"page-footer\" role=\"contentinfo\">\r\n    <!-- INCLUDE navbar_footer.html -->\r\n    <div class=\"copyright\">\r\n        <!-- EVENT overall_footer_copyright_prepend -->\r\n        {CREDIT_LINE}\r\n        <!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->\r\n        <!-- EVENT overall_footer_copyright_append -->\r\n        <!-- IF DEBUG_OUTPUT --><br />{DEBUG_OUTPUT}<!-- ENDIF -->\r\n        <!-- IF U_ACP --><br /><strong><a href=\"{U_ACP}\">"
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.ACP : stack1), depth0))
+    + "</a></strong><!-- ENDIF -->\r\n    </div>\r\n    <div id=\"darkenwrapper\" class=\"darkenwrapper\" data-ajax-error-title=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.AJAX_ERROR_TITLE : stack1), depth0))
+    + "\" data-ajax-error-text=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.AJAX_ERROR_TEXT : stack1), depth0))
+    + "\" data-ajax-error-text-abort=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.AJAX_ERROR_TEXT_ABORT : stack1), depth0))
+    + "\" data-ajax-error-text-timeout=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.AJAX_ERROR_TEXT_TIMEOUT : stack1), depth0))
+    + "\" data-ajax-error-text-parsererror=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.AJAX_ERROR_TEXT_PARSERERROR : stack1), depth0))
+    + "\">\r\n        <div id=\"darken\" class=\"darken\">&nbsp;</div>\r\n    </div>\r\n    <div id=\"phpbb_alert\" class=\"phpbb_alert\" data-l-err=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.ERROR : stack1), depth0))
+    + "\" data-l-timeout-processing-req=\""
+    + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.i18n : depth0)) != null ? stack1.COMMON : stack1)) != null ? stack1.TIMEOUT_PROCESSING_REQ : stack1), depth0))
+    + "\">\r\n        <a href=\"#\" class=\"alert_close\">\r\n            <i class=\"icon fa-times-circle fa-fw\" aria-hidden=\"true\"></i>\r\n        </a>\r\n        <h3 class=\"alert_title\">&nbsp;</h3><p class=\"alert_text\"></p>\r\n    </div>\r\n    <div id=\"phpbb_confirm\" class=\"phpbb_alert\">\r\n        <a href=\"#\" class=\"alert_close\">\r\n            <i class=\"icon fa-times-circle fa-fw\" aria-hidden=\"true\"></i>\r\n        </a>\r\n        <div class=\"alert_text\"></div>\r\n    </div>\r\n</div>\r\n</div>\r\n\r\n<div>\r\n    <a id=\"bottom\" class=\"anchor\" accesskey=\"z\"></a>\r\n    <!-- IF not S_IS_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->\r\n</div>\r\n<script type=\"text/javascript\" src=\"{T_JQUERY_LINK}\"></script>\r\n<!-- IF S_ALLOW_CDN -->\r\n<script type=\"text/javascript\">window.jQuery || document.write('\\x3Cscript src=\"{T_ASSETS_PATH}/javascript/jquery.min.js?assets_version={T_ASSETS_VERSION}\">\\x3C/script>');</script><!-- ENDIF -->\r\n<script type=\"text/javascript\" src=\"{T_ASSETS_PATH}/javascript/core.js?assets_version={T_ASSETS_VERSION}\"></script>\r\n<!-- INCLUDEJS forum_fn.js -->\r\n<!-- INCLUDEJS ajax.js -->\r\n<!-- IF S_ALLOW_CDN -->\r\n<script type=\"text/javascript\">\r\n		(function($){\r\n			var $fa_cdn = $('head').find('link[rel=\"stylesheet\"]').first(),\r\n				$span = $('<span class=\"fa\" style=\"display:none\"></span>').appendTo('body');\r\n			if ($span.css('fontFamily') !== 'FontAwesome' ) {\r\n				$fa_cdn.after('<link href=\"{T_ASSETS_PATH}/css/font-awesome.min.css\" rel=\"stylesheet\">');\r\n				$fa_cdn.remove();\r\n			}\r\n			$span.remove();\r\n		})(jQuery);\r\n</script>\r\n<!-- ENDIF -->\r\n<!-- IF S_COOKIE_NOTICE -->\r\n<script src=\"{T_ASSETS_PATH}/cookieconsent/cookieconsent.min.js?assets_version={T_ASSETS_VERSION}\"></script>\r\n<script>\r\n		window.addEventListener(\"load\", function(){\r\n			window.cookieconsent.initialise({\r\n				\"palette\": {\r\n					\"popup\": {\r\n						\"background\": \"#0F538A\"\r\n					},\r\n					\"button\": {\r\n						\"background\": \"#E5E5E5\"\r\n					}\r\n				},\r\n				\"theme\": \"classic\",\r\n				\"content\": {\r\n					\"message\": \"{LA_COOKIE_CONSENT_MSG}\",\r\n					\"dismiss\": \"{LA_COOKIE_CONSENT_OK}\",\r\n					\"link\": \"{LA_COOKIE_CONSENT_INFO}\",\r\n					\"href\": \"{LA_COOKIE_CONSENT_HREF}\"\r\n				}\r\n			})});\r\n</script>\r\n<!-- ENDIF -->\r\n<!-- EVENT overall_footer_after -->\r\n<!-- IF S_PLUPLOAD --><!-- INCLUDE plupload.html --><!-- ENDIF -->\r\n<!--{$SCRIPTS}-->\r\n\r\n<!-- EVENT overall_footer_body_after -->\r\n<!--</body>\r\n</html>-->\r\n";
+},"useData":true});
+
+/***/ }),
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28028,12 +32489,6 @@ LoginPage = function (_Component) {_inherits(LoginPage, _Component);
 
 
 LoginPage;
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type.\n| <!-- INCLUDE overall_header.html -->\n| \n| <p class=\"{S_CONTENT_FLOW_END} responsive-center time<!-- IF S_USER_LOGGED_IN --> rightside<!-- ENDIF -->\"><!-- IF S_USER_LOGGED_IN -->{LAST_VISIT_DATE}<!-- ELSE -->{CURRENT_TIME}<!-- ENDIF --></p>");
 
 /***/ })
 /******/ ]);

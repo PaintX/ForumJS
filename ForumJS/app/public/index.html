@@ -1,11 +1,29 @@
 ﻿<!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" >
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/css/app.css">
+
+        <link rel="stylesheet" href="styles/test/theme/base.css">
+        <link rel="stylesheet" href="styles/test/theme/bidi.css">
+        <link rel="stylesheet" href="styles/test/theme/buttons.css">
+        <link rel="stylesheet" href="styles/test/theme/colours.css">
+        <link rel="stylesheet" href="styles/test/theme/common.css">
+        <link rel="stylesheet" href="styles/test/theme/content.css">
+        <link rel="stylesheet" href="styles/test/theme/cp.css">
+        <link rel="stylesheet" href="styles/test/theme/forms.css">
+        <link rel="stylesheet" href="styles/test/theme/icons.css">
+        <link rel="stylesheet" href="styles/test/theme/links.css">
+        <link rel="stylesheet" href="styles/test/theme/normalize.css">
+        <link rel="stylesheet" href="styles/test/theme/plupload.css">
+        <link rel="stylesheet" href="styles/test/theme/responsive.css">
+        <link rel="stylesheet" href="styles/test/theme/stylesheet.css">
+        <link rel="stylesheet" href="styles/test/theme/tweaks.css">
+        <link rel="stylesheet" href="styles/test/theme/utilities.css">
+
     </head>
 
-    <body>
+    <body id="appBody">
         <div id="root">
             <div id="preloader">
                 <svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-zigzag">
@@ -21,10 +39,9 @@
                 </svg>
             </div>
         </div>
-
-        <!-- Load Babel -->
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="min/js/bundle.js"></script>
-
     </body>
+
+    <!-- Load Babel -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="min/js/bundle.js"></script>
 </html>

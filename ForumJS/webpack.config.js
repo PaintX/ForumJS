@@ -26,7 +26,7 @@ function _GetFilesByExtension (dir , pattern) {
     
     let objectList = {};
     let dirList = [];
-    let fileList = _GetFilesByExtension(path.join(__dirname, '/app/public') , ['.js' , '.jsx']);
+    let fileList = _GetFilesByExtension(path.join(__dirname, '/app') , ['.js' , '.jsx' , '.hbs']);
     
     fileList.map( (file) => {
        let dir = file.substring(0,file.lastIndexOf('/'));
@@ -40,7 +40,7 @@ function _GetFilesByExtension (dir , pattern) {
     }  
     
     dirList.push('node_modules')
-    
+
 module.exports = {
   entry: './app/public/js/app.jsx',
   output: {
@@ -51,16 +51,20 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      //exclude: /node_modules/,
+      exclude: /styles/,
       loader: 'babel-loader',
       query: {
         presets: ['es2015', 'react'],
         retainLines : true,
       }
-    }]
+    },
+    { test: /\.hbs/, 
+         loader: "handlebars-loader",
+      }
+    ]
   },
    resolve: {
-    extensions: ['.min.js','.js', '.jsx'],
+    extensions: ['.min.js','.js', '.jsx' , '.hbs'],
     modules : dirList,
   },
 }

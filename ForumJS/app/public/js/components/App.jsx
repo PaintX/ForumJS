@@ -4,6 +4,7 @@ class App extends Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         return (
             <div className="inner-page">
@@ -12,9 +13,5 @@ class App extends Component {
         );
     }
 }
-/*
-App.propTypes = {
-    children: PropTypes.object.isRequired
-};*/
 
 export default App;

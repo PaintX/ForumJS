@@ -1,6 +1,10 @@
 ﻿import React, { Component } from 'react';
+import { translate } from 'translate';
+import siteinfos from "siteinfos";
 
-var tempalteIndex = require("../../../styles/prosilver/template/index_body.html");
+var compiled = require('index_body.hbs');
+
+
 
 class IndexPage extends Component {
     constructor(props) {
@@ -11,14 +15,15 @@ class IndexPage extends Component {
 
     }
 
+
     componentDidMount() {
 
     }
-
-
+    
     render() {
-        return tempalteIndex;
+
+        return <div dangerouslySetInnerHTML={{ __html: compiled(object.Assign({}, { i18n: this.props.i18n }, siteinfos.getAll()))}} />;
     }
 }
 
-export default IndexPage;
+export default (translate(['COMMON'])(IndexPage));

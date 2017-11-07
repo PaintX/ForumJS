@@ -8,11 +8,8 @@ var routes =
    'index': {
       url: '/',
       controller: 'index',
+      view: 'index_body',
     },
-   'site_infos': {
-       url: '/api/site/infos',
-       controller: 'site',
-   },
 }
 
 module.exports = routes;

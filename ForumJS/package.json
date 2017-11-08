@@ -6,7 +6,7 @@
   "author": {
     "name": "ARRT"
   },
-	"scripts": {
+  "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "express": "^4.16.2",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
+    "handlebars-utils": "^1.0.4",
     "object-assign": "^4.1.1"
   }
 }

@@ -34,12 +34,33 @@
     <Compile Include="app\config\core.routes.js" />
     <Compile Include="app\config\http.routes.js" />
     <Compile Include="app\controllers\index.js" />
+    <Compile Include="app\core\functions.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\global\config.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\helpers\and.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\helpers\i18n.js" />
+    <Compile Include="app\helpers\or.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\helpers\not.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\i18n\en.js" />
+    <Compile Include="app\i18n\fr.js" />
+    <Content Include="app\views\components\forumlist_body.hbs" />
+    <Content Include="app\views\components\navbar_header.hbs" />
     <Content Include="app\views\components\overall_footer.hbs">
       <SubType>Code</SubType>
     </Content>
     <Content Include="app\views\components\overall_header.hbs">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="app\views\pages\Error_404.hbs" />
     <Content Include="app\views\pages\index_body.hbs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -48,6 +69,10 @@
     <Folder Include="app\" />
     <Folder Include="app\config\" />
     <Folder Include="app\controllers\" />
+    <Folder Include="app\core\" />
+    <Folder Include="app\helpers\" />
+    <Folder Include="app\i18n\" />
+    <Folder Include="app\global\" />
     <Folder Include="app\public\" />
     <Folder Include="app\views\" />
     <Folder Include="app\views\components\" />

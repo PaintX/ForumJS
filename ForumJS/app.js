@@ -14,9 +14,20 @@ var handlebars = require("express-handlebars");
 var cookieParser = require('cookie-parser');
 var path = require('path');
 var routes = require('./app/config/core.routes');
+var functions = require('./app/core/functions');
+var i18n = require('./app/helpers/i18n');
+var hbsNotHelper = require('./app/helpers/not');
+var hbsAndHelper = require('./app/helpers/and');
+var hbsOrHelper = require('./app/helpers/or');
 
 var app = express();
 var paths = {};
+
+i18n.configure({
+    locales: ['en', 'fr'],
+    directory: __dirname + '/app/i18n'
+});
+
 
 var sess = session({ secret: 'this is my appppppppp', resave: true, saveUninitialized: true });
 
@@ -27,9 +38,9 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, '/app/public')));
 app.set('views', path.join(__dirname,'/app/views'));
-
+i18n.init(app);
 app.set('view engine', '.hbs');
-app.engine('.hbs', handlebars({ extname: '.hbs', partialsDir: './app/views/components' }));
+app.engine('.hbs', handlebars({ extname: '.hbs', partialsDir: './app/views/components', helpers: { i18n: i18n.helper, not: hbsNotHelper.helper, and: hbsAndHelper.helper, or: hbsOrHelper.helper }  }));
 
 /**
  * Load all routes in core.routes.
@@ -56,7 +67,9 @@ for (var key in routes) {
         app[action](url, function (req, res, next) {
 
             function _render(result) {
-                var sessionData = objectAssign(result, { 'session': req.session });
+               // var sessionData = objectAssign(result, { 'session': req.session });
+                //-- assignation des variable générale
+                result = objectAssign(result, functions.page_header(req.session)) ;
                 res.render(path[req.route.path].render, result);
             }
             var result = path[req.route.path].action[req.method](req, res, next, _render);
@@ -103,7 +116,7 @@ app.use(function (req, res, next) {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-    res.status(err.status || 500).render('./pages/Error_404', { title: "Sorry, page not found", 'session': req.session });
+    res.status(err.status || 500).render('./pages/Error_404', { title: "Sorry, page not found", 'error': err.stack});
 });
 
 app.set('port', process.env.PORT || 3000);

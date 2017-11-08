@@ -9,7 +9,27 @@ var routes =
       url: '/',
       controller: 'index',
       view: 'index_body',
-    },
+        },
+   'search': {
+       url: '/search.html',
+       controller: 'index',
+       view: 'index_body',
+   },
+   'login': {
+       url: '/login.html',
+       controller: 'index',
+       view: 'index_body',
+   },
+   'register': {
+       url: '/register.html',
+       controller: 'index',
+       view: 'index_body',
+   },
+   'viewonline': {
+       url: '/viewonline.html',
+       controller: 'index',
+       view: 'index_body',
+   },
 }
 
 module.exports = routes;

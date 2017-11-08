@@ -1,0 +1,1 @@
+var forumjs_installer_container;

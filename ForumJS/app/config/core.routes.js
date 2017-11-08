@@ -30,6 +30,13 @@ var routes =
        controller: 'index',
        view: 'index_body',
    },
+
+
+   'install': {
+       url: '/install/index',
+       controller: 'install',
+       view: 'adm/style/installer_install',
+   },
 }
 
 module.exports = routes;

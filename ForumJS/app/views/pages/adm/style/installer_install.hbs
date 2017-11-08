@@ -1,0 +1,13 @@
+{{> adm/style/installer_header }}
+<h1>{{TITLE}}</h1>
+<p>{{CONTENT}}</p>
+{{#if SHOW_INSTALL_START_FORM }}
+<form id="install_install" method="post" action="{{U_ACTION}}.html">
+	<fieldset class="submit-buttons">
+		<legend>{{i18n "L_SUBMIT"}}</legend>
+		<input class="button1" name="install" type="submit" value="{{i18n "L_INSTALL"}}" />
+	</fieldset>
+</form>
+{{/if}}
+<!-- INCLUDEJS {T_ASSETS_PATH}/javascript/installer.js -->
+<!-- INCLUDE installer_footer.html -->

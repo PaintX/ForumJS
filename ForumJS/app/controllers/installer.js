@@ -1,5 +1,6 @@
 ﻿var i18n = require('../helpers/i18n');
 var routes = require("../config/core.routes");
+var check_filesystem = require("./module/check_filesystem");
 
 function _get(req, res, next) {
     let template = {};
@@ -39,27 +40,56 @@ function _get(req, res, next) {
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('INTRODUCTION_TITLE'),
         'S_SELECTED': true,
+		'step' : 0,
     });
 
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('STAGE_REQUIREMENTS'),
         'S_SELECTED': false,
+		'step' : 1,
     });
 
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('STAGE_OBTAIN_DATA'),
         'S_SELECTED': false,
+		'step' : 2,
     }); 
 
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('STAGE_INSTALL'),
         'S_SELECTED': false,
+		'step' : 3,
     });
 
     return template;
 }
 function _post(req, res, next) {
-    return _get(req, res, next);
+	let template = _get(req, res, next);
+	template.SHOW_INSTALL_START_FORM = false;
+	template.l_block2.map((val) =>
+	{
+		val.S_SELECTED = false;
+		if ( val.step == req.body.step )
+		{
+			val.S_SELECTED = true;
+		}
+	});
+	
+	switch ( parseInt(req.body.step) )
+	{
+		case (1):
+		{
+			template.TITLE = 'test';
+			template.CONTENT = 'cvbcvb';
+			
+			check_filesystem.run();
+			
+			
+			break;
+		}
+	}
+	console.log(req.body.step);
+    return template;
 }
 
 module.exports.post = _post;

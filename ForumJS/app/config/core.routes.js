@@ -33,10 +33,27 @@ var routes =
 
 
    'install': {
-       url: '/install/index',
+       url: '/install',
        controller: 'install',
+       view: 'adm/style/installer_main',
+   },
+   'install_support': {
+       url: '/support/install',
+       controller: 'install',
+       view: 'adm/style/installer_main',
+   },
+   'install_license': {
+       url: '/license/install',
+       controller: 'install',
+       view: 'adm/style/installer_main',
+   },
+
+   'install_install': {
+       url: '/install/install',
+       controller: 'installer',
        view: 'adm/style/installer_install',
    },
+
 }
 
 module.exports = routes;

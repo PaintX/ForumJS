@@ -4,7 +4,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>ForumJS</Name>
     <RootNamespace>ForumJS</RootNamespace>
-    <NodejsPort>80</NodejsPort>
+    <NodejsPort>8080</NodejsPort>
     <Environment>DEBUG=app:*,-not_this</Environment>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -34,6 +34,10 @@
     <Compile Include="app\config\core.routes.js" />
     <Compile Include="app\config\http.routes.js" />
     <Compile Include="app\controllers\index.js" />
+    <Compile Include="app\controllers\install.js" />
+    <Compile Include="app\controllers\installer.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="app\core\functions.js">
       <SubType>Code</SubType>
     </Compile>
@@ -52,6 +56,136 @@
     </Compile>
     <Compile Include="app\i18n\en.js" />
     <Compile Include="app\i18n\fr.js" />
+    <Content Include="app\public\css\adm\admin.css" />
+    <Content Include="app\public\css\font-awesome.css" />
+    <Content Include="app\public\css\font-awesome.min.css" />
+    <Content Include="app\public\css\theme\base.css" />
+    <Content Include="app\public\css\theme\bidi.css" />
+    <Content Include="app\public\css\theme\buttons.css" />
+    <Content Include="app\public\css\theme\colours.css" />
+    <Content Include="app\public\css\theme\common.css" />
+    <Content Include="app\public\css\theme\content.css" />
+    <Content Include="app\public\css\theme\cp.css" />
+    <Content Include="app\public\css\theme\en\icon_user_online.gif" />
+    <Content Include="app\public\css\theme\en\stylesheet.css" />
+    <Content Include="app\public\css\theme\forms.css" />
+    <Content Include="app\public\css\theme\fr\icon_user_online.gif" />
+    <Content Include="app\public\css\theme\fr\stylesheet.css" />
+    <Content Include="app\public\css\theme\icons.css" />
+    <Content Include="app\public\css\theme\images\announce_read.gif" />
+    <Content Include="app\public\css\theme\images\announce_read_locked.gif" />
+    <Content Include="app\public\css\theme\images\announce_read_locked_mine.gif" />
+    <Content Include="app\public\css\theme\images\announce_read_mine.gif" />
+    <Content Include="app\public\css\theme\images\announce_unread.gif" />
+    <Content Include="app\public\css\theme\images\announce_unread_locked.gif" />
+    <Content Include="app\public\css\theme\images\announce_unread_locked_mine.gif" />
+    <Content Include="app\public\css\theme\images\announce_unread_mine.gif" />
+    <Content Include="app\public\css\theme\images\bg_header.gif" />
+    <Content Include="app\public\css\theme\images\bg_list.gif" />
+    <Content Include="app\public\css\theme\images\forum_link.gif" />
+    <Content Include="app\public\css\theme\images\forum_read.gif" />
+    <Content Include="app\public\css\theme\images\forum_read_locked.gif" />
+    <Content Include="app\public\css\theme\images\forum_read_subforum.gif" />
+    <Content Include="app\public\css\theme\images\forum_unread.gif" />
+    <Content Include="app\public\css\theme\images\forum_unread_locked.gif" />
+    <Content Include="app\public\css\theme\images\forum_unread_subforum.gif" />
+    <Content Include="app\public\css\theme\images\icons_contact.png" />
+    <Content Include="app\public\css\theme\images\icon_download.gif" />
+    <Content Include="app\public\css\theme\images\icon_offline.gif" />
+    <Content Include="app\public\css\theme\images\icon_online.gif" />
+    <Content Include="app\public\css\theme\images\icon_rate_bad.gif" />
+    <Content Include="app\public\css\theme\images\icon_rate_good.gif" />
+    <Content Include="app\public\css\theme\images\index.htm" />
+    <Content Include="app\public\css\theme\images\loading.gif" />
+    <Content Include="app\public\css\theme\images\no_avatar.gif" />
+    <Content Include="app\public\css\theme\images\plupload\done.gif" />
+    <Content Include="app\public\css\theme\images\plupload\error.gif" />
+    <Content Include="app\public\css\theme\images\plupload\throbber.gif" />
+    <Content Include="app\public\css\theme\images\quote.gif" />
+    <Content Include="app\public\css\theme\images\quote_rtl.gif" />
+    <Content Include="app\public\css\theme\images\site_logo.gif" />
+    <Content Include="app\public\css\theme\images\sticky_read.gif" />
+    <Content Include="app\public\css\theme\images\sticky_read_locked.gif" />
+    <Content Include="app\public\css\theme\images\sticky_read_locked_mine.gif" />
+    <Content Include="app\public\css\theme\images\sticky_read_mine.gif" />
+    <Content Include="app\public\css\theme\images\sticky_unread.gif" />
+    <Content Include="app\public\css\theme\images\sticky_unread_locked.gif" />
+    <Content Include="app\public\css\theme\images\sticky_unread_locked_mine.gif" />
+    <Content Include="app\public\css\theme\images\sticky_unread_mine.gif" />
+    <Content Include="app\public\css\theme\images\topic_moved.gif" />
+    <Content Include="app\public\css\theme\images\topic_read.gif" />
+    <Content Include="app\public\css\theme\images\topic_read_hot.gif" />
+    <Content Include="app\public\css\theme\images\topic_read_hot_mine.gif" />
+    <Content Include="app\public\css\theme\images\topic_read_locked.gif" />
+    <Content Include="app\public\css\theme\images\topic_read_locked_mine.gif" />
+    <Content Include="app\public\css\theme\images\topic_read_mine.gif" />
+    <Content Include="app\public\css\theme\images\topic_unread.gif" />
+    <Content Include="app\public\css\theme\images\topic_unread_hot.gif" />
+    <Content Include="app\public\css\theme\images\topic_unread_hot_mine.gif" />
+    <Content Include="app\public\css\theme\images\topic_unread_locked.gif" />
+    <Content Include="app\public\css\theme\images\topic_unread_locked_mine.gif" />
+    <Content Include="app\public\css\theme\images\topic_unread_mine.gif" />
+    <Content Include="app\public\css\theme\index.htm" />
+    <Content Include="app\public\css\theme\links.css" />
+    <Content Include="app\public\css\theme\normalize.css" />
+    <Content Include="app\public\css\theme\plupload.css" />
+    <Content Include="app\public\css\theme\print.css" />
+    <Content Include="app\public\css\theme\responsive.css" />
+    <Content Include="app\public\css\theme\stylesheet.css" />
+    <Content Include="app\public\css\theme\tweaks.css" />
+    <Content Include="app\public\css\theme\utilities.css" />
+    <Content Include="app\public\fonts\fontawesome-webfont.eot" />
+    <Content Include="app\public\fonts\fontawesome-webfont.svg" />
+    <Content Include="app\public\fonts\fontawesome-webfont.ttf" />
+    <Content Include="app\public\fonts\fontawesome-webfont.woff" />
+    <Content Include="app\public\fonts\fontawesome-webfont.woff2" />
+    <Content Include="app\public\fonts\FontAwesome.otf" />
+    <Content Include="app\public\images\adm\alert_close.png" />
+    <Content Include="app\public\images\adm\arrow_down.gif" />
+    <Content Include="app\public\images\adm\arrow_left.gif" />
+    <Content Include="app\public\images\adm\arrow_right.gif" />
+    <Content Include="app\public\images\adm\arrow_up.gif" />
+    <Content Include="app\public\images\adm\bg_button.gif" />
+    <Content Include="app\public\images\adm\bg_hash1.gif" />
+    <Content Include="app\public\images\adm\bg_hash2.gif" />
+    <Content Include="app\public\images\adm\bg_hash3.gif" />
+    <Content Include="app\public\images\adm\bg_hash4.gif" />
+    <Content Include="app\public\images\adm\bg_header.gif" />
+    <Content Include="app\public\images\adm\bg_header.jpg" />
+    <Content Include="app\public\images\adm\bg_tabs_alt1.gif" />
+    <Content Include="app\public\images\adm\bg_tabs_alt2.gif" />
+    <Content Include="app\public\images\adm\cellpic3.gif" />
+    <Content Include="app\public\images\adm\file_conflict.gif" />
+    <Content Include="app\public\images\adm\file_modified.gif" />
+    <Content Include="app\public\images\adm\file_new.gif" />
+    <Content Include="app\public\images\adm\file_new_conflict.gif" />
+    <Content Include="app\public\images\adm\file_not_modified.gif" />
+    <Content Include="app\public\images\adm\file_up_to_date.gif" />
+    <Content Include="app\public\images\adm\gradient2b.gif" />
+    <Content Include="app\public\images\adm\icon_delete.gif" />
+    <Content Include="app\public\images\adm\icon_delete_disabled.gif" />
+    <Content Include="app\public\images\adm\icon_down.gif" />
+    <Content Include="app\public\images\adm\icon_down_disabled.gif" />
+    <Content Include="app\public\images\adm\icon_edit.gif" />
+    <Content Include="app\public\images\adm\icon_edit_disabled.gif" />
+    <Content Include="app\public\images\adm\icon_folder.gif" />
+    <Content Include="app\public\images\adm\icon_folder_link.gif" />
+    <Content Include="app\public\images\adm\icon_folder_lock.gif" />
+    <Content Include="app\public\images\adm\icon_subfolder.gif" />
+    <Content Include="app\public\images\adm\icon_sync.gif" />
+    <Content Include="app\public\images\adm\icon_sync_disabled.gif" />
+    <Content Include="app\public\images\adm\icon_trace.gif" />
+    <Content Include="app\public\images\adm\icon_up.gif" />
+    <Content Include="app\public\images\adm\icon_up_disabled.gif" />
+    <Content Include="app\public\images\adm\innerbox_bg.gif" />
+    <Content Include="app\public\images\adm\loading.gif" />
+    <Content Include="app\public\images\adm\no_avatar.gif" />
+    <Content Include="app\public\images\adm\no_image.png" />
+    <Content Include="app\public\images\adm\phpbb_logo.png" />
+    <Content Include="app\public\images\adm\progress_bar.gif" />
+    <Content Include="app\public\images\adm\spacer.gif" />
+    <Content Include="app\public\images\zozor404.png" />
+    <Content Include="app\views\components\adm\style\installer_header.hbs" />
     <Content Include="app\views\components\forumlist_body.hbs" />
     <Content Include="app\views\components\navbar_header.hbs" />
     <Content Include="app\views\components\overall_footer.hbs">
@@ -60,6 +194,8 @@
     <Content Include="app\views\components\overall_header.hbs">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="app\views\pages\adm\style\installer_install.hbs" />
+    <Content Include="app\views\pages\adm\style\installer_main.hbs" />
     <Content Include="app\views\pages\Error_404.hbs" />
     <Content Include="app\views\pages\index_body.hbs" />
     <Content Include="package.json" />
@@ -74,9 +210,23 @@
     <Folder Include="app\i18n\" />
     <Folder Include="app\global\" />
     <Folder Include="app\public\" />
+    <Folder Include="app\public\css\" />
+    <Folder Include="app\public\css\adm\" />
+    <Folder Include="app\public\css\theme\" />
+    <Folder Include="app\public\css\theme\en\" />
+    <Folder Include="app\public\css\theme\fr\" />
+    <Folder Include="app\public\css\theme\images\" />
+    <Folder Include="app\public\css\theme\images\plupload\" />
+    <Folder Include="app\public\fonts\" />
+    <Folder Include="app\public\images\" />
+    <Folder Include="app\public\images\adm\" />
     <Folder Include="app\views\" />
     <Folder Include="app\views\components\" />
+    <Folder Include="app\views\components\adm\" />
+    <Folder Include="app\views\components\adm\style\" />
     <Folder Include="app\views\pages\" />
+    <Folder Include="app\views\pages\adm\" />
+    <Folder Include="app\views\pages\adm\style\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

@@ -69,9 +69,6 @@ function _init(application)
     });
 }
 
-
-
-
 function _helper (msg) 
 {
     var trad = undefined;
@@ -83,7 +80,36 @@ function _helper (msg)
     return trad;
 };
 
+
+function _getLangFor(categorie, str)
+{
+    let trad = str;
+    for (let key in i18n[_defaultParams.actualLocale][categorie]) {
+        if (i18n[_defaultParams.actualLocale][categorie][key][str] != undefined) {
+            trad = i18n[_defaultParams.actualLocale][categorie][key][str];
+        }
+    }
+    return trad
+
+}
+function _getLangForACP(str)
+{
+    return _getLangFor('acp', str);
+}
+
+function _getLangForInstall(str) {
+    return _getLangFor('install', str);
+}
+
+function _getLocaleName(locale)
+{
+    return i18n[locale].local_name;
+}
 module.exports.helper = _helper;
 module.exports.configure = _configure;
 module.exports.init = _init;
+module.exports.getLangForACP = _getLangForACP;
+module.exports.getLangForACP = _getLangForACP;
+module.exports.getLangForInstall = _getLangForInstall;
 module.exports.params = _defaultParams;
+module.exports.getLocaleName = _getLocaleName;

@@ -1,4 +1,8 @@
 module.exports = {
+    local_name: 'British English',
+
+
+
 	'INSTALL_INTRO'			: 'Welcome to Installation',
 'INSTALL_INTRO_BODY'	: 'With this option, it is possible to install phpBB3 onto your server.</p><p>In order to proceed, you will need your database settings. If you do not know your database settings, please contact your host and ask for them. You will not be able to continue without them. You need:</p> \
 	<ul>\

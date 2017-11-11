@@ -66,6 +66,8 @@ for (var key in routes) {
 
         app[action](url, function (req, res, next) {
 
+		console.log('   200 => ' + req.method + ' ' + req.originalUrl);
+		
             function _render(result) {
                // var sessionData = objectAssign(result, { 'session': req.session });
                 //-- assignation des variable générale

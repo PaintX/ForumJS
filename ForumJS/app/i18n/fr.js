@@ -28,6 +28,18 @@ module.exports = {
             'MENU_SUPPORT'		: 'Support',
         },
         serverRequirements: {
+	'DIRECTORY_NOT_EXISTS'						:'Répertoire inexistant',
+	'DIRECTORY_NOT_EXISTS_EXPLAIN'				:'Pour être en mesure d’installer phpBB le répertoire « %1$s » doit exister.',
+	'DIRECTORY_NOT_EXISTS_EXPLAIN_OPTIONAL'		: 'Il est recommandé que le répertoire « %1$s » existe pour améliorer votre confort d’utilisation du forum.',
+	'DIRECTORY_NOT_WRITABLE'					: 'Répertoire inaccessible en écriture',
+	'DIRECTORY_NOT_WRITABLE_EXPLAIN'			: 'Pour être en mesure d’installer phpBB le répertoire « %1$s » doit être accessible en écriture.',
+	'DIRECTORY_NOT_WRITABLE_EXPLAIN_OPTIONAL'	: 'Il est recommandé que le répertoire « %1$s » soit accessible en écriture pour améliorer votre confort d’utilisation du forum.',
+	
+		'PHP_VERSION_REQD'					:'Version de NodeJS',
+	'PHP_VERSION_REQD_EXPLAIN'			: 'ForumJS requiert NodeJS version v6 ou supérieure.',
+		'PHP_GETIMAGESIZE_SUPPORT'			: 'La fonction NodeJS image-size est requise',
+	'PHP_GETIMAGESIZE_SUPPORT_EXPLAIN'	:'Pour que ForumJS fonctionne correctement, la fonction image-size doit être disponible.',
+	
             'STAGE_REQUIREMENTS'	: 'Vérifier les prérequis',
         },
         install: {
@@ -62,7 +74,7 @@ module.exports = {
         },
     },
 
-
+'NEXT_STEP'					: 'Suivant',
 
 
     'CHANGE': 'Modifier',

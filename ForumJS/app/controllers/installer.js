@@ -1,8 +1,15 @@
 ﻿var i18n = require('../helpers/i18n');
+var debug = require('debug')('install:installer');
 var routes = require("../config/core.routes");
 var check_filesystem = require("./module/check_filesystem");
+var check_server_environment = require("./module/check_server_environment");
+var messages = require("./module/messages");
 
 function _get(req, res, next) {
+	if ( req.session.install == undefined )
+	{
+		req.session.install = { stage : 0 };
+	}
     let template = {};
     template.SHOW_INSTALL_START_FORM = true;
     template.L_INSTALL = i18n.getLangForACP('INSTALL');
@@ -40,31 +47,88 @@ function _get(req, res, next) {
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('INTRODUCTION_TITLE'),
         'S_SELECTED': true,
-		'step' : 0,
+		'STAGE_NAME' : 0,
     });
 
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('STAGE_REQUIREMENTS'),
         'S_SELECTED': false,
-		'step' : 1,
+		'STAGE_NAME' : 1,
     });
 
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('STAGE_OBTAIN_DATA'),
         'S_SELECTED': false,
-		'step' : 2,
+		'STAGE_NAME' : 2,
     }); 
 
     template.l_block2.push({
         'L_TITLE': i18n.getLangForInstall('STAGE_INSTALL'),
         'S_SELECTED': false,
-		'step' : 3,
-    });
+		'STAGE_NAME' : 3,
+	});
 
-    return template;
+	let stage = 0;
+	let obj = {};
+	if ( req.session.install  != undefined)
+	{
+		stage = parseInt(req.session.install.stage );
+		messages.clear_error_messages();
+		messages.clear_warning_messages();
+		switch ( stage )
+		{
+			case ( 1 ):
+			{
+				check_filesystem.run();
+				check_server_environment.run();
+
+				obj.form =  	'<form id="install_install" method="post" action="'+routes.install_install.url+'.html">' +
+				'<fieldset class="submit-buttons">'+
+					'<legend>{{L_SUBMIT}}</legend>'+
+					'<input type="hidden" name="step" value="2" />'+
+					'<input class="button1" name="install" type="submit" value="{{L_INSTALL}}" />'+
+				'</fieldset>'+
+			'</form>';
+				break;
+			}
+			case ( 2 ):
+			{
+				obj.form =  	'<form id="install_install" method="post" action="'+routes.install_install.url+'.html">' +
+				'<fieldset class="submit-buttons">'+
+					'<legend>{{L_SUBMIT}}</legend>'+
+					'<input type="hidden" name="step" value="2" />'+
+					'<input class="button1" name="install" type="submit" value="{{L_INSTALL}}" />'+
+				'</fieldset>'+
+			'</form>';
+				break;
+			}
+		}
+	}
+
+	if ( req.query.action != undefined)
+	{
+		switch ( req.query.action )
+		{
+			case ( 'status' ):
+			{
+				
+				obj.nav =  {active : stage};
+				obj.errors = messages.get_error_messages();
+				obj.warnings = messages.get_warning_messages();
+				
+				if (stage>3 || obj.errors.length > 0)
+					res.send(JSON.stringify({ status : 'finish' , messages : obj}));
+				else
+					res.send(JSON.stringify({ status : 'continue' , messages : obj}));
+				break;
+			}
+		}
+	}
+	else
+    	return template;
 }
 function _post(req, res, next) {
-	let template = _get(req, res, next);
+	/*let template = _get(req, res, next);
 	template.SHOW_INSTALL_START_FORM = false;
 	template.l_block2.map((val) =>
 	{
@@ -79,17 +143,76 @@ function _post(req, res, next) {
 	{
 		case (1):
 		{
-			template.TITLE = 'test';
-			template.CONTENT = 'cvbcvb';
+			messages.clear_error_messages();
+			messages.clear_warning_messages();
+			template.SHOW_INSTALL_STEP_2_FORM = true;
+			template.TITLE = i18n.getLangForInstall('STAGE_REQUIREMENTS');
+			template.CONTENT = '';
 			
-			check_filesystem.run();
+			if (!check_filesystem.run())
+			{
+				//debug(messages.get_error_messages());
+			}
+			
+			check_server_environment.run();
+			debug(messages.get_error_messages());
+			debug(messages.get_warning_messages());
 			
 			
+			if ( messages.get_error_messages().length > 0 )
+			{
+				template.CONTENT += '<div id="error-container" class="errorbox">';
+				
+				messages.get_error_messages().map((error)=>
+				{template.CONTENT += '<br>';
+					template.CONTENT += '<div>';
+					template.CONTENT += '<strong>';
+					template.CONTENT += error.title;
+					template.CONTENT += '</strong>';
+					if ( error.description != undefined )
+					{
+						template.CONTENT += '<p>';
+						template.CONTENT += error.description;
+						template.CONTENT += '</p>';
+					}
+					template.CONTENT += '</div>';
+					
+				});
+				template.CONTENT += '<br>';
+				template.CONTENT += '</div>';
+			}
+			
+			if ( messages.get_warning_messages().length > 0 )
+			{
+				template.CONTENT += '<div id="warning-container" class="warningbox">';
+				messages.get_warning_messages().map((warning)=>
+				{
+					template.CONTENT += '<div>';
+					template.CONTENT += '<strong>';
+					template.CONTENT += warning.title;
+					template.CONTENT += '</strong>';
+					
+					if ( warning.description != undefined )
+					{
+						template.CONTENT += '<p>';
+						template.CONTENT += warning.description;
+						template.CONTENT += '</p>';
+					}
+			
+					template.CONTENT += '</div>';
+				});
+				template.CONTENT += '</div>';
+			}
+
+			template.L_NEXT_STEP = i18n.helper('NEXT_STEP');
+			//console.log(result);
 			break;
 		}
 	}
-	console.log(req.body.step);
-    return template;
+	return template;*/
+	req.session.install = {stage : parseInt(req.body.step)};
+	res.send(JSON.stringify({ status : 'continue'  , messages : { refresh : true }}));
+	//return {}
 }
 
 module.exports.post = _post;

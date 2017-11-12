@@ -5,6 +5,9 @@ var check_filesystem = require("./module/check_filesystem");
 var check_server_environment = require("./module/check_server_environment");
 var messages = require("./module/messages");
 
+var process = false;
+let obj = {};
+let status = 'continue';
 function _get(req, res, next) {
 	if ( req.session.install == undefined )
 	{
@@ -69,7 +72,7 @@ function _get(req, res, next) {
 	});
 
 	let stage = 0;
-	let obj = {};
+	
 	if ( req.session.install  != undefined)
 	{
 		stage = parseInt(req.session.install.stage );
@@ -89,17 +92,24 @@ function _get(req, res, next) {
 					'<input class="button1" name="install" type="submit" value="{{L_INSTALL}}" />'+
 				'</fieldset>'+
 			'</form>';
+
+			status ='continue';
 				break;
 			}
 			case ( 2 ):
 			{
-				obj.form =  	'<form id="install_install" method="post" action="'+routes.install_install.url+'.html">' +
-				'<fieldset class="submit-buttons">'+
-					'<legend>{{L_SUBMIT}}</legend>'+
-					'<input type="hidden" name="step" value="2" />'+
-					'<input class="button1" name="install" type="submit" value="{{L_INSTALL}}" />'+
-				'</fieldset>'+
-			'</form>';
+				let form = {};
+				form.options = [];
+				form.options.push({ 'LEGEND' : i18n.getLangForInstall('ADMIN_CONFIG') , 'S_LEGEND' : true});
+
+				form.options.push({ 'LEGEND' : i18n.getLangForInstall('ADMIN_CONFIG') , 'S_LEGEND' : true});
+
+				// if a callback is specified, the rendered HTML string has to be sent explicitly
+				res.render('./components/adm/style/installer_form.hbs', form , function(err, html) {
+					obj.form =  html;
+					status ='finish';
+				});
+					
 				break;
 			}
 		}
@@ -119,7 +129,7 @@ function _get(req, res, next) {
 				if (stage>3 || obj.errors.length > 0)
 					res.send(JSON.stringify({ status : 'finish' , messages : obj}));
 				else
-					res.send(JSON.stringify({ status : 'continue' , messages : obj}));
+					res.send(JSON.stringify({ status : status , messages : obj}));
 				break;
 			}
 		}
@@ -128,91 +138,8 @@ function _get(req, res, next) {
     	return template;
 }
 function _post(req, res, next) {
-	/*let template = _get(req, res, next);
-	template.SHOW_INSTALL_START_FORM = false;
-	template.l_block2.map((val) =>
-	{
-		val.S_SELECTED = false;
-		if ( val.step == req.body.step )
-		{
-			val.S_SELECTED = true;
-		}
-	});
-	
-	switch ( parseInt(req.body.step) )
-	{
-		case (1):
-		{
-			messages.clear_error_messages();
-			messages.clear_warning_messages();
-			template.SHOW_INSTALL_STEP_2_FORM = true;
-			template.TITLE = i18n.getLangForInstall('STAGE_REQUIREMENTS');
-			template.CONTENT = '';
-			
-			if (!check_filesystem.run())
-			{
-				//debug(messages.get_error_messages());
-			}
-			
-			check_server_environment.run();
-			debug(messages.get_error_messages());
-			debug(messages.get_warning_messages());
-			
-			
-			if ( messages.get_error_messages().length > 0 )
-			{
-				template.CONTENT += '<div id="error-container" class="errorbox">';
-				
-				messages.get_error_messages().map((error)=>
-				{template.CONTENT += '<br>';
-					template.CONTENT += '<div>';
-					template.CONTENT += '<strong>';
-					template.CONTENT += error.title;
-					template.CONTENT += '</strong>';
-					if ( error.description != undefined )
-					{
-						template.CONTENT += '<p>';
-						template.CONTENT += error.description;
-						template.CONTENT += '</p>';
-					}
-					template.CONTENT += '</div>';
-					
-				});
-				template.CONTENT += '<br>';
-				template.CONTENT += '</div>';
-			}
-			
-			if ( messages.get_warning_messages().length > 0 )
-			{
-				template.CONTENT += '<div id="warning-container" class="warningbox">';
-				messages.get_warning_messages().map((warning)=>
-				{
-					template.CONTENT += '<div>';
-					template.CONTENT += '<strong>';
-					template.CONTENT += warning.title;
-					template.CONTENT += '</strong>';
-					
-					if ( warning.description != undefined )
-					{
-						template.CONTENT += '<p>';
-						template.CONTENT += warning.description;
-						template.CONTENT += '</p>';
-					}
-			
-					template.CONTENT += '</div>';
-				});
-				template.CONTENT += '</div>';
-			}
-
-			template.L_NEXT_STEP = i18n.helper('NEXT_STEP');
-			//console.log(result);
-			break;
-		}
-	}
-	return template;*/
 	req.session.install = {stage : parseInt(req.body.step)};
 	res.send(JSON.stringify({ status : 'continue'  , messages : { refresh : true }}));
-	//return {}
 }
 
 module.exports.post = _post;

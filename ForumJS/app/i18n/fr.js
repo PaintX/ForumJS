@@ -72,6 +72,9 @@ module.exports = {
             'STAGE_OBTAIN_DATA': 'Définir les données d’installation',
             'STAGE_INSTALL'	: 'Installation de phpBB',
         },
+        data : {
+        'ADMIN_CONFIG'				: 'Configuration du compte Administrateur',
+    },
     },
 
 'NEXT_STEP'					: 'Suivant',

@@ -4,6 +4,7 @@ var routes = require("../config/core.routes");
 var check_filesystem = require("./module/check_filesystem");
 var check_server_environment = require("./module/check_server_environment");
 var messages = require("./module/messages");
+var form = require("./module/form");
 
 var process = false;
 let obj = {};
@@ -78,6 +79,7 @@ function _get(req, res, next) {
 		stage = parseInt(req.session.install.stage );
 		messages.clear_error_messages();
 		messages.clear_warning_messages();
+		
 		switch ( stage )
 		{
 			case ( 1 ):
@@ -93,23 +95,61 @@ function _get(req, res, next) {
 				'</fieldset>'+
 			'</form>';
 
-			status ='continue';
+			status ='finish';
 				break;
 			}
 			case ( 2 ):
 			{
-				let form = {};
-				form.options = [];
-				form.options.push({ 'LEGEND' : i18n.getLangForInstall('ADMIN_CONFIG') , 'S_LEGEND' : true});
+				
 
-				form.options.push({ 'LEGEND' : i18n.getLangForInstall('ADMIN_CONFIG') , 'S_LEGEND' : true});
+				let admin_form = {
+					'admin_name'	: {
+						'label'			: 'ADMIN_USERNAME',
+						'description'	: 'ADMIN_USERNAME_EXPLAIN',
+						'type'			: 'text',
+						'default'		: '',
+					},
+					'board_email'	: {
+						'label'		: 'CONTACT_EMAIL',
+						'type'		: 'email',
+						'default'	: '',
+					},
+					'admin_pass1'	: {
+						'label'			: 'ADMIN_PASSWORD',
+						'description'	: 'ADMIN_PASSWORD_EXPLAIN',
+						'type'			: 'password',
+					},
+					'admin_pass2'	: {
+						'label'	: 'ADMIN_PASSWORD_CONFIRM',
+						'type'	: 'password',
+					},
+					'step'	: {
+						'default' : 3,
+						'type'	: 'hidden',
+					},
+					'submit_admin'	: {
+						'label'	: 'SUBMIT',
+						'type'	: 'submit',
+					},
+				};
+				
+				let formulaire = form.generate_form_render_data('ADMIN_CONFIG' , admin_form);
+				formulaire.U_ACTION = routes.install_install.url+'.html';
 
 				// if a callback is specified, the rendered HTML string has to be sent explicitly
-				res.render('./components/adm/style/installer_form.hbs', form , function(err, html) {
+				res.render('./components/adm/style/installer_form.hbs', formulaire , function(err, html) {
 					obj.form =  html;
 					status ='finish';
 				});
 					
+				break;
+			}
+			case ( 3 ):
+			{
+
+
+				obj.form ='';
+			status ='finish';
 				break;
 			}
 		}
@@ -130,6 +170,8 @@ function _get(req, res, next) {
 					res.send(JSON.stringify({ status : 'finish' , messages : obj}));
 				else
 					res.send(JSON.stringify({ status : status , messages : obj}));
+
+					obj.form =  '';
 				break;
 			}
 		}
@@ -139,6 +181,7 @@ function _get(req, res, next) {
 }
 function _post(req, res, next) {
 	req.session.install = {stage : parseInt(req.body.step)};
+	status = 'continue';
 	res.send(JSON.stringify({ status : 'continue'  , messages : { refresh : true }}));
 }
 

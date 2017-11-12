@@ -419,7 +419,7 @@
 		} while (messageEndIndex !== -1);
 */
 		if (xhReq.readyState === 4) {
-			$('#loading_indicator').css('display', 'none');
+			//$('#loading_indicator').css('display', 'none');
 			resetPolling();
 
 			var timeoutDetected = !transmissionOver;

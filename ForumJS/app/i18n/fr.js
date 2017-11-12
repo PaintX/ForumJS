@@ -11,6 +11,7 @@ module.exports = {
             'INTRODUCTION_BODY': 'Bienvenue sur phpBB3 !<br /><br />phpBB® est la solution de forum libre la plus répandue dans le monde. phpBB3 est l’aboutissement d’un long processus débuté en 2000. Comme ses prédécesseurs, phpBB3 est riche en fonctionnalités, convivial et complètement supporté par l’équipe phpBB. phpBB3 améliore considérablement ce qui a rendu populaire phpBB2 et ajoute des fonctionnalités très souvent demandées, qui n’étaient pas présentes dans les versions précédentes. Nous espérons qu’il dépassera vos attentes.<br /><br />Cet outil vous guidera à travers l’installation de phpBB3, la mise à jour de votre forum phpBB3 ou la conversion depuis un autre système de forum (y compris phpBB2). Pour plus d’informations, nous vous invitons à prendre connaissance du <a href="../docs/INSTALL.html">guide d’installation</a> (en anglais).<br /><br />Pour consulter la licence de phpBB3 ou vous renseigner sur l’obtention de support ainsi que notre position, choisissez l’option respective à partir du menu latéral. Pour continuer, choisissez l’option appropriée dans les onglets ci-dessus.',
             'INSTALL_PANEL': 'Assistant d’installation',
             'SELECT_LANG'	: 'Choisissez une langue',
+            'SUBMIT'					: 'Envoyer',
         },
         support:{
             'SUPPORT_TITLE'		:'Support',
@@ -74,6 +75,13 @@ module.exports = {
         },
         data : {
         'ADMIN_CONFIG'				: 'Configuration du compte Administrateur',
+        	// Form labels
+	'ADMIN_CONFIG': 'Configuration du compte Administrateur',
+	'ADMIN_PASSWORD'			: 'Mot de passe de l’administrateur',
+	'ADMIN_PASSWORD_CONFIRM'	: 'Confirmez le mot de passe',
+	'ADMIN_PASSWORD_EXPLAIN'	: 'Saisissez un mot de passe entre 6 et 30 caractères.',
+	'ADMIN_USERNAME'			: 'Nom de l’administrateur',
+	'ADMIN_USERNAME_EXPLAIN'	: 'Saisissez un nom d’utilisateur entre 3 et 20 caractères.',
     },
     },
 

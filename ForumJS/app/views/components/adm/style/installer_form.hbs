@@ -1,5 +1,5 @@
-<form id="<!-- IF FORM_ID -->{FORM_ID}<!-- ELSE -->install_install<!-- ENDIF -->" method="POST" action="{U_ACTION}">
-<!-- IF .options -->
+<form id="{{#if FORM_ID}}{{FORM_ID}}{{else}}install_install{{/if}}" method="POST" action="{{U_ACTION}}">
+{{#if options}}
 {{#if (not S_NOT_ONLY_BUTTON_FORM)}}
 <fieldset>
 {{/if}}
@@ -14,29 +14,9 @@
 			<legend>{{LEGEND}}</legend>
 		{{else}}
 		<dl>
-			<dt><label for="{{KEY}}">{{TITLE}}{{i18n "L_COLON"}}</label><!-- IF options.S_EXPLAIN --><br /><span class="explain">{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
+			{{#if TITLE}}<dt><label for="{{KEY}}">{{TITLE}}{{i18n "L_COLON"}}</label>{{#if S_EXPLAIN }}<br /><span class="explain">{{TITLE_EXPLAIN}}</span>{{/if}}</dt>{{/if}}
 			<dd>
-				<!-- IF options.TYPE == 'text' -->
-				<input type="text" name="{options.KEY}" value="{options.DEFAULT}" />
-				<!-- ENDIF -->
-				<!-- IF options.TYPE == 'email' -->
-				<input type="email" name="{options.KEY}" value="{options.DEFAULT}" />
-				<!-- ENDIF -->
-				<!-- IF options.TYPE == 'password' -->
-				<input type="password" name="{options.KEY}" />
-				<!-- ENDIF -->
-				<!-- IF options.TYPE == 'select' -->
-				<select name="{options.KEY}">
-					<!-- BEGIN options.OPTIONS -->
-					<option value="{options.OPTIONS.value}"<!-- IF options.OPTIONS.selected --> selected<!-- ENDIF -->>{options.OPTIONS.label}</option>
-					<!-- END options.OPTIONS -->
-				</select>
-				<!-- ENDIF -->
-				<!-- IF options.TYPE == 'radio' -->
-					<!-- BEGIN options.OPTIONS -->
-				<input type="radio" name="{options.KEY}" value="{options.OPTIONS.value}" <!-- IF options.OPTIONS.selected -->checked<!-- ENDIF --> /> {options.OPTIONS.label}
-					<!-- END options.OPTIONS -->
-				<!-- ENDIF -->
+				<input type="{{TYPE}}" name="{{KEY}}" value="{{DEFAULT}}" />
 			</dd>
 		</dl>
 		{{/if}}
@@ -44,13 +24,14 @@
 {{#if (not S_NOT_ONLY_BUTTON_FORM)}}
 </fieldset>
 {{/if}}
-<!-- ENDIF -->
-<!-- IF .submit_buttons -->
-<fieldset class="submit-buttons">
-	<legend>{L_SUBMIT}</legend>
-	<!-- BEGIN submit_buttons -->
-	<input class="button1" type="submit" name="{submit_buttons.KEY}" value="{submit_buttons.TITLE}" />
-	<!-- END submit_buttons -->
-</fieldset>
-<!-- ENDIF -->
+{{/if}}
+{{#if submit_buttons}}
+
+	<fieldset class="submit-buttons">
+		<legend>{{L_SUBMIT}}</legend>
+		{{#each submit_buttons}}
+			<input class="button1" type="submit" name="{{KEY}}" value="{{TITLE}}" />
+		{{/each}}
+	</fieldset>
+{{/if}}
 </form>

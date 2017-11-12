@@ -1,6 +1,6 @@
 ﻿function _get (req, res, next)
 {
-    return { S_VIEWTOPIC: false, S_VIEWFORUM : true };
+    return {};
 }
 
 function _post (req, res, next)

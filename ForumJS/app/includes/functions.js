@@ -305,6 +305,7 @@ objRet = {
     'L_USERNAME' : i18n.getLangFor('common' , 'USERNAME'),
     'L_PASSWORD' : i18n.getLangFor('common' , 'PASSWORD'),
     'L_REGISTER' : i18n.getLangFor('common', 'REGISTER'),
+    'L_REGISTRATION' : i18n.getLangFor('common', 'REGISTER'),
 }
 
 

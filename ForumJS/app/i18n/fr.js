@@ -4,6 +4,11 @@ module.exports = {
         common: {
         },
     },
+    ucp : {
+        common: {
+            'USERNAME_CHARS_ANY_EXPLAIN'			:'Le nom d’utilisateur doit avoir une longueur comprise entre %s et %s.',
+        },
+    },
     install: {
         common: {   
         },

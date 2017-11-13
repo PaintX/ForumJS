@@ -8,6 +8,8 @@ var config = {
     load_online_time : false,
 
     require_activation : constants.USER_ACTIVATION_NONE,
+
+    allow_name_chars : 'USERNAME_CHARS_ANY',
 }
 
 function load()

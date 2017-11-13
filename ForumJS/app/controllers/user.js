@@ -1,6 +1,10 @@
+var ucp_register = require('../includes/ucp/ucp_register');
+
 function _get (req, res, next)
 {
-    return {};
+  let objRet = {};
+  objRet = ucp_register.run();
+  return objRet;
 }
 
 function _post (req, res, next)

@@ -1,0 +1,53 @@
+	</div>
+
+<div id="page-footer">
+
+	<div class="mainfooter">
+	<div style="float: left; text-align: left;">
+	<div style="margin-top: 6px;">
+		<img src="{{T_THEME_PATH}}/images/icon_home.png" width="16" height="16" alt="" /><a href="{{U_INDEX}}" accesskey="h">{{L_INDEX}}</a>
+			
+		{{#if ( not S_IS_BOT) }}
+			{{#if S_WATCH_FORUM_LINK }}{{#if S_WATCHING_FORUM }}<img src="{{T_THEME_PATH}}/images/icon_unsubscribe.png" style=" margin-left: 4px;" width="16" height="16" alt="" />{{else}}<img src="{{T_THEME_PATH}}/images/icon_subscribe.png" style=" margin-left: 4px;" width="16" height="16" alt="" />{{/if}}<a href="{{S_WATCH_FORUM_LINK}}" title="{{S_WATCH_FORUM_TITLE}}">{{S_WATCH_FORUM_TITLE}}</a>{{/if}}
+			{{#if U_WATCH_TOPIC}}{{#if S_WATCHING_TOPIC }}<img src="{{T_THEME_PATH}}/images/icon_unsubscribe.png" style=" margin-left: 4px;" width="16" height="16" alt="" />{{else}}<img src="{{T_THEME_PATH}}/images/icon_subscribe.png" style=" margin-left: 4px;" width="16" height="16" alt="" />{{/if}}<a href="{{U_WATCH_TOPIC}}" title="{{L_WATCH_TOPIC}}">{{L_WATCH_TOPIC}}</a>{{/if}}
+			{{#if U_BOOKMARK_TOPIC }}<img src="{{T_THEME_PATH}}/images/icon_bookmark.png" style=" margin-left: 4px;" width="16" height="16" alt="" /><a href="{{U_BOOKMARK_TOPIC}}" title="{{L_BOOKMARK_TOPIC}}">{{L_BOOKMARK_TOPIC}}</a>{{/if}}
+			{{#if U_BUMP_TOPIC }}<img src="{{T_THEME_PATH}}/images/icon_bump.png" style=" margin-left: 4px;" width="16" height="16" alt="" /><a href="{{U_BUMP_TOPIC}}" title="{{L_BUMP_TOPIC}}">{{L_BUMP_TOPIC}}</a>{{/if}}
+		{{/if}}
+	</div>
+	
+	<div style="margin-top: -7px; margin-bottom: 5px; text-transform: capitalize;">
+	<br />
+	{{CREDIT_LINE}}
+	</div>
+	</div>
+
+	<div style="float: right; text-align: right;">
+	<div style="margin-top: 6px;">
+	{{#if U_TEAM }}<a href="{{U_TEAM}}">{{L_THE_TEAM}}</a> &bull; {{/if}}{{#if ( not S_IS_BOT) }}<a href="{{U_DELETE_COOKIES}}">{{L_DELETE_COOKIES}}</a> &bull; {{/if}}{{S_TIMEZONE}}
+	</div>
+	
+	<div style="margin-top: -5px; margin-bottom: 5px; text-transform: capitalize;">
+	<br />
+	Theme by <a href="http://www.abhisheksrivastava.in/" title="Abhishek Srivastava">Abhishek Srivastava</a>
+	</div>	
+	
+	</div>
+
+	</div>
+
+</div>
+
+</div>
+
+		<div style="text-align: center; color: #fff;">
+		{{#if TRANSLATION_INFO }}<br />{{TRANSLATION_INFO}}{{/if}}
+		{{#if DEBUG_OUTPUT }}<br />{{DEBUG_OUTPUT}}{{/if}}
+		</div>
+
+<div>
+	<a id="bottom" name="bottom" accesskey="z"></a>
+	{{#if ( not S_IS_BOT) }}{{RUN_CRON_TASK}}{{/if}}
+</div>
+
+</body>
+</html>

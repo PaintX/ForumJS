@@ -2968,19 +2968,19 @@ hr.dashed {
 }
 
 span.corners-top {
-	background-image: url("./styles/dualcore/theme/images/corners_left.png");
+	background-image: url("./images/corners_left.png");
 }
 
 span.corners-top span {
-	background-image: url("./styles/dualcore/theme/images/corners_right.png");
+	background-image: url("./images/corners_right.png");
 }
 
 span.corners-bottom {
-	background-image: url("./styles/dualcore/theme/images/corners_left.png");
+	background-image: url("./images/corners_left.png");
 }
 
 span.corners-bottom span {
-	background-image: url("./styles/dualcore/theme/images/corners_right.png");
+	background-image: url("./images/corners_right.png");
 }
 
 /* Horizontal lists
@@ -3906,7 +3906,7 @@ fieldset.quick-login input.inputbox {
 ---------------------------------------- */
 
 a.button1, input.button1, input.button3, a.button2, input.button2 {
-	background: #1c2a32 url("./styles/dualcore/theme/images/button-highlight.png") repeat-x 0px -1px;
+	background: #1c2a32 url("./images/button-highlight.png") repeat-x 0px -1px;
 	padding: 4px 8px;
 	color: #fff;
 	font-family: droid sans,tahoma;	
@@ -3943,7 +3943,7 @@ a.button1, a.button1:link, a.button1:visited, a.button1:active, a.button2, a.but
 }
 
 a.button2, a.button2:link, a.button2:visited, a.button2:active {
-	background: #1c2a32 url("./styles/dualcore/theme/images/button-highlight.png") repeat-x 0px -1px;
+	background: #1c2a32 url("./images/button-highlight.png") repeat-x 0px -1px;
 	padding: 4px 8px;
 }
 
@@ -3951,11 +3951,11 @@ a.button2, a.button2:link, a.button2:visited, a.button2:active {
 a.button1:hover, input.button1:hover, a.button2:hover, input.button2:hover, input.button3:hover {
 	border-color: #001b32;
 	color: #00b0ff;
-	background: #003350 url("./styles/dualcore/theme/images/button-highlight.png") repeat-x 0px -1px;
+	background: #003350 url("./images/button-highlight.png") repeat-x 0px -1px;
 }
 
 input.search {
-	background-image: url("./styles/dualcore/theme/images/icon_textbox_search.gif");
+	background-image: url("./images/icon_textbox_search.gif");
 }
 
 input.disabled {
@@ -3967,7 +3967,7 @@ Custom CSS Style for DualCore
 -------------------------------------------------------------- */
 
 .maintitle {
-	background: #00496d url("./styles/dualcore/theme/images/maintitle.png") repeat-x 50% 50%;
+	background: #00496d url("./images/maintitle.png") repeat-x 50% 50%;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -4014,7 +4014,7 @@ Custom CSS Style for DualCore
 }
 
 .mainheader {
-	background: #00496d url("./styles/dualcore/theme/images/mainheader.png") repeat-x 50% 50%;
+	background: #00496d url("./images/mainheader.png") repeat-x 50% 50%;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -4054,7 +4054,7 @@ Custom CSS Style for DualCore
 }
 
 .nav-bar {
-	background: #001b32 url("./styles/dualcore/theme/images/navbar.png") repeat-x 50% 50%;
+	background: #001b32 url("./images/navbar.png") repeat-x 50% 50%;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -4112,7 +4112,7 @@ dd.topics span, dd.posts span, dd.views span {
 }
 
 .trigger {
-    background: url("./styles/dualcore/theme/images/collapse-icon.png") no-repeat;
+    background: url("./images/collapse-icon.png") no-repeat;
     width: 32px;
     height: 19px;
     cursor: pointer;
@@ -4144,7 +4144,7 @@ dd.topics span, dd.posts span, dd.views span {
 }
 
 .dualcore-logo {
-	background-image: url("./styles/dualcore/theme/images/logo.png");
+	background-image: url("./images/logo.png");
 	width: 500px;
 	height: 140px;
 }
@@ -4263,7 +4263,7 @@ dd.topics span, dd.posts span, dd.views span {
 
 
 .topnav {
-	background: #000 url("./styles/dualcore/theme/images/navbar.png") repeat-x 50% 50%;
+	background: #000 url("./images/navbar.png") repeat-x 50% 50%;
 	height: 35px;
 	line-height: 35px;
 	border-bottom: 1px solid #1b1b1b;
@@ -4355,7 +4355,7 @@ dd.topics span, dd.posts span, dd.views span {
 	width: 70px;
 	height: 30px;
 	padding: 0 10px 0 35px;
-	background: url("./styles/dualcore/theme/images/quicksearch.png") no-repeat 10px 50% #fcfcfc;
+	background: url("./images/quicksearch.png") no-repeat 10px 50% #fcfcfc;
 	border: none;
 	font-size: 14px;
 	font-weight: bold;
@@ -4393,7 +4393,7 @@ dd.topics span, dd.posts span, dd.views span {
 }
 
 .mainfooter {
-	background: #00496d url("./styles/dualcore/theme/images/maintitle.png") repeat-x 50% 50%;
+	background: #00496d url("./images/maintitle.png") repeat-x 50% 50%;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -4441,7 +4441,7 @@ dd.topics span, dd.posts span, dd.views span {
 .expandview {
 	width: 100%;
 	height: 17px;
-	background: url("./styles/dualcore/theme/images/expand-view.png") no-repeat top;
+	background: url("./images/expand-view.png") no-repeat top;
 	text-align: center;
 	margin-top: -5px;
 }

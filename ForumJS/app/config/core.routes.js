@@ -10,6 +10,19 @@ var routes =
 		controller: 'index',
 		view: 'index_body',
 	},
+
+	'login':
+	{
+		url:'/user/login',
+		controller : 'user',
+	},
+
+	'signup':
+	{
+		url:'/user/signup',
+		controller : 'user',
+		view: 'ucp_register',
+	}
 }
 
 module.exports = routes;

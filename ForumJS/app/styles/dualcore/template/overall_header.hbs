@@ -45,7 +45,7 @@
 
 		var url = '{UA_POPUP_PM}';
 		window.open(url.replace(/&amp;/g, '&'), '_phpbbprivmsg', 'height=225,resizable=yes,scrollbars=yes, width=400');
-	{{/and}}
+{{/and}}
 
 	/**
 	* Find a member
@@ -99,68 +99,68 @@
 <div class="topnav">
 <div style="margin: 0 auto; min-width: 900px; width: {{$BOARD_WIDTH}}; position: relative;">
 <div class="navlink"><ul>
-				<!-- IF not S_USER_LOGGED_IN and S_REGISTER_ENABLED and not (S_SHOW_COPPA or S_REGISTRATION) and not S_IS_BOT -->
-				<li><a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x">
-					<strong><img src="{T_THEME_PATH}/images/icon_logout.png" width="16" height="16" alt="" />{L_LOGIN_LOGOUT}</strong>
-				</a></li>
-				<li><a href="{U_REGISTER}">
-					<strong><img src="{T_THEME_PATH}/images/icon_register.png" width="16" height="16" alt="" />{L_REGISTER}</strong>
-				</a></li>	
-				<!-- ENDIF -->	
-				<!-- IF S_USER_LOGGED_IN and not S_IS_BOT -->
-				<li><a href="{U_PROFILE}">
-					<strong><img src="{T_THEME_PATH}/images/icon_ucp.png" width="20" height="20" alt="" />{S_USERNAME}</strong>
-				</a></li>
-				<!-- ENDIF -->	
-				<!-- IF U_ACP -->
-				<li><a href="{U_ACP}">
-					<strong><img src="{T_THEME_PATH}/images/icon_admin.png" width="20" height="20" alt="" />{L_ACP}</strong>
+				{{#and (not S_USER_LOGGED_IN) S_REGISTER_ENABLED  }}	
+					<li><a href="{{U_LOGIN_LOGOUT}}" title="{{L_LOGIN_LOGOUT}}" accesskey="x">
+						<strong><img src="{{T_THEME_PATH}}/images/icon_logout.png" width="16" height="16" alt="" />{{L_LOGIN_LOGOUT}}</strong>
+					</a></li>
+					<li><a href="{{U_REGISTER}}.html">
+						<strong><img src="{{T_THEME_PATH}}/images/icon_register.png" width="16" height="16" alt="" />{{L_REGISTER}}</strong>
+					</a></li>	
+				{{/and}}	
+				{{#and S_USER_LOGGED_IN (not S_IS_BOT)}}
+					<li><a href="{{U_PROFILE}}">
+						<strong><img src="{{T_THEME_PATH}}/images/icon_ucp.png" width="20" height="20" alt="" />{{S_USERNAME}}</strong>
+					</a></li>
+				{{/and}}
+				{{#if U_ACP }}
+				<li><a href="{{U_ACP}}">
+					<strong><img src="{{T_THEME_PATH}}/images/icon_admin.png" width="20" height="20" alt="" />{{L_ACP}}</strong>
 				</a></li>				
-				<!-- ENDIF -->				
-				<!-- IF S_DISPLAY_PM and not S_IS_BOT and S_USER_LOGGED_IN -->
-				<li><a href="{U_PRIVATEMSGS}">
-					<strong><img src="{T_THEME_PATH}/images/icon_pm.png" width="20" height="20" alt="" />{PRIVATE_MESSAGE_INFO}</strong>
-				</a></li>
-				<!-- ENDIF -->
-				<!-- IF U_RESTORE_PERMISSIONS -->
-				<li><a href="{U_RESTORE_PERMISSIONS}">
-				<strong><img src="{T_THEME_PATH}/images/icon_restore.png" width="16" height="16" alt="" />{L_RESTORE_PERMISSIONS}</strong>
-				</a></li>
-				<!-- ENDIF -->
-				<!-- IF S_USER_LOGGED_IN and not S_IS_BOT -->				
-				<li><a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x">
-					<strong><img src="{T_THEME_PATH}/images/icon_logout.png" width="20" height="20" alt="" />{L_LOGOUT}</strong>
-				</a></li>
-				<!-- ENDIF -->			
+				{{/if}}	
+				{{#and S_DISPLAY_PM (not S_IS_BOT) S_USER_LOGGED_IN}}				
+					<li><a href="{{U_PRIVATEMSGS}}">
+						<strong><img src="{{T_THEME_PATH}}/images/icon_pm.png" width="20" height="20" alt="" />{{PRIVATE_MESSAGE_INFO}}</strong>
+					</a></li>
+				{{/and}}
+				{{#if U_RESTORE_PERMISSIONS }}
+					<li><a href="{{U_RESTORE_PERMISSIONS}}">
+						<strong><img src="{{T_THEME_PATH}}/images/icon_restore.png" width="16" height="16" alt="" />{{L_RESTORE_PERMISSIONS}}</strong>
+					</a></li>
+				{{/if}}	
+				{{#and S_USER_LOGGED_IN (not S_IS_BOT)}}			
+					<li><a href="{{U_LOGIN_LOGOUT}}" title="{{L_LOGIN_LOGOUT}}" accesskey="x">
+						<strong><img src="{{T_THEME_PATH}}/images/icon_logout.png" width="20" height="20" alt="" />{{L_LOGOUT}}</strong>
+					</a></li>
+				{{/and}}		
 </ul></div>
 
 <div class="navlink" style="float: right;"><ul><li>
-		<!-- IF S_USER_LOGGED_IN -->		
-        <div class="float-right">		
-            <div class="quicksearch">
-                <!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
-                    <form action="{U_SEARCH}" method="get" id="search">
-                        <fieldset>
-                            <input name="keywords" id="keywords" type="text" maxlength="128" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
-                            <!--<input class="button2" value="{L_SEARCH}" type="submit" />-->
-                            {S_SEARCH_HIDDEN_FIELDS}
-                        </fieldset>
-                        </form>
-                    <!-- ENDIF -->
-            </div>
-        </div>			
-		<!-- ENDIF -->
-		
-		<!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->
-	<form method="post" action="{S_LOGIN_ACTION}"  style="margin-top: -6px; margin-right: -5px;">
+		{{#if S_USER_LOGGED_IN }}		
+			<div class="float-right">		
+				<div class="quicksearch">
+					{{#and S_DISPLAY_SEARCH (not S_IN_SEARCH)}}
+						<form action="{U_SEARCH}" method="get" id="search">
+							<fieldset>
+								<input name="keywords" id="keywords" type="text" maxlength="128" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
+								<!--<input class="button2" value="{L_SEARCH}" type="submit" />-->
+								{{S_SEARCH_HIDDEN_FIELDS}}
+							</fieldset>
+						</form>
+					{{/and}}	
+				</div>
+			</div>			
+		{{/if}}	
+
+	{{#and  (not S_USER_LOGGED_IN) (not S_IS_BOT)}}
+	<form method="post" action="{{S_LOGIN_ACTION}}"  style="margin-top: -6px; margin-right: -5px;">
 		<fieldset class="quick-login">
-			<label for="username" style="color: #fff;">{L_USERNAME}:</label>&nbsp;<input type="text" name="username" id="username" size="15" class="inputbox" title="{L_USERNAME}" />
-			<label for="password" style="color: #fff;">{L_PASSWORD}:</label>&nbsp;<input type="password" name="password" id="password" size="15" class="inputbox" title="{L_PASSWORD}" />
-			<input type="submit" name="login" value="{L_LOGIN}" class="button1" />
-			{S_LOGIN_REDIRECT}
+			<label for="username" style="color: #fff;">{{L_USERNAME}}:</label>&nbsp;<input type="text" name="username" id="username" size="15" class="inputbox" title="{{L_USERNAME}}" />
+			<label for="password" style="color: #fff;">{{L_PASSWORD}}:</label>&nbsp;<input type="password" name="password" id="password" size="15" class="inputbox" title="{{L_PASSWORD}}" />
+			<input type="submit" name="login" value="{{L_LOGIN_LOGOUT}}" class="button1" />
+			{{S_LOGIN_REDIRECT}}
 		</fieldset>
 	</form>
-		<!-- ENDIF -->
+	{{/and}}	
 </li></ul></div>
 
 </div>
@@ -171,18 +171,18 @@
 	<div id="page-header">
 	
 	<div class="mainheader">
-	<a style="display: inline-block;" href="{U_INDEX}" accesskey="h" class="dualcore-logo<!-- IF $LOGO_ANIMATION == 'on' --> dualcore-logo-animation<!-- ENDIF -->"></a>
+	<a style="display: inline-block;" href="{{U_INDEX}}" accesskey="h" class="dualcore-logo{{#if LOGO_ANIMATION}} dualcore-logo-animation{{/if}}"></a>
 	</div>
 	
 	<div class="mainheader">
-		<div class="mainnav<!-- IF $MENU_ANIMATION == 'on' --> mainnav-animation<!-- ENDIF -->"><ul>
-				<li><a href="{U_INDEX}" accesskey="h">
-					<strong>{L_HOME}</strong>
-					<span>{SITENAME}</span>
+		<div class="mainnav {{#if MENU_ANIMATION }}mainnav-animation{{/if}}"><ul>
+				<li><a href="{{U_INDEX}}" accesskey="h">
+					<strong>{{L_HOME}}</strong>
+					<span>{{SITENAME}}</span>
 				</a></li>
-				<li><a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}">
-					<strong>{L_FAQ}</strong>
-					<span>{L_FAQ_EXPLAIN}</span>
+				<li><a href="{{U_FAQ}}" title="{L_FAQ_EXPLAIN}">
+					<strong>{{L_FAQ}}</strong>
+					<span>{{L_FAQ_EXPLAIN}}</span>
 				</a></li>
 				<!-- IF not S_IS_BOT and S_DISPLAY_MEMBERLIST -->
 				<li><a href="{U_MEMBERLIST}" title="{L_MEMBERLIST_EXPLAIN}">
@@ -206,17 +206,17 @@
 	</div>		
 
 	<div class="nav-bar">
-	<img src="{T_THEME_PATH}/images/icon_home.png" width="16" height="16" alt="" /><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks -->
+	<img src="{{T_THEME_PATH}}/images/icon_home.png" width="16" height="16" alt="" /><a href="{{U_INDEX}}" accesskey="h">{{L_INDEX}}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{{navlinks.U_VIEW_FORUM}}">{{navlinks.FORUM_NAME}}</a><!-- END navlinks -->
 	</div>		
 
 	</div>
 
 	<a name="start_here"></a>
 	<div id="page-body">
-		<!-- IF S_BOARD_DISABLED and S_USER_LOGGED_IN and (U_MCP or U_ACP) -->
-		<div id="information" class="rules">
-			<div class="inner"><span class="corners-top"><span></span></span>
-				<strong>{L_INFORMATION}:</strong> {L_BOARD_DISABLED}
-			<span class="corners-bottom"><span></span></span></div>
-		</div>
-		<!-- ENDIF -->
+		{{#and S_BOARD_DISABLED  S_USER_LOGGED_IN }}
+			<div id="information" class="rules">
+				<div class="inner"><span class="corners-top"><span></span></span>
+					<strong>{{L_INFORMATION}}:</strong> {{L_BOARD_DISABLED}}
+				<span class="corners-bottom"><span></span></span></div>
+			</div>
+		{{/and}}

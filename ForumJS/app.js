@@ -18,6 +18,7 @@ var i18n = require('./app/helpers/i18n');
 var hbsNotHelper = require('./app/helpers/not');
 var hbsAndHelper = require('./app/helpers/and');
 var hbsOrHelper = require('./app/helpers/or');
+var functions = require('./app/includes/functions');
 
 var app = express();
 var paths = {};
@@ -69,11 +70,13 @@ for (var key in routes) {
 		
             function _render(result) {
                // var sessionData = objectAssign(result, { 'session': req.session });
-                //result = objectAssign(result, functions.page_header(req.session)) ;
+                result = objectAssign(result, functions.page_header(req.session)) ;
                 result.T_TEMPLATE_PATH = '/styles/dualcore/template';
                 result.T_THEME_PATH= '/styles/dualcore/theme';
                 result.S_CONTENT_DIRECTION = 'ltr';
                 result.$BOARD_WIDTH = '80%';
+                result.MENU_ANIMATION = false;
+                result.LOGO_ANIMATION = true;
                 res.render(path[req.route.path].render, result);
             }
             var result = path[req.route.path].action[req.method](req, res, next, _render);

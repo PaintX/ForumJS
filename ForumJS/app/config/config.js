@@ -10,6 +10,8 @@ var config = {
     require_activation : constants.USER_ACTIVATION_NONE,
 
     allow_name_chars : 'USERNAME_CHARS_ANY',
+    min_name_chars : 5,
+    max_name_chars : 25,
 }
 
 function load()

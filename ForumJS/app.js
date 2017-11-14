@@ -19,9 +19,12 @@ var hbsNotHelper = require('./app/helpers/not');
 var hbsAndHelper = require('./app/helpers/and');
 var hbsOrHelper = require('./app/helpers/or');
 var functions = require('./app/includes/functions');
+var db = require('./app/includes/db');
 
 var app = express();
 var paths = {};
+
+db.init();
 
 i18n.configure({
     locales: ['en', 'fr'],

@@ -3,6 +3,7 @@ var debug = require('debug');
 var schemas = require('./schemas/schema.json');
 var db = undefined;
 
+
 //-- http://ftp.phpbb-fr.com/cdd/phpbb3/_screens/doc_table/?table=phpbb_acl_options
 function _createTable() 
 {
@@ -20,13 +21,14 @@ function _createTable()
                 {
                     case ( 0 ):
                     {
-                        switch ( val )
+                        if ( val.startsWith("UINT") || val.startsWith("TINT") || val.startsWith("BOOL") ||
+                        val.startsWith("USINT") || val.startsWith("ULINT") )
                         {
-                            default:
-                            {
-                                query += " INTEGER ";
-                                break;
-                            }
+                            query += " INTEGER ";
+                        }
+                        else
+                        {
+                            query += " TEXT ";
                         }
                         break;
                     }
@@ -44,6 +46,13 @@ function _createTable()
             });
             query += "," ;
         }
+
+        if ( schemas[table].PRIMARY_KEY != undefined)
+        {
+            query+= " PRIMARY KEY ( " + schemas[table].PRIMARY_KEY + " )";
+            query += "," ;
+        }
+
         query = query.substring(0,query.length-1);
         query += " )";
 
@@ -58,4 +67,25 @@ function init()
     db = new sqlite3.Database('dbForumJS.db',_createTable);
 }
 
+function getModel(table)
+{
+    let model = {};
+    for ( let champ in schemas)
+    {
+        console.log(champ);
+        if ( champ == "phpbb_" + table)
+        {
+            model = Object.assign({} , schemas[champ].COLUMNS );
+        }
+    }
+
+    for ( let champ in model)
+    {
+        model[champ] = undefined;
+    }
+
+    return model;
+}
+
 module.exports.init = init;
+module.exports.getModel = getModel;

@@ -1,6 +1,7 @@
 var ucp_register = require('../includes/ucp/ucp_register');
+var database = require('../includes/db');
 
-function _get (req, res, next)
+function _get (req, res, next , render)
 {
   return ucp_register.run();
 }
@@ -29,9 +30,18 @@ function _post (req, res, next)
 
   if (objret.ERROR.length < 1 )
   {
+    database.addUser(formulaire,function()
+    {
+      render(objret);
+    });
+
+
+
+    return undefined;
     //-- redirection vers ?
   }
-  return objret;
+  else
+    return objret;
 }
 
 module.exports.post = _post;

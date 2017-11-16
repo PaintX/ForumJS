@@ -6,7 +6,16 @@ function init()
     sqlite.init();
 }
 
-function addUser(data , callback)
+function getUser(fn , query_params)
+{
+    sqlite.get('users' , function()
+    {
+        if ( fn != undefined)
+            fn();
+    },query_params);
+}
+
+function addUser(data , fn)
 {
     function genRandomString(length){
         return crypto.randomBytes(Math.ceil(length/2))
@@ -23,15 +32,21 @@ function addUser(data , callback)
 
     var user = sqlite.getModel('users');
 
-    user.user_form_salt = genRandomString();
+    user.user_form_salt = genRandomString(32);
     user.user_password = hashPassword(data.new_password, user.user_form_salt);
     user.user_email = data.email;
     user.user_email_hash = hashPassword(user.user_email, user.user_form_salt);
-   // user.username = data.
+    user.username = data.username;
 
 
+    sqlite.set('users' , user , function()
+    {
+        if ( fn != undefined)
+            fn();
+    });
 
 }
 
 module.exports.init = init;
 module.exports.addUser = addUser;
+module.exports.getUser = getUser;

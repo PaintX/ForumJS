@@ -2,7 +2,7 @@ var sqlite3 = require('sqlite3');
 var debug = require('debug');
 var schemas = require('./schemas/schema.json');
 var db = undefined;
-
+var table_prefix = "phpbb_";
 
 //-- http://ftp.phpbb-fr.com/cdd/phpbb3/_screens/doc_table/?table=phpbb_acl_options
 function _createTable() 
@@ -67,17 +67,61 @@ function init()
     db = new sqlite3.Database('dbForumJS.db',_createTable);
 }
 
-function getModel(table)
+function set(table , data , fn)
 {
-    let model = {};
-    for ( let champ in schemas)
+    let query = "INSERT INTO '"  +(table_prefix + table) +"' (";
+
+    for ( let champ in data)
     {
-        console.log(champ);
-        if ( champ == "phpbb_" + table)
+        if ( data[champ] != undefined)
         {
-            model = Object.assign({} , schemas[champ].COLUMNS );
+            query += " '" + champ + "' ";
+            query +=",";            
+        }
+
+    }
+    query = query.substring(0,query.length-1);
+    query += ")";
+
+    query += " VALUES (";
+
+    for ( let champ in data)
+    {
+        if ( data[champ] != undefined)
+        {
+            query += " '" + data[champ] + "' ";
+            query +=",";
         }
     }
+    query = query.substring(0,query.length-1);
+    query += ")";
+
+    db.run(query , function()
+    {
+        if ( fn != undefined )
+            fn();
+    });
+}
+
+function get(table , fn , query_params)
+{
+    let query = "SELECT * FROM '"  +(table_prefix + table) +"' ";
+
+    if ( query_params != undefined)
+        query += query_params;
+
+    db.all(query , function(err, rows) {
+        if ( err )
+            console.log("db error "+ err);
+
+        console.log(rows);
+
+    });
+}
+
+function getModel(table)
+{
+    let model = Object.assign({} , schemas[(table_prefix + table)].COLUMNS );
 
     for ( let champ in model)
     {
@@ -89,3 +133,5 @@ function getModel(table)
 
 module.exports.init = init;
 module.exports.getModel = getModel;
+module.exports.set = set;
+module.exports.get = get;

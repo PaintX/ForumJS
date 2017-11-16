@@ -6,7 +6,7 @@ function _get (req, res, next , render)
   return ucp_register.run();
 }
 
-function _post (req, res, next)
+function _post (req, res, next , render)
 {
   let objret = ucp_register.run();
   let formulaire = req.body;
@@ -30,6 +30,10 @@ function _post (req, res, next)
 
   if (objret.ERROR.length < 1 )
   {
+    database.getUser(function(){
+
+
+    });
     database.addUser(formulaire,function()
     {
       render(objret);

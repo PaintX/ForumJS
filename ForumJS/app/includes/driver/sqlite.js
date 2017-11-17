@@ -103,18 +103,15 @@ function set(table , data , fn)
     });
 }
 
-function get(table , fn , query_params)
+function get(table , fn)
 {
     let query = "SELECT * FROM '"  +(table_prefix + table) +"' ";
-
-    if ( query_params != undefined)
-        query += query_params;
 
     db.all(query , function(err, rows) {
         if ( err )
             console.log("db error "+ err);
-
-        console.log(rows);
+        if ( fn != undefined )
+            fn(rows);
 
     });
 }

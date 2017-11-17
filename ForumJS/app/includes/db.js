@@ -6,13 +6,13 @@ function init()
     sqlite.init();
 }
 
-function getUser(fn , query_params)
+function getUser(fn)
 {
-    sqlite.get('users' , function()
+    sqlite.get('users' , function(rows)
     {
         if ( fn != undefined)
-            fn();
-    },query_params);
+            fn(rows);
+    });
 }
 
 function addUser(data , fn)

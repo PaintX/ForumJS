@@ -28,12 +28,19 @@ function _post (req, res, next , render)
     objret.ERROR.push("Les mots de passe ne sont pas identique");
   }
 
+  let usernameIsFound = false;
+  database.getUser(function(users){
+    users.map(function(user){
+      if ( user.username == formulaire.username)
+        usernameIsFound = true;
+    });
+  });
+
+
   if (objret.ERROR.length < 1 )
   {
-    database.getUser(function(){
 
 
-    });
     database.addUser(formulaire,function()
     {
       render(objret);

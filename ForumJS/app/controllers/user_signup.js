@@ -31,7 +31,7 @@ function _post (req, res, next , render)
   if (objret.ERROR.length < 1 )
   {
     let usernameIsFound = false;
-    database.getUser(function(users){
+    database.getUsers(function(users){
       users.map(function(user){
         if ( user.username == formulaire.username)
           usernameIsFound = true;

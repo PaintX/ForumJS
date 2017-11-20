@@ -15,6 +15,7 @@ var routes =
 	{
 		url:'/user/login',
 		controller : 'user_login',
+		view: 'login_body',
 	},
 
 	'signup':

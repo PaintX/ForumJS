@@ -8,7 +8,8 @@ module.exports = {
         common: {
             'USERNAME_CHARS_ANY_EXPLAIN'			:'Le nom d’utilisateur doit avoir une longueur comprise entre %s et %s.',
             'CHARACTERS'			: ['%d caractère', '%d caractères'],
-            'TIMEZONE'					: 'Fuseau horaire'
+            'TIMEZONE'					: 'Fuseau horaire',
+            'LOGIN_LINK_NO_DATA_PROVIDED'	: 'Aucune donnée n’a été fournie sur cette page afin de lier un compte externe à un compte du forum. Veuillez contacter l’administrateur du forum si vous rencontrez à nouveau ce problème.',
         },
     },
     install: {

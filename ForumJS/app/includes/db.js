@@ -6,7 +6,12 @@ function init()
     sqlite.init();
 }
 
-function getUser(fn)
+function getUserByName ( name , fn )
+{
+
+}
+
+function getUsers(fn)
 {
     sqlite.get('users' , function(rows)
     {
@@ -49,4 +54,5 @@ function addUser(data , fn)
 
 module.exports.init = init;
 module.exports.addUser = addUser;
-module.exports.getUser = getUser;
+module.exports.getUsers = getUsers;
+module.exports.getUserByName = getUserByName;

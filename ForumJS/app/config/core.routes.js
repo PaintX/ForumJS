@@ -14,13 +14,13 @@ var routes =
 	'login':
 	{
 		url:'/user/login',
-		controller : 'user',
+		controller : 'user_login',
 	},
 
 	'signup':
 	{
 		url:'/user/signup',
-		controller : 'user',
+		controller : 'user_signup',
 		view: 'ucp_register',
 	}
 }

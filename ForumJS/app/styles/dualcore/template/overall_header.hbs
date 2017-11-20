@@ -152,7 +152,7 @@
 		{{/if}}	
 
 	{{#and  (not S_USER_LOGGED_IN) (not S_IS_BOT)}}
-	<form method="post" action="{{S_LOGIN_ACTION}}"  style="margin-top: -6px; margin-right: -5px;">
+	<form method="post" action="{{S_LOGIN_ACTION}}.html"  style="margin-top: -6px; margin-right: -5px;">
 		<fieldset class="quick-login">
 			<label for="username" style="color: #fff;">{{L_USERNAME}}:</label>&nbsp;<input type="text" name="username" id="username" size="15" class="inputbox" title="{{L_USERNAME}}" />
 			<label for="password" style="color: #fff;">{{L_PASSWORD}}:</label>&nbsp;<input type="password" name="password" id="password" size="15" class="inputbox" title="{{L_PASSWORD}}" />

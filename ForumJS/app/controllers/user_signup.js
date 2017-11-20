@@ -28,28 +28,31 @@ function _post (req, res, next , render)
     objret.ERROR.push("Les mots de passe ne sont pas identique");
   }
 
-  let usernameIsFound = false;
-  database.getUser(function(users){
-    users.map(function(user){
-      if ( user.username == formulaire.username)
-        usernameIsFound = true;
-    });
-  });
-
-
   if (objret.ERROR.length < 1 )
   {
+    let usernameIsFound = false;
+    database.getUser(function(users){
+      users.map(function(user){
+        if ( user.username == formulaire.username)
+          usernameIsFound = true;
+      });
 
-
-    database.addUser(formulaire,function()
-    {
-      render(objret);
+      if ( usernameIsFound )
+      {
+        objret.ERROR.push("Ce nom d'utilisateur est deja utilisé ");
+        return render(objret);
+      }
+      else
+      {
+        database.addUser(formulaire,function()
+        {
+          render(objret);
+          //-- redirection vers ?
+        });
+      }
     });
 
-
-
-    return undefined;
-    //-- redirection vers ?
+    return undefined; 
   }
   else
     return objret;

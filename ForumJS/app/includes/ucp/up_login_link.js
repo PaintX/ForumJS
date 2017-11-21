@@ -18,8 +18,6 @@ function run()
     let objRet = {
         // Common template elements
         'LOGIN_LINK_ERROR' : login_link_error,
-        'PASSWORD_CREDENTIAL'	: 'login_password',
-        'USERNAME_CREDENTIAL' : 'login_username',
         'S_HIDDEN_FIELDS'	: undefined , //	=> $this->get_hidden_fields($data),
 
         // Registration elements

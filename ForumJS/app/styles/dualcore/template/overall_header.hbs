@@ -154,8 +154,8 @@
 	{{#and  (not S_USER_LOGGED_IN) (not S_IS_BOT)}}
 	<form method="post" action="{{S_LOGIN_ACTION}}.html"  style="margin-top: -6px; margin-right: -5px;">
 		<fieldset class="quick-login">
-			<label for="username" style="color: #fff;">{{L_USERNAME}}:</label>&nbsp;<input type="text" name="username" id="username" size="15" class="inputbox" title="{{L_USERNAME}}" />
-			<label for="password" style="color: #fff;">{{L_PASSWORD}}:</label>&nbsp;<input type="password" name="password" id="password" size="15" class="inputbox" title="{{L_PASSWORD}}" />
+			<label for="{{USERNAME_CREDENTIAL}}" style="color: #fff;">{{L_USERNAME}}:</label>&nbsp;<input type="text" name="{{USERNAME_CREDENTIAL}}" id="{{USERNAME_CREDENTIAL}}" size="15" class="inputbox" title="{{L_USERNAME}}" />
+			<label for="{{PASSWORD_CREDENTIAL}}" style="color: #fff;">{{L_PASSWORD}}:</label>&nbsp;<input type="password" name="{{PASSWORD_CREDENTIAL}}" id="{{PASSWORD_CREDENTIAL}}" size="15" class="inputbox" title="{{L_PASSWORD}}" />
 			<input type="submit" name="login" value="{{L_LOGIN_LOGOUT}}" class="button1" />
 			{{S_LOGIN_REDIRECT}}
 		</fieldset>
